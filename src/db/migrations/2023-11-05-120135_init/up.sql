@@ -1,132 +1,113 @@
--- Create the Staff table
-CREATE TABLE Staff (
-    StaffID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    Name VARCHAR(255),
-    Position VARCHAR(255),
-    ContactDetails VARCHAR(255),
-    Qualifications VARCHAR(255)
+-- Create the teachers table
+CREATE TABLE teachers (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    name VARCHAR(255),
+    contact_details VARCHAR(255),
 );
 
--- Create the Students table
-CREATE TABLE Students (
-    StudentID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    Name VARCHAR(255),
-    DateOfBirth DATE,
-    ContactDetails VARCHAR(255),
-    GradeLevel VARCHAR(255)
+-- Create the students table
+CREATE TABLE students (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    name VARCHAR(255),
+    date_of_birth TIMESTAMP,
+    contact_details VARCHAR(255),
+    grade_level VARCHAR(255)
 );
 
--- Create the Attendance table
-CREATE TABLE Attendance (
-    AttendanceID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    StudentID UUID NOT NULL,
-    StaffID UUID NOT NULL,
-    Date DATE,
-    Status VARCHAR(20),
-    ReasonForAbsence VARCHAR(255),
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
-    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+-- Create the attendance table
+CREATE TABLE attendance (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    student_id UUID NOT NULL,
+    attendance_date  TIMESTAMP,
+    status VARCHAR(20), -- present, absent
+    reason_for_absence VARCHAR(255),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
 );
 
--- Create the Performance table
-CREATE TABLE Performance (
-    PerformanceID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    StudentID UUID NOT NULL,
-    Subject VARCHAR(255),
-    Date DATE,
-    Grade VARCHAR(10),
-    TeacherID UUID NOT NULL,
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
-    FOREIGN KEY (TeacherID) REFERENCES Staff(StaffID)
+-- Create the parents table
+CREATE TABLE parents (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    name VARCHAR(255),
+    contact_details VARCHAR(255)
 );
 
--- Create the Parents table
-CREATE TABLE Parents (
-    ParentID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    Name VARCHAR(255),
-    ContactDetails VARCHAR(255)
+-- Create the schedule table
+CREATE TABLE schedule (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    class_id UUID NOT NULL,
+    subject_id UUID NOT NULL,
+    day VARCHAR(20),
+    start_time TIME,
+    end_time  TIME,
+    FOREIGN KEY (class_id) REFERENCES classes(class_id),
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id),
 );
 
--- Create the Schedule table
-CREATE TABLE Schedule (
-    ScheduleID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    ClassID UUID NOT NULL,
-    Subject VARCHAR(255),
-    Day VARCHAR(20),
-    Time TIME,
-    StaffID UUID NOT NULL,
-    FOREIGN KEY (ClassID) REFERENCES Classes(ClassID),
-    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+-- Create the classes table
+CREATE TABLE classes (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    name VARCHAR(255),
+    grade_level VARCHAR(20),
+    teacher_id UUID NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES staff(staff_id)
 );
 
--- Create the Classes table
-CREATE TABLE Classes (
-    ClassID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    Name VARCHAR(255),
-    GradeLevel VARCHAR(20),
-    TeacherID UUID NOT NULL,
-    FOREIGN KEY (TeacherID) REFERENCES Staff(StaffID)
+-- Create the subjects table
+CREATE TABLE subjects (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    name VARCHAR(255),
+    description TEXT,
+    grade_level VARCHAR(20)
 );
 
--- Create the Subjects table
-CREATE TABLE Subjects (
-    SubjectID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    Name VARCHAR(255),
-    Description TEXT,
-    GradeLevel VARCHAR(20)
+-- Create the exams table
+CREATE TABLE exams (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    subject_id UUID NOT NULL,
+    date TIMESTAMP,
+    type VARCHAR(20),
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
--- Create the Exams table
-CREATE TABLE Exams (
-    ExamID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    SubjectID UUID NOT NULL,
-    Date DATE,
-    Type VARCHAR(20),
-    FOREIGN KEY (SubjectID) REFERENCES Subjects(SubjectID)
+-- Create the fees table
+CREATE TABLE fees (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    student_id UUID NOT NULL,
+    invoice_id UUID,
+    description VARCHAR(255),
+    amount DECIMAL(10, 2),
+    due_date TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
 
--- Create the Invoices table
-CREATE TABLE Invoices (
-    InvoiceID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    StudentID UUID NOT NULL,
-    IssueDate DATE,
-    DueDate DATE,
-    TotalAmount DECIMAL(10, 2),
-    Status VARCHAR(20),
-    PaymentMethod VARCHAR(20),
-    TransactionReference VARCHAR(255),
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID)
+-- Create the invoices table
+CREATE TABLE invoices (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    student_id UUID NOT NULL,
+    issue_date TIMESTAMP,
+    due_date TIMESTAMP,
+    status VARCHAR(20),
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
 
--- Create the Payments table
-CREATE TABLE Payments (
-    PaymentID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    InvoiceID UUID NOT NULL,
-    Date DATE,
-    Amount DECIMAL(10, 2),
-    PaymentMethod VARCHAR(20),
-    TransactionReference VARCHAR(255),
-    FOREIGN KEY (InvoiceID) REFERENCES Invoices(InvoiceID)
+-- Create the payments table
+CREATE TABLE payments (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    invoice_id UUID NOT NULL,
+    payment_date TIMESTAMP,
+    amount DECIMAL(10, 2),
+    payment_method VARCHAR(20),
+    transaction_reference VARCHAR(255),
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
 
--- Create the Fees table
-CREATE TABLE Fees (
-    FeeID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    StudentID UUID NOT NULL,
-    Description VARCHAR(255),
-    Amount DECIMAL(10, 2),
-    DueDate DATE,
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID)
-);
-
--- Create the ParentPickup table
-CREATE TABLE Pickup (
-    PickupID UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-    ParentID UUID NOT NULL,
-    StudentID UUID NOT NULL,
-    PickupDate DATE,
-    PickupTime TIME,
-    AuthorizedGuardian VARCHAR(255),
-    FOREIGN KEY (ParentID) REFERENCES Parents(ParentID),
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID)
+-- Create the parent_pickup table
+CREATE TABLE pickups (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    parent_id UUID NOT NULL,
+    student_id UUID NOT NULL,
+    pickup_date TIMESTAMP,
+    FOREIGN KEY (parent_id) REFERENCES parents(parent_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
