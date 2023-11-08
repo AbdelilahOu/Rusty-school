@@ -69,6 +69,17 @@ CREATE TABLE exams (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
+-- Create the results table
+CREATE TABLE results (
+    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
+    exam_id UUID NOT NULL,
+    student_id UUID NOT NULL,
+    score DECIMAL(10, 2),
+    grade VARCHAR(20),
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+
 -- Create the fees table
 CREATE TABLE fees (
     id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
