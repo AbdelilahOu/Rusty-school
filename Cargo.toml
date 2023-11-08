@@ -5,7 +5,17 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = [".", "migration"]
+
+
 [dependencies]
+sea-orm = { version = "0.12.4", features = [
+    "sqlx-postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "with-uuid",
+] }
 axum = "0.6.20"
 tokio = { version = "1.0", features = ["full"] }
 chrono = { version = "0.4.31", features = ["serde"] }
