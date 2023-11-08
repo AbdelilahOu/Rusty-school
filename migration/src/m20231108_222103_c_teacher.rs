@@ -15,11 +15,13 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Post::Id)
                             .integer()
                             .not_null()
-                            .auto_increment()
+                            .uuid()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Post::Title).string().not_null())
-                    .col(ColumnDef::new(Post::Text).string().not_null())
+                    .col(ColumnDef::new(Post::Name).string().not_null())
+                    .col(ColumnDef::new(Post::Email).string().null())
+                    .col(ColumnDef::new(Post::Phone).string().null())
+                    .col(ColumnDef::new(Post::Address).string().null())
                     .to_owned(),
             )
             .await
@@ -36,6 +38,8 @@ impl MigrationTrait for Migration {
 enum Post {
     Table,
     Id,
-    Title,
-    Text,
+    Name,
+    Email,
+    Phone,
+    Address,
 }

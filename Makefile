@@ -16,5 +16,8 @@ dropdb:
 migrationup:
 	sea-orm-cli migrate up
 
+migrationdown:
+	sea-orm-cli migrate down
+
 entities:
 	sea-orm-cli generate entity --database-url postgresql://root:mysecretpassword@localhost:5432/school?sslmode=disable 
