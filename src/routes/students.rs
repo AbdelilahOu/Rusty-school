@@ -3,13 +3,14 @@ use axum::{
     Router,
 };
 
-use crate::handlers::health::health_check;
+use crate::handlers::students::*;
 
 pub fn load_students_routes() -> Router {
     let router = Router::new()
-        .route("/", get(health_check()))
-        .route("/", post(health_check()))
-        .route("/", delete(health_check()))
-        .route("/", put(health_check()));
+        .route("/", get(list_students()))
+        .route("/:id", get(get_student()))
+        .route("/", post(create_student()))
+        .route("/:id", delete(delete_student()))
+        .route("/:id", put(update_student()));
     router
 }
