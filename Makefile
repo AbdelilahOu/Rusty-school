@@ -1,5 +1,6 @@
 dev: 
 	cargo run
+	
 containerup:
 	docker run --name school-manager-api -e POSTGRES_USER=root -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15
 
