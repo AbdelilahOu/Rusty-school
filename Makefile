@@ -20,5 +20,8 @@ migrationup:
 migrationdown:
 	sea-orm-cli migrate down
 
+entity:
+	sea-orm-cli generate entity -o src/models
+
 entities:
 	sea-orm-cli generate entity --database-url postgresql://root:mysecretpassword@localhost:5432/school?sslmode=disable 
