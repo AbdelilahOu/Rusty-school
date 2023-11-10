@@ -1,5 +1,7 @@
-pub fn create_student() {}
-pub fn update_student() {}
-pub fn delete_student() {}
-pub fn list_students() {}
-pub fn get_student() {}
+use axum::Json;
+
+pub async fn create_student(Json(payload): Json<String>) {}
+pub async fn update_student() {}
+pub async fn delete_student() {}
+pub async fn list_students() {}
+pub async fn get_student() {}
