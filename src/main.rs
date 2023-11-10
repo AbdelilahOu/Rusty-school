@@ -7,21 +7,13 @@ mod handlers;
 mod routes;
 use handlers::health::health_check;
 
-use crate::routes::{
-    attendance::load_attendances_routes, classes::load_classes_routes, exams::load_exams_routes,
-    fees::load_fees_routes, students::load_students_routes, teachers::load_teachers_routes,
-};
+use crate::routes::students::load_students_routes;
 
 #[tokio::main]
 async fn main() {
     let app = Router::new()
         .route("/", get(health_check()))
-        .nest("/attendances", load_attendances_routes())
-        .nest("/classes", load_classes_routes())
-        .nest("/exams", load_exams_routes())
-        .nest("/fees", load_fees_routes())
-        .nest("/students", load_students_routes())
-        .nest("/teachers", load_teachers_routes());
+        .nest("/students", load_students_routes());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
 
