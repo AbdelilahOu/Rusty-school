@@ -2208,7 +2208,6 @@ dependencies = [
  "migration",
  "sea-orm",
  "serde",
- "serde_json",
  "service",
  "tokio",
  "uuid",
