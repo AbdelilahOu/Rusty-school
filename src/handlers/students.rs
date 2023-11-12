@@ -7,7 +7,7 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 struct CreateResponse {
-    error: String,
+    error: Option<String>,
     data: String,
 }
 
@@ -18,7 +18,7 @@ pub async fn create_student(_req: HttpRequest) -> HttpResponse {
         .status(StatusCode::CREATED)
         .content_type(ContentType::json())
         .json(CreateResponse {
-            error: String::new(),
+            error: None,
             data: String::from("Student created successfully"),
         })
 }
