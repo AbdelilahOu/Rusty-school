@@ -1,6 +1,6 @@
-use crate::handlers::health;
+use crate::handlers::students;
 use actix_web::{web, Scope};
 
 pub fn load_students_routes() -> Scope {
-    web::scope("/students").route("/", web::get().to(health::health_check))
+    web::scope("/students").route("/", web::get().to(students::create_student))
 }

@@ -3,14 +3,16 @@ name = "school-management-api"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [workspace]
-members = [".", "migration"]
+members = [".", "migration", "entity", "service"]
 
 
 [dependencies]
+service = { path = "./service" }
+entity = { path = "./entity" }
+migration = { path = "./migration" }
 sea-orm = { version = "0.12.4", features = [
+    "debug-print",
     "sqlx-postgres",
     "runtime-tokio-rustls",
     "macros",

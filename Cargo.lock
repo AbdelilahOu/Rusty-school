@@ -962,6 +962,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "entity"
+version = "0.1.0"
+dependencies = [
+ "sea-orm",
+ "serde",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2196,9 +2204,12 @@ dependencies = [
  "actix-web",
  "chrono",
  "dotenv",
+ "entity",
+ "migration",
  "sea-orm",
  "serde",
  "serde_json",
+ "service",
  "tokio",
  "uuid",
 ]
@@ -2431,6 +2442,15 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "service"
+version = "0.1.0"
+dependencies = [
+ "entity",
+ "sea-orm",
+ "tokio",
 ]
 
 [[package]]
