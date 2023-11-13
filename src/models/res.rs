@@ -1,7 +1,8 @@
 use serde::Serialize;
 
 #[derive(Serialize)]
-struct ResultResponse<T> {
-    error: Option<String>,
-    data: Option<T>,
+pub struct ResultResponse<T> {
+    pub error: Option<String>,
+    pub message: Option<String>,
+    pub data: Option<T>,
 }

@@ -1,6 +1,8 @@
 use ::entity::students::{ActiveModel, Entity as Student};
 use sea_orm::{prelude::Uuid, *};
+use serde::Deserialize;
 
+#[derive(Deserialize, Debug)]
 pub struct CStudent {
     pub first_name: String,
     pub last_name: String,
