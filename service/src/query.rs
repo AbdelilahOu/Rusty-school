@@ -1,4 +1,4 @@
-use ::entity::{student, student::Entity as Student};
+// use ::entity::{student, student::Entity as Student};
 use sea_orm::{prelude::Uuid, *};
 
 pub struct Query;
