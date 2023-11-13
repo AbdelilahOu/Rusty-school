@@ -9,21 +9,19 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Student::Table)
+                    .table(Students::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Student::Id)
+                        ColumnDef::new(Students::Id)
                             .integer()
                             .not_null()
                             .uuid()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Student::FirstName).string().not_null())
-                    .col(ColumnDef::new(Student::LastName).string().not_null())
-                    .col(ColumnDef::new(Student::DateOfBirth).string().not_null())
-                    .col(ColumnDef::new(Student::ContactDetails).string().not_null())
-                    .col(ColumnDef::new(Student::Address).string().not_null())
-                    .col(ColumnDef::new(Student::Level).string().not_null())
+                    .col(ColumnDef::new(Students::FirstName).string().not_null())
+                    .col(ColumnDef::new(Students::LastName).string().not_null())
+                    .col(ColumnDef::new(Students::Address).string().not_null())
+                    .col(ColumnDef::new(Students::Level).string().not_null())
                     .to_owned(),
             )
             .await
@@ -31,19 +29,17 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Student::Table).to_owned())
+            .drop_table(Table::drop().table(Students::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Student {
+enum Students {
     Table,
     Id,
     FirstName,
     LastName,
-    DateOfBirth,
-    ContactDetails,
     Address,
     Level,
 }
