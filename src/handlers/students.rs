@@ -21,11 +21,6 @@ pub struct CreateBody {
     last_name: String,
 }
 
-#[derive(Deserialize)]
-pub struct DeleteParam {
-    id: Uuid,
-}
-
 pub async fn create_student(body: ActJson<CreateBody>, state: ActData<AppState>) -> HttpResponse {
     HttpResponse::Ok()
         .status(StatusCode::CREATED)
