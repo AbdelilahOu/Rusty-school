@@ -7,4 +7,5 @@ pub fn load_students_routes() -> Scope {
         .route("/{id}", web::get().to(students::get_student))
         .route("/{id}", web::put().to(students::update_student))
         .route("/{id}", web::delete().to(students::delete_student))
+        .route("/{page}/{skip}", web::post().to(students::create_student))
 }
