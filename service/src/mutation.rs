@@ -6,6 +6,7 @@ use crate::CStudent;
 pub struct ServiceMutation;
 
 impl ServiceMutation {
+    // students entity
     pub async fn create_student(db: &DbConn, data: CStudent) -> Result<Uuid, DbErr> {
         let c_student = ActiveModel {
             first_name: Set(data.first_name),
@@ -58,4 +59,5 @@ impl ServiceMutation {
             Err(err) => Err(err.to_string()),
         }
     }
+    // teachers entity
 }

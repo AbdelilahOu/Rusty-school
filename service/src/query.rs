@@ -5,6 +5,7 @@ use sea_orm::{prelude::Uuid, *};
 pub struct ServiceQuery;
 
 impl ServiceQuery {
+    // students entity
     pub async fn list_students(queries: ListQuery, db: &DbConn) -> Result<Vec<GStudent>, String> {
         let list_students = Student::find()
             .offset((queries.page - 1) * queries.limit)
@@ -42,4 +43,5 @@ impl ServiceQuery {
             Err(e) => Err(e.to_string()),
         }
     }
+    //
 }
