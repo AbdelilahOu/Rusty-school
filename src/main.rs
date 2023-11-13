@@ -7,7 +7,7 @@ mod db;
 mod handlers;
 mod routes;
 
-struct AppState {
+pub struct AppState {
     db_conn: DatabaseConnection,
 }
 
@@ -16,18 +16,20 @@ async fn main() -> std::io::Result<()> {
     let conn_res = establish_connection().await;
     match conn_res {
         Ok(conn) => {
-            let _ = HttpServer::new(|| {
+            let _ = HttpServer::new(move || {
                 App::new()
-                    // .app_data(web::Data::new(AppState { db_conn: conn }))
+                    .app_data(web::Data::new(AppState {
+                        db_conn: conn.clone(),
+                    }))
                     .wrap(Logger::default())
-                    .wrap(Logger::new("%a %{User-Agent}i"))
                     .service(load_students_routes())
             })
             .bind(("127.0.0.1", 8080))?
             .run()
             .await;
         }
-        Err(db_err) => println!("{}", db_err.to_string()),
-    }
+        Err(db_err) => panic!("{}", db_err.to_string()),
+    };
+
     Ok(())
 }
