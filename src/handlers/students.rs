@@ -2,10 +2,11 @@ use crate::{models::res::ResultResponse, AppState};
 use ::service::Mutation;
 use actix_web::{
     http::{header::ContentType, StatusCode},
-    web::{Data as ActData, Json as ActJson, Path as ActPath},
+    web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery},
     HttpResponse,
 };
-use service::{CStudent, Query};
+
+use service::{CStudent, ListQuery, Query};
 use uuid::Uuid;
 
 pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
@@ -60,6 +61,27 @@ pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> Htt
             .json(ResultResponse {
                 error: None,
                 message: Some("Student selected successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
+pub async fn get_students(queries: ActQuery<ListQuery>, state: ActData<AppState>) -> HttpResponse {
+    let students = Query::list_students(queries.into_inner(), &state.db_conn).await;
+
+    match students {
+        Ok(i) => HttpResponse::Created()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Students selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()

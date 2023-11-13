@@ -5,6 +5,7 @@ use sea_orm::DatabaseConnection;
 
 mod db;
 mod handlers;
+mod middlewares;
 mod models;
 mod routes;
 

@@ -17,3 +17,9 @@ pub struct GStudent {
     pub address: String,
     pub level: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct ListQuery {
+    pub page: u64,
+    pub limit: u64,
+}
