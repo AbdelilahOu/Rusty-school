@@ -9,13 +9,11 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Students::Table)
+                    .table(Teachers::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Students::Id).uuid().not_null().primary_key())
-                    .col(ColumnDef::new(Students::FirstName).string().not_null())
-                    .col(ColumnDef::new(Students::LastName).string().not_null())
-                    .col(ColumnDef::new(Students::Address).string().not_null())
-                    .col(ColumnDef::new(Students::Level).string().not_null())
+                    .col(ColumnDef::new(Teachers::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Teachers::FirstName).string().not_null())
+                    .col(ColumnDef::new(Teachers::LastName).string().not_null())
                     .to_owned(),
             )
             .await
@@ -23,20 +21,18 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Students::Table).to_owned())
+            .drop_table(Table::drop().table(Teachers::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Students {
-    #[sea_orm(iden = "students")]
+enum Teachers {
+    #[sea_orm(iden = "teachers")]
     Table,
     Id,
     #[sea_orm(iden = "first_name")]
     FirstName,
     #[sea_orm(iden = "last_name")]
     LastName,
-    Address,
-    Level,
 }
