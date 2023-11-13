@@ -1,10 +1,11 @@
 use ::service::Mutation;
 use actix_web::{
     http::{header::ContentType, StatusCode},
-    web::{self, Json},
-    HttpRequest, HttpResponse,
+    web::{Data as ActData, Json as ActJson, Path as ActPath},
+    HttpResponse,
 };
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::AppState;
 
@@ -20,26 +21,30 @@ pub struct CreateBody {
     last_name: String,
 }
 
-pub async fn create_student(body: Json<CreateBody>, state: web::Data<AppState>) -> HttpResponse {
+#[derive(Deserialize)]
+pub struct DeleteParam {
+    id: Uuid,
+}
+
+pub async fn create_student(body: ActJson<CreateBody>, state: ActData<AppState>) -> HttpResponse {
     HttpResponse::Ok()
         .status(StatusCode::CREATED)
         .content_type(ContentType::json())
         .body("HI")
 }
 
-pub async fn delete_student(_req: HttpRequest, data: web::Data<AppState>) -> HttpResponse {
-    let delete_res = Mutation::delete_student(&data.db_conn, uuid::Uuid::new_v4()).await;
+pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
+    let id = params.into_inner();
+    let delete_res = Mutation::delete_student(&state.db_conn, id).await;
 
     match delete_res {
-        Ok(i) => HttpResponse::Ok()
-            .status(StatusCode::CREATED)
+        Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(CreateResponse {
                 error: None,
                 data: Some(i.to_string()),
             }),
-        Err(e) => HttpResponse::Ok()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
+        Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(CreateResponse {
                 error: Some(e),
