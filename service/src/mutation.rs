@@ -1,14 +1,7 @@
 use ::entity::students::{ActiveModel, Entity as Student};
 use sea_orm::{prelude::Uuid, *};
-use serde::Deserialize;
 
-#[derive(Deserialize, Debug)]
-pub struct CStudent {
-    pub first_name: String,
-    pub last_name: String,
-    pub address: String,
-    pub level: String,
-}
+use crate::CStudent;
 
 pub struct Mutation;
 
@@ -23,23 +16,46 @@ impl Mutation {
         };
         match Student::insert(c_student).exec(db).await {
             Ok(res) => Ok(res.last_insert_id),
-            Err(db_err) => return Err(db_err),
+            Err(err) => return Err(err),
         }
     }
     pub async fn delete_student(db: &DbConn, id: Uuid) -> Result<u64, String> {
-        let student_res = Student::find_by_id(id).one(db).await;
-        match student_res {
+        let selected_student = Student::find_by_id(id).one(db).await;
+        match selected_student {
             Ok(student_opt) => match student_opt {
-                Some(student_a) => match student_a.delete(db).await {
+                Some(student_model) => match student_model.delete(db).await {
                     Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(db_err) => Err(db_err.to_string()),
+                    Err(err) => Err(err.to_string()),
                 },
                 None => Err(String::from("student doesnt exist")),
             },
-            Err(db_err) => Err(db_err.to_string()),
+            Err(err) => Err(err.to_string()),
         }
     }
-    // pub async fn update_student(db: &DbConn) -> Result<(), DbErr> {
-    //     Ok(())
-    // }
+    pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> Result<CStudent, String> {
+        let selected_student = Student::find_by_id(id).one(db).await;
+        match selected_student {
+            Ok(student_opt) => match student_opt {
+                Some(student_model) => {
+                    let mut student_model: ActiveModel = student_model.into();
+                    student_model.first_name = Set(data.first_name);
+                    student_model.last_name = Set(data.last_name);
+                    student_model.address = Set(data.address);
+                    student_model.level = Set(data.level);
+                    student_model.id = Set(id);
+                    match student_model.update(db).await {
+                        Ok(updated_student) => Ok(CStudent {
+                            first_name: updated_student.first_name,
+                            last_name: updated_student.last_name,
+                            address: updated_student.address,
+                            level: updated_student.level,
+                        }),
+                        Err(err) => Err(err.to_string()),
+                    }
+                }
+                None => Err(String::from("student doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
 }

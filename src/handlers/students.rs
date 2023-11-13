@@ -5,7 +5,7 @@ use actix_web::{
     web::{Data as ActData, Json as ActJson, Path as ActPath},
     HttpResponse,
 };
-use service::CStudent;
+use service::{CStudent, Query};
 use uuid::Uuid;
 
 pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
@@ -40,6 +40,53 @@ pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> 
                 error: None,
                 message: Some("Student deleted successfully".to_string()),
                 data: Some(i.to_string()),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
+pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
+    let selected_student = Query::get_student(params.into_inner(), &state.db_conn).await;
+
+    match selected_student {
+        Ok(i) => HttpResponse::Created()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Student selected successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
+pub async fn update_student(
+    id: ActPath<Uuid>,
+    body: ActJson<CStudent>,
+    state: ActData<AppState>,
+) -> HttpResponse {
+    let update_res =
+        Mutation::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
+
+    match update_res {
+        Ok(i) => HttpResponse::Created()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Student updated successfully".to_string()),
+                data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
