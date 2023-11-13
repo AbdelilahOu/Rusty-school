@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 #[derive(Serialize)]
-struct ResultResponse<T: for<'de> Serialize<'de>> {
+struct ResultResponse<T> {
     error: Option<String>,
     data: Option<T>,
 }
