@@ -2,9 +2,9 @@ use crate::{GStudent, ListQuery};
 use ::entity::students::Entity as Student;
 use sea_orm::{prelude::Uuid, *};
 
-pub struct Query;
+pub struct ServiceQuery;
 
-impl Query {
+impl ServiceQuery {
     pub async fn list_students(queries: ListQuery, db: &DbConn) -> Result<Vec<GStudent>, String> {
         let list_students = Student::find()
             .offset((queries.page - 1) * queries.limit)

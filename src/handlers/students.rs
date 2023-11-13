@@ -1,16 +1,15 @@
 use crate::{models::res::ResultResponse, AppState};
-use ::service::Mutation;
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery},
     HttpResponse,
 };
 
-use service::{CStudent, ListQuery, Query};
+use service::{CStudent, ListQuery, ServiceMutation, ServiceQuery};
 use uuid::Uuid;
 
 pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
-    let res = Mutation::create_student(&state.db_conn, body.into_inner()).await;
+    let res = ServiceMutation::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -32,7 +31,7 @@ pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -
 }
 
 pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
-    let delete_res = Mutation::delete_student(&state.db_conn, params.into_inner()).await;
+    let delete_res = ServiceMutation::delete_student(&state.db_conn, params.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -53,7 +52,7 @@ pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> 
 }
 
 pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
-    let selected_student = Query::get_student(params.into_inner(), &state.db_conn).await;
+    let selected_student = ServiceQuery::get_student(params.into_inner(), &state.db_conn).await;
 
     match selected_student {
         Ok(i) => HttpResponse::Created()
@@ -74,7 +73,7 @@ pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> Htt
 }
 
 pub async fn get_students(queries: ActQuery<ListQuery>, state: ActData<AppState>) -> HttpResponse {
-    let students = Query::list_students(queries.into_inner(), &state.db_conn).await;
+    let students = ServiceQuery::list_students(queries.into_inner(), &state.db_conn).await;
 
     match students {
         Ok(i) => HttpResponse::Created()
@@ -100,7 +99,7 @@ pub async fn update_student(
     state: ActData<AppState>,
 ) -> HttpResponse {
     let update_res =
-        Mutation::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        ServiceMutation::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
 
     match update_res {
         Ok(i) => HttpResponse::Created()

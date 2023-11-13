@@ -3,9 +3,9 @@ use sea_orm::{prelude::Uuid, *};
 
 use crate::CStudent;
 
-pub struct Mutation;
+pub struct ServiceMutation;
 
-impl Mutation {
+impl ServiceMutation {
     pub async fn create_student(db: &DbConn, data: CStudent) -> Result<Uuid, DbErr> {
         let c_student = ActiveModel {
             first_name: Set(data.first_name),
