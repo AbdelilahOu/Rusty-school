@@ -11,6 +11,7 @@ impl ServiceQuery {
             .limit(queries.limit)
             .all(db)
             .await;
+
         match list_students {
             Ok(students) => {
                 let maped_students = students.into_iter().map(|student| GStudent {
