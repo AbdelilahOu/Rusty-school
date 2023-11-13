@@ -9,16 +9,7 @@ use service::CStudent;
 use uuid::Uuid;
 
 pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
-    let res = Mutation::create_student(
-        &state.db_conn,
-        CStudent {
-            first_name: body.first_name.clone(),
-            last_name: body.last_name.clone(),
-            address: body.address.clone(),
-            level: body.level.clone(),
-        },
-    )
-    .await;
+    let res = Mutation::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -40,8 +31,7 @@ pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -
 }
 
 pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
-    let id = params.into_inner();
-    let delete_res = Mutation::delete_student(&state.db_conn, id).await;
+    let delete_res = Mutation::delete_student(&state.db_conn, params.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
