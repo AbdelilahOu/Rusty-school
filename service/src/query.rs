@@ -1,4 +1,4 @@
-use crate::{generate_filters, GStudent, ListQuery};
+use crate::{generate_filters, GStudent, QueriesFilters};
 use ::entity::students::Entity as Student;
 use sea_orm::{prelude::Uuid, *};
 
@@ -6,10 +6,10 @@ pub struct ServiceQuery;
 
 impl ServiceQuery {
     // students entity
-    pub async fn list_students(queries: ListQuery, db: &DbConn) -> Result<Vec<GStudent>, String> {
+    pub async fn list_students(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GStudent>, String> {
         let list_students = Student::find()
-            .offset((queries.page - 1) * queries.limit)
-            .limit(queries.limit)
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
             .filter(generate_filters())
             .all(db)
             .await;

@@ -5,7 +5,7 @@ use actix_web::{
     HttpResponse,
 };
 
-use service::{CStudent, ListQuery, ServiceMutation, ServiceQuery};
+use service::{CStudent, ListQuery, QueriesFilters, ServiceMutation, ServiceQuery};
 use uuid::Uuid;
 
 pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
@@ -73,7 +73,14 @@ pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> Htt
 }
 
 pub async fn get_students(queries: ActQuery<ListQuery>, state: ActData<AppState>) -> HttpResponse {
-    let students = ServiceQuery::list_students(queries.into_inner(), &state.db_conn).await;
+    let students = ServiceQuery::list_students(
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: Vec::<String>::new(),
+        },
+        &state.db_conn,
+    )
+    .await;
 
     match students {
         Ok(i) => HttpResponse::Created()

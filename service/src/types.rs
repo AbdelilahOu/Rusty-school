@@ -23,3 +23,8 @@ pub struct ListQuery {
     pub page: u64,
     pub limit: u64,
 }
+
+pub struct QueriesFilters {
+    pub queries: ListQuery,
+    pub filters: Vec<String>,
+}
