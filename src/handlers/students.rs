@@ -5,10 +5,23 @@ use actix_web::{
     HttpResponse,
 };
 
-use service::{CStudent, ListQuery, QueriesFilters, ServiceMutation, ServiceQuery};
+use serde::Deserialize;
+use service::{CStudent, Filters, ListQuery, QueriesFilters, ServiceMutation, ServiceQuery};
 use uuid::Uuid;
 
-pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -> HttpResponse {
+#[derive(Deserialize, Clone)]
+pub struct FiltersBody {
+    pub filters: Vec<Filters>,
+}
+
+// i like my functions to stay inline
+type AFiltersBody = ActJson<FiltersBody>;
+type AQueries = ActQuery<ListQuery>;
+type State = ActData<AppState>;
+type IdParam = ActPath<Uuid>;
+type StBody = ActJson<CStudent>;
+
+pub async fn create_student(body: StBody, state: State) -> HttpResponse {
     let res = ServiceMutation::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -30,8 +43,8 @@ pub async fn create_student(body: ActJson<CStudent>, state: ActData<AppState>) -
     }
 }
 
-pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_student(&state.db_conn, params.into_inner()).await;
+pub async fn delete_student(id: IdParam, state: State) -> HttpResponse {
+    let delete_res = ServiceMutation::delete_student(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -51,8 +64,8 @@ pub async fn delete_student(params: ActPath<Uuid>, state: ActData<AppState>) -> 
     }
 }
 
-pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> HttpResponse {
-    let selected_student = ServiceQuery::get_student(params.into_inner(), &state.db_conn).await;
+pub async fn get_student(id: IdParam, state: State) -> HttpResponse {
+    let selected_student = ServiceQuery::get_student(id.into_inner(), &state.db_conn).await;
 
     match selected_student {
         Ok(i) => HttpResponse::Created()
@@ -72,11 +85,11 @@ pub async fn get_student(params: ActPath<Uuid>, state: ActData<AppState>) -> Htt
     }
 }
 
-pub async fn get_students(queries: ActQuery<ListQuery>, state: ActData<AppState>) -> HttpResponse {
+pub async fn get_students(queries: AQueries, body: AFiltersBody, state: State) -> HttpResponse {
     let students = ServiceQuery::list_students(
         QueriesFilters {
             queries: queries.into_inner(),
-            filters: Vec::<String>::new(),
+            filters: body.clone().filters,
         },
         &state.db_conn,
     )
@@ -100,14 +113,9 @@ pub async fn get_students(queries: ActQuery<ListQuery>, state: ActData<AppState>
     }
 }
 
-pub async fn update_student(
-    id: ActPath<Uuid>,
-    body: ActJson<CStudent>,
-    state: ActData<AppState>,
-) -> HttpResponse {
+pub async fn update_student(id: IdParam, body: StBody, state: State) -> HttpResponse {
     let update_res =
         ServiceMutation::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
-
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())

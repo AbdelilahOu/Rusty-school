@@ -18,13 +18,20 @@ pub struct GStudent {
     pub level: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 pub struct ListQuery {
     pub page: u64,
     pub limit: u64,
 }
 
+#[derive(Deserialize, Clone)]
+pub struct Filters {
+    pub feild: String,
+    pub operation: String,
+    pub value: String,
+}
+
 pub struct QueriesFilters {
     pub queries: ListQuery,
-    pub filters: Vec<String>,
+    pub filters: Vec<Filters>,
 }
