@@ -1,18 +1,12 @@
-use crate::{models::res::ResultResponse, AppState};
+use crate::{models::commen::*, AppState};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery},
     HttpResponse,
 };
 
-use serde::Deserialize;
-use service::{CStudent, Filters, ListQuery, QueriesFilters, ServiceMutation, ServiceQuery};
+use service::*;
 use uuid::Uuid;
-
-#[derive(Deserialize, Clone)]
-pub struct FiltersBody {
-    pub filters: Vec<Filters>,
-}
 
 // i like my functions to stay inline
 type TFiltersBody = ActJson<FiltersBody>;
