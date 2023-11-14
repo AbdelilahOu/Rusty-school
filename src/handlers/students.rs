@@ -15,8 +15,8 @@ pub struct FiltersBody {
 }
 
 // i like my functions to stay inline
-type AFiltersBody = ActJson<FiltersBody>;
-type AQueries = ActQuery<ListQuery>;
+type TFiltersBody = ActJson<FiltersBody>;
+type TQueries = ActQuery<ListQuery>;
 type State = ActData<AppState>;
 type IdParam = ActPath<Uuid>;
 type StBody = ActJson<CStudent>;
@@ -85,7 +85,7 @@ pub async fn get_student(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_students(queries: AQueries, body: AFiltersBody, state: State) -> HttpResponse {
+pub async fn get_students(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let students = ServiceQuery::list_students(
         QueriesFilters {
             queries: queries.into_inner(),
