@@ -1,4 +1,4 @@
-use sea_orm_migration::prelude::*;
+use sea_orm_migration::{prelude::*, sea_query::extension::postgres::PgExpr};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,11 +11,19 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Students::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Students::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Students::Id).uuid().primary_key())
                     .col(ColumnDef::new(Students::FirstName).string().not_null())
                     .col(ColumnDef::new(Students::LastName).string().not_null())
                     .col(ColumnDef::new(Students::Address).string().not_null())
                     .col(ColumnDef::new(Students::Level).string().not_null())
+                    .col(
+                        ColumnDef::new(Students::FullName).string().generated(
+                            Expr::col(Students::FirstName)
+                                .concat(" ")
+                                .concat(Expr::col(Students::LastName)),
+                            true,
+                        ),
+                    )
                     .to_owned(),
             )
             .await
@@ -37,6 +45,8 @@ enum Students {
     FirstName,
     #[sea_orm(iden = "last_name")]
     LastName,
+    #[sea_orm(iden = "full_name")]
+    FullName,
     Address,
     Level,
 }

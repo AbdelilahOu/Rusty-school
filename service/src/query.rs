@@ -1,4 +1,4 @@
-use crate::{generate_filters, GStudent, QueriesFilters};
+use crate::{generate_student_filters, GStudent, QueriesFilters};
 use ::entity::students::Entity as Student;
 use sea_orm::{prelude::Uuid, *};
 
@@ -10,7 +10,7 @@ impl ServiceQuery {
         let list_students = Student::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            .filter(generate_filters())
+            .filter(generate_student_filters(qf.filters))
             .all(db)
             .await;
 
