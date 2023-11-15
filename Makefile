@@ -22,3 +22,5 @@ migrationdown:
 
 entity:
 	sea-orm-cli generate entity -o entity/src --lib
+
+.PHONY: createdb dropdb migrationup migrationdown entity
