@@ -1,6 +1,6 @@
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use db::db::establish_connection;
-use routes::students::load_students_routes;
+use routes::{students::load_students_routes, teachers::load_teachers_routes};
 use sea_orm::DatabaseConnection;
 
 mod db;
@@ -25,6 +25,7 @@ async fn main() -> std::io::Result<()> {
                     }))
                     .wrap(Logger::default())
                     .service(load_students_routes())
+                    .service(load_teachers_routes())
             })
             .bind(("127.0.0.1", 8080))?
             .run()
