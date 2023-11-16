@@ -20,7 +20,13 @@ pub fn generate_student_filters(filters: Vec<Filters>) -> Condition {
                     "LIKE" => conditions.add(StudentCol::FirstName.like(filter.value)),
                     _ => conditions,
                 },
-                "level" => conditions,
+                "level" => match filter.operation.as_str() {
+                    "=" => {
+                        // get level id using level
+                        conditions
+                    }
+                    _ => conditions,
+                },
                 "address" => conditions,
                 _ => conditions,
             }
