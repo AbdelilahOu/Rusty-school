@@ -1,19 +1,3 @@
--- Create the teachers table
-CREATE TABLE teachers (
-    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
-    name VARCHAR(255),
-    contact_details VARCHAR(255),
-);
-
--- Create the students table
-CREATE TABLE students (
-    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
-    name VARCHAR(255),
-    date_of_birth TIMESTAMP,
-    contact_details VARCHAR(255),
-    grade_level VARCHAR(255)
-);
-
 -- Create the attendance table
 CREATE TABLE attendance (
     id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
@@ -22,13 +6,6 @@ CREATE TABLE attendance (
     status VARCHAR(20), -- present, absent
     reason_for_absence VARCHAR(255),
     FOREIGN KEY (student_id) REFERENCES students(student_id),
-);
-
--- Create the parents table
-CREATE TABLE parents (
-    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
-    name VARCHAR(255),
-    contact_details VARCHAR(255)
 );
 
 -- Create the schedule table
@@ -111,16 +88,6 @@ CREATE TABLE payments (
     payment_method VARCHAR(20),
     transaction_reference VARCHAR(255),
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
-);
-
--- Create the parent_pickup table
-CREATE TABLE pickups (
-    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
-    parent_id UUID NOT NULL,
-    student_id UUID NOT NULL,
-    pickup_date TIMESTAMP,
-    FOREIGN KEY (parent_id) REFERENCES parents(parent_id),
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
 
 -- Create the scans table
