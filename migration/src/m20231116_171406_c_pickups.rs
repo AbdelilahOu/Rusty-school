@@ -22,14 +22,19 @@ impl MigrationTrait for Migration {
                             .from(Pickups::Table, Pickups::StudentId)
                             .to(Students::Table, Students::Id),
                     )
-                    .col(ColumnDef::new(Pickups::ParentId).string().not_null())
+                    .col(ColumnDef::new(Pickups::ParentId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-pickup-parent_id")
                             .from(Pickups::Table, Pickups::ParentId)
                             .to(Parents::Table, Parents::Id),
                     )
-                    .col(ColumnDef::new(Pickups::PickupDate).timestamp().not_null())
+                    .col(
+                        ColumnDef::new(Pickups::CreatedAt)
+                            .timestamp()
+                            .not_null()
+                            .extra("DEFAULT CURRENT_TIMESTAMP"),
+                    )
                     .to_owned(),
             )
             .await
@@ -51,6 +56,6 @@ enum Pickups {
     StudentId,
     #[sea_orm(iden = "parent_id")]
     ParentId,
-    #[sea_orm(iden = "pickup_date")]
-    PickupDate,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }
