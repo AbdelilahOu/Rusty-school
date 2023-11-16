@@ -37,7 +37,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Students {
+pub enum Students {
     #[sea_orm(iden = "students")]
     Table,
     Id,

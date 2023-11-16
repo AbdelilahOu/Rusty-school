@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Parents {
+pub enum Parents {
     #[sea_orm(iden = "parents")]
     Table,
     Id,

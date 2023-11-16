@@ -2,7 +2,8 @@ pub use sea_orm_migration::prelude::*;
 
 mod m20231109_190937_c_student;
 mod m20231113_170500_c_teacher;
-mod m20231116_165911_c_parents;
+mod m20231116_165911_c_parents;mod m20231116_171406_c_pickups;
+
 
 pub struct Migrator;
 
