@@ -11,7 +11,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Parents::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Parents::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Parents::Id).uuid().primary_key())
                     .col(ColumnDef::new(Parents::FirstName).string().not_null())
                     .col(ColumnDef::new(Parents::LastName).string().not_null())
                     .col(

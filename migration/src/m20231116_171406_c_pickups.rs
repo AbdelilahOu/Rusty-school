@@ -14,7 +14,7 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Pickups::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Pickups::Id).uuid().not_null().primary_key())
+                    .col(ColumnDef::new(Pickups::Id).uuid().primary_key())
                     .col(ColumnDef::new(Pickups::StudentId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
