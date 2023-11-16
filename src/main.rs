@@ -1,9 +1,9 @@
-use actix_web::{middleware::Logger, web, App, HttpServer};
-use db::db::establish_connection;
+use actix_web::{web, App, HttpServer};
+use database::db::establish_connection;
 use routes::{students::load_students_routes, teachers::load_teachers_routes};
 use sea_orm::DatabaseConnection;
 
-mod db;
+mod database;
 mod handlers;
 mod middlewares;
 mod models;
@@ -18,20 +18,27 @@ async fn main() -> std::io::Result<()> {
     let conn_res = establish_connection().await;
     match conn_res {
         Ok(conn) => {
-            let _ = HttpServer::new(move || {
+            // start server
+            let server_res = HttpServer::new(move || {
                 App::new()
                     .app_data(web::Data::new(AppState {
                         db_conn: conn.clone(),
                     }))
-                    .wrap(Logger::default())
                     .service(load_students_routes())
                     .service(load_teachers_routes())
             })
             .bind(("127.0.0.1", 8080))?
             .run()
             .await;
+            // check
+            match server_res {
+                Ok(_) => println!("Server is listening at http://127.0.0.1:8080"),
+                Err(err) => panic!("{}", err.to_string()),
+            }
         }
-        Err(db_err) => panic!("{}", db_err.to_string()),
+        Err(db_err) => {
+            panic!("{}", db_err.to_string())
+        }
     };
 
     Ok(())
