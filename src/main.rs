@@ -1,6 +1,4 @@
 use actix_web::{web, App, HttpServer};
-use database::db::establish_connection;
-use routes::{students::load_students_routes, teachers::load_teachers_routes};
 use sea_orm::DatabaseConnection;
 
 mod database;
@@ -8,6 +6,9 @@ mod handlers;
 mod middlewares;
 mod models;
 mod routes;
+
+use database::db::establish_connection;
+use routes::{students::load_students_routes, teachers::load_teachers_routes};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
