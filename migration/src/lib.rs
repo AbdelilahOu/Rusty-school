@@ -4,7 +4,9 @@ mod m20231109_190937_c_student;
 mod m20231113_170500_c_teacher;
 mod m20231116_165911_c_parents;
 mod m20231116_171406_c_pickups;
-mod m20231116_214011_c_scans;
+mod m20231116_214011_c_scans;mod m20231116_234108_c_subject;
+mod m20231117_132237_c_level;
+
 
 pub struct Migrator;
 
