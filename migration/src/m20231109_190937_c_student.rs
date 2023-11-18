@@ -49,4 +49,6 @@ pub enum Students {
     FullName,
     Address,
     Level,
+    #[sea_orm(iden = "person_id")]
+    PersonId,
 }

@@ -1,10 +1,5 @@
 use sea_orm_migration::prelude::*;
 
-use super::{
-    m20231109_190937_c_student::Students, m20231113_170500_c_teacher::Teachers,
-    m20231116_165911_c_parents::Parents,
-};
-
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -175,30 +170,6 @@ impl MigrationTrait for Migration {
                             .to(Streets::Table, Streets::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformations::StudentId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk-contacts-student_id")
-                            .from(ContactInformations::Table, ContactInformations::StudentId)
-                            .to(Students::Table, Students::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
-                    )
-                    .col(ColumnDef::new(ContactInformations::ParentId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk-contacts-parent_id")
-                            .from(ContactInformations::Table, ContactInformations::ParentId)
-                            .to(Parents::Table, Parents::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
-                    )
-                    .col(ColumnDef::new(ContactInformations::TeacherId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk-contacts-teacher_id")
-                            .from(ContactInformations::Table, ContactInformations::TeacherId)
-                            .to(Teachers::Table, Teachers::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
-                    )
                     .to_owned(),
             )
             .await;
@@ -264,7 +235,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum ContactInformations {
+pub enum ContactInformations {
     #[sea_orm(iden = "contacts_informations")]
     Table,
     Id,
@@ -281,12 +252,6 @@ enum ContactInformations {
     District,
     #[sea_orm(iden = "street_id")]
     Street,
-    #[sea_orm(iden = "student_id")]
-    StudentId,
-    #[sea_orm(iden = "parent_id")]
-    ParentId,
-    #[sea_orm(iden = "teacher_id")]
-    TeacherId,
 }
 
 #[derive(DeriveIden)]

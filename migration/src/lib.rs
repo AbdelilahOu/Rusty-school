@@ -8,6 +8,7 @@ mod m20231116_214011_c_scans;
 mod m20231116_234108_c_subject;
 mod m20231117_132237_c_level;
 mod m20231118_095513_c_contact;
+mod m20231118_162555_c_person;
 
 pub struct Migrator;
 
@@ -23,6 +24,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20231116_234108_c_subject::Migration),
             Box::new(m20231117_132237_c_level::Migration),
             Box::new(m20231118_095513_c_contact::Migration),
+            Box::new(m20231118_162555_c_person::Migration),
         ]
     }
 }
