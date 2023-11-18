@@ -20,14 +20,16 @@ impl MigrationTrait for Migration {
                         ForeignKey::create()
                             .name("fk-pickup-student_id")
                             .from(Pickups::Table, Pickups::StudentId)
-                            .to(Students::Table, Students::Id),
+                            .to(Students::Table, Students::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(ColumnDef::new(Pickups::ParentId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-pickup-parent_id")
                             .from(Pickups::Table, Pickups::ParentId)
-                            .to(Parents::Table, Parents::Id),
+                            .to(Parents::Table, Parents::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(
                         ColumnDef::new(Pickups::CreatedAt)
