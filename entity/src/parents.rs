@@ -3,14 +3,12 @@
 use sea_orm::{entity::prelude::*, Set};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "students")]
+#[sea_orm(table_name = "parents")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
-    pub address: String,
-    pub level: String,
     pub full_name: Option<String>,
 }
 
