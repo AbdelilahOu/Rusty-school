@@ -2,5 +2,7 @@
 
 pub mod prelude;
 
+pub mod parents;
+pub mod pickups;
 pub mod students;
 pub mod teachers;
