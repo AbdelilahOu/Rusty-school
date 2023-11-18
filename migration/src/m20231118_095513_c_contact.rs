@@ -265,61 +265,90 @@ impl MigrationTrait for Migration {
 
 #[derive(DeriveIden)]
 enum ContactInformations {
+    #[sea_orm(iden = "contacts_informations")]
     Table,
     Id,
+    #[sea_orm(iden = "phone_number")]
     Phone,
     Email,
+    #[sea_orm(iden = "country_id")]
     Country,
+    #[sea_orm(iden = "state_id")]
     State,
+    #[sea_orm(iden = "city_id")]
     City,
+    #[sea_orm(iden = "district_id")]
     District,
+    #[sea_orm(iden = "street_id")]
     Street,
+    #[sea_orm(iden = "student_id")]
     StudentId,
+    #[sea_orm(iden = "parent_id")]
     ParentId,
+    #[sea_orm(iden = "teacher_id")]
     TeacherId,
 }
 
 #[derive(DeriveIden)]
 enum Countries {
+    #[sea_orm(iden = "countries")]
     Table,
     Id,
+    #[sea_orm(iden = "country_name")]
     CName,
+    #[sea_orm(iden = "country_initials")]
     Cinitials,
 }
 
 #[derive(DeriveIden)]
 enum States {
+    #[sea_orm(iden = "states")]
     Table,
     Id,
+    #[sea_orm(iden = "state_name")]
     SName,
+    #[sea_orm(iden = "state_initials")]
     Sinitials,
+    #[sea_orm(iden = "state_code")]
     SCode,
+    #[sea_orm(iden = "country_id")]
     CountyId,
 }
 
 #[derive(DeriveIden)]
 enum Cities {
+    #[sea_orm(iden = "cities")]
     Table,
     Id,
+    #[sea_orm(iden = "city_name")]
     CiName,
+    #[sea_orm(iden = "state_id")]
     StateId,
 }
 
 #[derive(DeriveIden)]
 enum Districts {
+    #[sea_orm(iden = "districts")]
     Table,
     Id,
+    #[sea_orm(iden = "district_name")]
     DName,
+    #[sea_orm(iden = "city_id")]
     CityId,
 }
 
 #[derive(DeriveIden)]
 enum Streets {
+    #[sea_orm(iden = "streets")]
     Table,
     Id,
+    #[sea_orm(iden = "street_name")]
     StName,
+    #[sea_orm(iden = "zip_code")]
     ZipCode,
+    #[sea_orm(iden = "street_type")]
     StreetType,
+    #[sea_orm(iden = "district_id")]
     DistrictId,
 }
 
