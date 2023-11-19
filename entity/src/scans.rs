@@ -3,13 +3,14 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "pickups")]
+#[sea_orm(table_name = "scans")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub student_id: Uuid,
-    pub parent_id: Uuid,
-    pub created_at: DateTime,
+    pub student_id: Option<Uuid>,
+    pub parent_id: Option<Uuid>,
+    pub teacher_id: Option<Uuid>,
+    pub scan_date: DateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -19,7 +20,7 @@ pub enum Relation {
         from = "Column::ParentId",
         to = "super::parents::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
     Parents,
     #[sea_orm(
@@ -27,9 +28,17 @@ pub enum Relation {
         from = "Column::StudentId",
         to = "super::students::Column::Id",
         on_update = "NoAction",
-        on_delete = "Cascade"
+        on_delete = "NoAction"
     )]
     Students,
+    #[sea_orm(
+        belongs_to = "super::teachers::Entity",
+        from = "Column::TeacherId",
+        to = "super::teachers::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    Teachers,
 }
 
 impl Related<super::parents::Entity> for Entity {
@@ -41,6 +50,12 @@ impl Related<super::parents::Entity> for Entity {
 impl Related<super::students::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Students.def()
+    }
+}
+
+impl Related<super::teachers::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Teachers.def()
     }
 }
 

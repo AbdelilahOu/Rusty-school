@@ -11,7 +11,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Countries::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Countries::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Countries::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Countries::CName).string().not_null())
                     .col(ColumnDef::new(Countries::Cinitials).string())
                     .to_owned(),
@@ -27,7 +33,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(States::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(States::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(States::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(States::SName).string().not_null())
                     .col(ColumnDef::new(States::Sinitials).string())
                     .col(ColumnDef::new(States::SCode).integer())
@@ -52,7 +64,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Cities::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Cities::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Cities::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Cities::CiName).string().not_null())
                     .col(ColumnDef::new(Cities::StateId).uuid())
                     .foreign_key(
@@ -75,7 +93,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Districts::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Districts::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Districts::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Districts::DName).string().not_null())
                     .col(ColumnDef::new(Districts::CityId).uuid())
                     .foreign_key(
@@ -98,7 +122,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Streets::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Streets::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Streets::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Streets::StName).string().not_null())
                     .col(ColumnDef::new(Streets::ZipCode).integer())
                     .col(ColumnDef::new(Streets::StreetType).string())
@@ -123,7 +153,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(ContactInformations::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(ContactInformations::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(ContactInformations::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(ContactInformations::Phone).string())
                     .col(
                         ColumnDef::new(ContactInformations::Email)

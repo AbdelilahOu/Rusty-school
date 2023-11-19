@@ -11,7 +11,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Levels::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Levels::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Levels::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Levels::Name).string().not_null())
                     .to_owned(),
             )

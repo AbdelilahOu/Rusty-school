@@ -16,7 +16,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Person::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Person::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Person::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Person::ContactId).uuid())
                     .foreign_key(
                         ForeignKey::create()

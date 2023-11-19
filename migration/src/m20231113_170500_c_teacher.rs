@@ -11,7 +11,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Teachers::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Teachers::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Teachers::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Teachers::FirstName).string().not_null())
                     .col(ColumnDef::new(Teachers::LastName).string().not_null())
                     .col(

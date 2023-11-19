@@ -11,7 +11,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Subjects::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Subjects::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Subjects::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Subjects::Name).string().not_null())
                     .col(ColumnDef::new(Subjects::Description).string())
                     .to_owned(),

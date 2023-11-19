@@ -23,7 +23,6 @@ pub struct QueriesFilters {
 pub struct CStudent {
     pub first_name: String,
     pub last_name: String,
-    pub address: String,
     pub level: String,
 }
 
@@ -32,7 +31,6 @@ pub struct GStudent {
     pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
-    pub address: String,
     pub level: String,
 }
 

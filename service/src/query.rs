@@ -23,7 +23,6 @@ impl ServiceQuery {
                     id: student.id,
                     first_name: student.first_name,
                     last_name: student.last_name,
-                    address: student.address,
                     level: student.level,
                 });
                 Ok(maped_students.collect())
@@ -39,7 +38,6 @@ impl ServiceQuery {
                     id: some_student.id,
                     first_name: some_student.first_name,
                     last_name: some_student.last_name,
-                    address: some_student.address,
                     level: some_student.level,
                 }),
                 None => Err(String::from("student doesnt exist")),

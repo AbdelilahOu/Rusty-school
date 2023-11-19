@@ -15,7 +15,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Scans::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Scans::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Scans::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Scans::StudentId).uuid())
                     .foreign_key(
                         ForeignKey::create()

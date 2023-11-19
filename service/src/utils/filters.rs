@@ -27,7 +27,6 @@ pub fn generate_student_filters(filters: Vec<Filters>) -> Condition {
                     }
                     _ => conditions,
                 },
-                "address" => conditions,
                 _ => conditions,
             }
         })

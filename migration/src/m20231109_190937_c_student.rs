@@ -11,10 +11,15 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Students::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Students::Id).uuid().primary_key())
+                    .col(
+                        ColumnDef::new(Students::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Students::FirstName).string().not_null())
                     .col(ColumnDef::new(Students::LastName).string().not_null())
-                    .col(ColumnDef::new(Students::Address).string().not_null())
                     .col(ColumnDef::new(Students::Level).string().not_null())
                     .col(
                         ColumnDef::new(Students::FullName).string().generated(
@@ -47,7 +52,6 @@ pub enum Students {
     LastName,
     #[sea_orm(iden = "full_name")]
     FullName,
-    Address,
     Level,
     #[sea_orm(iden = "person_id")]
     PersonId,
