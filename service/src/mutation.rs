@@ -1,8 +1,9 @@
+use ::entity::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
 use ::entity::students::{ActiveModel as StudentActiveModel, Entity as Student};
 use ::entity::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{CStudent, CTeacher};
+use crate::{CParent, CStudent, CTeacher};
 
 pub struct ServiceMutation;
 
@@ -100,6 +101,53 @@ impl ServiceMutation {
                     }
                 }
                 None => Err(String::from("teacher doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    // parents entity
+    pub async fn create_parent(db: &DbConn, data: CParent) -> Result<Uuid, DbErr> {
+        let c_parent = ParentActiveModel {
+            first_name: Set(data.first_name),
+            last_name: Set(data.last_name),
+            ..Default::default()
+        };
+        match Parent::insert(c_parent).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
+    pub async fn delete_parent(db: &DbConn, id: Uuid) -> Result<u64, String> {
+        let selected_parent = Parent::find_by_id(id).one(db).await;
+        match selected_parent {
+            Ok(parent_opt) => match parent_opt {
+                Some(parent_model) => match parent_model.delete(db).await {
+                    Ok(delete_a) => Ok(delete_a.rows_affected),
+                    Err(err) => Err(err.to_string()),
+                },
+                None => Err(String::from("parent doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> Result<CParent, String> {
+        let selected_parent = Parent::find_by_id(id).one(db).await;
+        match selected_parent {
+            Ok(parent_opt) => match parent_opt {
+                Some(parent_model) => {
+                    let mut parent_model: ParentActiveModel = parent_model.into();
+                    parent_model.first_name = Set(data.first_name);
+                    parent_model.last_name = Set(data.last_name);
+                    parent_model.id = Set(id);
+                    match parent_model.update(db).await {
+                        Ok(updated_parent) => Ok(CParent {
+                            first_name: updated_parent.first_name,
+                            last_name: updated_parent.last_name,
+                        }),
+                        Err(err) => Err(err.to_string()),
+                    }
+                }
+                None => Err(String::from("parent doesnt exist")),
             },
             Err(err) => Err(err.to_string()),
         }

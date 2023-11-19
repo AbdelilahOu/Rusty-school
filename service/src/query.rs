@@ -1,6 +1,6 @@
-use crate::{
-    generate_student_filters, generate_teacher_filters, GStudent, GTeacher, QueriesFilters,
-};
+use super::types::*;
+use super::utils::filters::*;
+use ::entity::parents::Entity as Parent;
 use ::entity::students::Entity as Student;
 use ::entity::teachers::Entity as Teacher;
 use sea_orm::{prelude::Uuid, *};
@@ -76,6 +76,41 @@ impl ServiceQuery {
                     last_name: some_teacher.last_name,
                 }),
                 None => Err(String::from("teacher doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
+    //
+    pub async fn list_parents(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GParent>, String> {
+        let list_parents = Parent::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .filter(generate_parent_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_parents {
+            Ok(parents) => {
+                let maped_parents = parents.into_iter().map(|parent| GParent {
+                    id: parent.id,
+                    first_name: parent.first_name,
+                    last_name: parent.last_name,
+                });
+                Ok(maped_parents.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    pub async fn get_parent(id: Uuid, db: &DbConn) -> Result<GParent, String> {
+        let selected_parent = Parent::find_by_id(id).one(db).await;
+        match selected_parent {
+            Ok(parent_op) => match parent_op {
+                Some(some_parent) => Ok(GParent {
+                    id: some_parent.id,
+                    first_name: some_parent.first_name,
+                    last_name: some_parent.last_name,
+                }),
+                None => Err(String::from("parent doesnt exist")),
             },
             Err(e) => Err(e.to_string()),
         }

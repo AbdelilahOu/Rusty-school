@@ -8,7 +8,9 @@ mod models;
 mod routes;
 
 use database::db::establish_connection;
-use routes::{students::load_students_routes, teachers::load_teachers_routes};
+use routes::{
+    parents::load_parents_routes, students::load_students_routes, teachers::load_teachers_routes,
+};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -27,6 +29,7 @@ async fn main() -> std::io::Result<()> {
                     }))
                     .service(load_students_routes())
                     .service(load_teachers_routes())
+                    .service(load_parents_routes())
             })
             .bind(("127.0.0.1", 8080))?
             .run()

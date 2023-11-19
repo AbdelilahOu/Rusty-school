@@ -46,3 +46,16 @@ pub struct GTeacher {
     pub first_name: String,
     pub last_name: String,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CParent {
+    pub first_name: String,
+    pub last_name: String,
+}
+
+#[derive(Serialize, Debug)]
+pub struct GParent {
+    pub id: Uuid,
+    pub first_name: String,
+    pub last_name: String,
+}
