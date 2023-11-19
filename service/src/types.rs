@@ -34,6 +34,11 @@ pub struct GStudent {
     pub level: String,
 }
 
+pub struct StudentWithAddress {
+    pub student: CStudent,
+    pub contact: CContact,
+}
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CTeacher {
     pub first_name: String,
@@ -58,4 +63,15 @@ pub struct GParent {
     pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CContact {
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    pub country_id: Option<Uuid>,
+    pub state_id: Option<Uuid>,
+    pub city_id: Option<Uuid>,
+    pub district_id: Option<Uuid>,
+    pub street_id: Option<Uuid>,
 }
