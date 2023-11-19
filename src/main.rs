@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
     match conn_res {
         Ok(conn) => {
             // start server
-            let server_res = HttpServer::new(move || {
+            let _ = HttpServer::new(move || {
                 App::new()
                     .app_data(web::Data::new(AppState {
                         db_conn: conn.clone(),
@@ -31,11 +31,6 @@ async fn main() -> std::io::Result<()> {
             .bind(("127.0.0.1", 8080))?
             .run()
             .await;
-            // check
-            match server_res {
-                Ok(_) => println!("Server is listening at http://127.0.0.1:8080"),
-                Err(err) => panic!("{}", err.to_string()),
-            }
         }
         Err(db_err) => {
             panic!("{}", db_err.to_string())
