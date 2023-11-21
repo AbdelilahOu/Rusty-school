@@ -39,6 +39,16 @@ pub struct StudentWithAddress {
     pub contact: CContact,
 }
 
+pub struct ParentWithAddress {
+    pub parent: CParent,
+    pub contact: CContact,
+}
+
+pub struct TeacherWithAddress {
+    pub teacher: CTeacher,
+    pub contact: CContact,
+}
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CTeacher {
     pub first_name: String,
