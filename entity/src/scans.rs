@@ -7,55 +7,25 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub student_id: Option<Uuid>,
-    pub parent_id: Option<Uuid>,
-    pub teacher_id: Option<Uuid>,
     pub scan_date: DateTime,
+    pub person_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::parents::Entity",
-        from = "Column::ParentId",
-        to = "super::parents::Column::Id",
+        belongs_to = "super::persons::Entity",
+        from = "Column::PersonId",
+        to = "super::persons::Column::Id",
         on_update = "NoAction",
         on_delete = "NoAction"
     )]
-    Parents,
-    #[sea_orm(
-        belongs_to = "super::students::Entity",
-        from = "Column::StudentId",
-        to = "super::students::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    Students,
-    #[sea_orm(
-        belongs_to = "super::teachers::Entity",
-        from = "Column::TeacherId",
-        to = "super::teachers::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    Teachers,
+    Persons,
 }
 
-impl Related<super::parents::Entity> for Entity {
+impl Related<super::persons::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Parents.def()
-    }
-}
-
-impl Related<super::students::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Students.def()
-    }
-}
-
-impl Related<super::teachers::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Teachers.def()
+        Relation::Persons.def()
     }
 }
 

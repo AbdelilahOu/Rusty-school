@@ -25,8 +25,6 @@ pub enum Relation {
     Persons,
     #[sea_orm(has_many = "super::pickups::Entity")]
     Pickups,
-    #[sea_orm(has_many = "super::scans::Entity")]
-    Scans,
 }
 
 impl Related<super::persons::Entity> for Entity {
@@ -38,12 +36,6 @@ impl Related<super::persons::Entity> for Entity {
 impl Related<super::pickups::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Pickups.def()
-    }
-}
-
-impl Related<super::scans::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Scans.def()
     }
 }
 
