@@ -28,6 +28,7 @@ impl ServiceTransaction {
                     // create person
                     let person = PersonsActiveModel {
                         contact_id: Set(Some(contact.id.unwrap())),
+                        person_type: Set("student".to_owned()),
                         ..Default::default()
                     }
                     .save(txn)

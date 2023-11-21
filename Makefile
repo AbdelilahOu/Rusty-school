@@ -14,13 +14,22 @@ createdb:
 dropdb:
 	docker exec -it school-manager-api dropdb school
 
-migrationup:
+mup:
 	sea-orm-cli migrate up
 
-migrationdown:
+mdownlatest:
 	sea-orm-cli migrate down
+
+mdownall: 
+	sea-orm-cli migrate reset
+
+mdownfresh:
+	sea-orm-cli migrate fresh
+
+mdownrefresh:
+	sea-orm-cli migrate refresh
 
 entity:
 	sea-orm-cli generate entity -o entity/src --lib
 
-.PHONY: createdb dropdb migrationup migrationdown entity
+.PHONY: createdb dropdb mup mdownlatest mdownall mdownfresh mdownrefresh entity
