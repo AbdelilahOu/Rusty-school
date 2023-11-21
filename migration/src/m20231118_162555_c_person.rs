@@ -2,7 +2,8 @@ use sea_orm_migration::prelude::*;
 
 use super::{
     m20231109_190937_c_student::Students, m20231113_170500_c_teacher::Teachers,
-    m20231116_165911_c_parents::Parents, m20231118_095513_c_contact::ContactInformations,
+    m20231116_165911_c_parents::Parents, m20231116_214011_c_scans::Scans,
+    m20231118_095513_c_contact::ContactInformations,
 };
 
 #[derive(DeriveMigrationName)]
@@ -23,6 +24,7 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
+                    .col(ColumnDef::new(Person::PersonType).string().not_null())
                     .col(ColumnDef::new(Person::ContactId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -36,6 +38,27 @@ impl MigrationTrait for Migration {
             .await;
 
         if let Err(e) = person_res {
+            return Err(e);
+        }
+
+        let person_scan = manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Scans::Table)
+                    .add_column(ColumnDef::new(Scans::PersonId).uuid())
+                    .add_foreign_key(
+                        TableForeignKey::new()
+                            .name("fk_scan_person")
+                            .from_tbl(Scans::Table)
+                            .from_col(Scans::PersonId)
+                            .to_tbl(Person::Table)
+                            .to_col(Person::Id),
+                    )
+                    .to_owned(),
+            )
+            .await;
+
+        if let Err(e) = person_scan {
             return Err(e);
         }
 
@@ -106,6 +129,32 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let drop_fk_scan = manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_scan_person")
+                    .table(Scans::Table)
+                    .to_owned(),
+            )
+            .await;
+
+        if let Err(e) = drop_fk_scan {
+            return Err(e);
+        }
+
+        let drop_scan_person_id = manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Scans::Table)
+                    .drop_column(Scans::PersonId)
+                    .to_owned(),
+            )
+            .await;
+
+        if let Err(e) = drop_scan_person_id {
+            return Err(e);
+        }
+
         let drop_fk_student = manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
@@ -203,4 +252,6 @@ enum Person {
     Id,
     #[sea_orm(iden = "contact_id")]
     ContactId,
+    #[sea_orm(iden = "person_type")]
+    PersonType,
 }
