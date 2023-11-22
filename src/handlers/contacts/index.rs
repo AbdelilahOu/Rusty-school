@@ -5,17 +5,23 @@ use actix_web::{
     HttpResponse,
 };
 
-pub use super::coutries::*;
-
 use service::*;
 use uuid::Uuid;
 
 type State = ActData<AppState>;
 
-pub async fn create_contact(state: State) -> HttpResponse {}
+pub async fn create_contact(state: State) -> HttpResponse {
+    HttpResponse::Ok().status(StatusCode::OK).body("great")
+}
 
-pub async fn get_contact(state: State) -> HttpResponse {}
+pub async fn get_contact(state: State) -> HttpResponse {
+    HttpResponse::Ok().status(StatusCode::OK).body("great")
+}
 
-pub async fn update_contact(state: State) -> HttpResponse {}
+pub async fn update_contact(state: State) -> HttpResponse {
+    HttpResponse::Ok().status(StatusCode::OK).body("great")
+}
 
-pub async fn delete_contact(state: State) -> HttpResponse {}
+pub async fn delete_contact(state: State) -> HttpResponse {
+    HttpResponse::Ok().status(StatusCode::OK).body("great")
+}
