@@ -1,2 +1,5 @@
 mod coutries;
-pub mod index;
+mod index;
+
+pub use coutries::*;
+pub use index::*;
