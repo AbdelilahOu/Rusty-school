@@ -9,8 +9,8 @@ mod routes;
 
 use database::db::establish_connection;
 use routes::{
-    contacts::index::load_contacts_routes, parents::load_parents_routes,
-    students::load_students_routes, teachers::load_teachers_routes,
+    contacts::load_contacts_routes, parents::load_parents_routes, students::load_students_routes,
+    teachers::load_teachers_routes,
 };
 
 pub struct AppState {

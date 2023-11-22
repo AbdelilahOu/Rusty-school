@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::contacts::index;
+use crate::handlers::contacts;
 
 use super::{
     cities::load_cities_routes, countries::load_countries_routes, districts::load_districts_routes,
@@ -9,6 +9,10 @@ use super::{
 
 pub fn load_contacts_routes() -> Scope {
     web::scope("/contacts")
+        .route("/", web::get().to(contacts::get_contact))
+        .route("/", web::post().to(contacts::create_contact))
+        .route("/{id}", web::put().to(contacts::update_contact))
+        .route("/{id}", web::delete().to(contacts::delete_contact))
         .service(load_countries_routes())
         .service(load_states_routes())
         .service(load_cities_routes())
