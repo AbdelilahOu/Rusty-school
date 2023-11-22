@@ -1,5 +1,7 @@
 use actix_web::{web, Scope};
 
+use crate::handlers::contacts::index;
+
 use super::{
     cities::load_cities_routes, countries::load_countries_routes, districts::load_districts_routes,
     states::load_states_routes, streets::load_streets_routes,

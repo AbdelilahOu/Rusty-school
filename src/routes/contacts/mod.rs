@@ -1,6 +1,6 @@
-pub mod cities;
-pub mod countries;
-pub mod districts;
+mod cities;
+mod countries;
+mod districts;
 pub mod index;
-pub mod states;
-pub mod streets;
+mod states;
+mod streets;

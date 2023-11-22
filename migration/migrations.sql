@@ -89,13 +89,3 @@ CREATE TABLE payments (
     transaction_reference VARCHAR(255),
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
 );
-
--- Create the scans table
-CREATE TABLE scans (
-    id UUID DEFAULT UUID_GENERATE_V4() PRIMARY KEY
-    student_id UUID,
-    parent_id UUID,
-    scan_date TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
-    FOREIGN KEY (parent_id) REFERENCES parents(parent_id)
-);
