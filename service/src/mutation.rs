@@ -183,4 +183,36 @@ impl ServiceMutation {
             Err(err) => Err(err.to_string()),
         }
     }
+    pub async fn update_contact(db: &DbConn, id: Uuid, data: CContact) -> Result<CContact, String> {
+        let selected_contact = Contact::find_by_id(id).one(db).await;
+        match selected_contact {
+            Ok(contact_opt) => match contact_opt {
+                Some(contact_model) => {
+                    let mut contact_model: ContactActiveModel = contact_model.into();
+                    contact_model.phone_number = Set(data.phone);
+                    contact_model.email = Set(data.email);
+                    contact_model.country_id = Set(data.country_id);
+                    contact_model.state_id = Set(data.state_id);
+                    contact_model.city_id = Set(data.city_id);
+                    contact_model.district_id = Set(data.district_id);
+                    contact_model.street_id = Set(data.street_id);
+                    contact_model.id = Set(id);
+                    match contact_model.update(db).await {
+                        Ok(updated_contact) => Ok(CContact {
+                            phone: updated_contact.phone_number,
+                            email: updated_contact.email,
+                            country_id: updated_contact.country_id,
+                            state_id: updated_contact.state_id,
+                            city_id: updated_contact.city_id,
+                            district_id: updated_contact.district_id,
+                            street_id: updated_contact.street_id,
+                        }),
+                        Err(e) => Err(e.to_string()),
+                    }
+                }
+                None => Err(String::from("contact doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
 }
