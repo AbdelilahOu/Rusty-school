@@ -153,7 +153,7 @@ impl ServiceMutation {
             Err(err) => Err(err.to_string()),
         }
     }
-    //
+    // contacts
     pub async fn create_contact(db: &DbConn, data: CContact) -> Result<Uuid, DbErr> {
         let c_contact = ContactActiveModel {
             phone_number: Set(data.phone),
@@ -168,6 +168,19 @@ impl ServiceMutation {
         match Contact::insert(c_contact).exec(db).await {
             Ok(res) => Ok(res.last_insert_id),
             Err(err) => return Err(err),
+        }
+    }
+    pub async fn delete_contact(db: &DbConn, id: Uuid) -> Result<u64, String> {
+        let selected_contact = Contact::find_by_id(id).one(db).await;
+        match selected_contact {
+            Ok(contact_opt) => match contact_opt {
+                Some(contact_model) => match contact_model.delete(db).await {
+                    Ok(delete_a) => Ok(delete_a.rows_affected),
+                    Err(err) => Err(err.to_string()),
+                },
+                None => Err(String::from("contact doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
         }
     }
 }
