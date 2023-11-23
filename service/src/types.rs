@@ -85,3 +85,15 @@ pub struct CContact {
     pub district_id: Option<Uuid>,
     pub street_id: Option<Uuid>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GContact {
+    pub id: Uuid,
+    pub email: Option<String>,
+    pub phone: Option<String>,
+    pub country_id: Option<Uuid>,
+    pub state_id: Option<Uuid>,
+    pub city_id: Option<Uuid>,
+    pub district_id: Option<Uuid>,
+    pub street_id: Option<Uuid>,
+}

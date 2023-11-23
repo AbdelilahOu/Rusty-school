@@ -1,9 +1,10 @@
+use ::entity::contacts_informations::{ActiveModel as ContactActiveModel, Entity as Contact};
 use ::entity::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
 use ::entity::students::{ActiveModel as StudentActiveModel, Entity as Student};
 use ::entity::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{CParent, CStudent, CTeacher};
+use crate::{CContact, CParent, CStudent, CTeacher};
 
 pub struct ServiceMutation;
 
@@ -153,4 +154,20 @@ impl ServiceMutation {
         }
     }
     //
+    pub async fn create_contact(db: &DbConn, data: CContact) -> Result<Uuid, DbErr> {
+        let c_contact = ContactActiveModel {
+            phone_number: Set(data.phone),
+            email: Set(data.email),
+            country_id: Set(data.country_id),
+            state_id: Set(data.state_id),
+            city_id: Set(data.city_id),
+            district_id: Set(data.district_id),
+            street_id: Set(data.street_id),
+            ..Default::default()
+        };
+        match Contact::insert(c_contact).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
 }
