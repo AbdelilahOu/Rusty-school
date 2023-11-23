@@ -1,5 +1,6 @@
 use super::types::*;
 use super::utils::filters::*;
+use ::entity::contacts_informations::Entity as Contact;
 use ::entity::parents::Entity as Parent;
 use ::entity::students::Entity as Student;
 use ::entity::teachers::Entity as Teacher;
@@ -111,6 +112,26 @@ impl ServiceQuery {
                     last_name: some_parent.last_name,
                 }),
                 None => Err(String::from("parent doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
+    //
+    pub async fn get_contact(id: Uuid, db: &DbConn) -> Result<GContact, String> {
+        let selected_contact = Contact::find_by_id(id).one(db).await;
+        match selected_contact {
+            Ok(contact_op) => match contact_op {
+                Some(some_contact) => Ok(GContact {
+                    id: some_contact.id,
+                    phone: some_contact.phone_number,
+                    email: some_contact.email,
+                    country_id: None,
+                    state_id: None,
+                    city_id: None,
+                    district_id: None,
+                    street_id: None,
+                }),
+                None => Err(String::from("contact doesnt exist")),
             },
             Err(e) => Err(e.to_string()),
         }
