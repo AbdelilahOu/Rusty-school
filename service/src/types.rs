@@ -97,3 +97,16 @@ pub struct GContact {
     pub district_id: Option<Uuid>,
     pub street_id: Option<Uuid>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CCountry {
+    pub name: String,
+    pub initials: Option<String>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GCountry {
+    pub id: Uuid,
+    pub name: String,
+    pub initials: Option<String>,
+}

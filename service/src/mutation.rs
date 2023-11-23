@@ -1,10 +1,11 @@
 use ::entity::contacts_informations::{ActiveModel as ContactActiveModel, Entity as Contact};
+use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};
 use ::entity::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
 use ::entity::students::{ActiveModel as StudentActiveModel, Entity as Student};
 use ::entity::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{CContact, CParent, CStudent, CTeacher};
+use crate::{CContact, CCountry, CParent, CStudent, CTeacher};
 
 pub struct ServiceMutation;
 
@@ -215,4 +216,51 @@ impl ServiceMutation {
             Err(e) => Err(e.to_string()),
         }
     }
+    // country
+    pub async fn create_country(db: &DbConn, data: CCountry) -> Result<Uuid, DbErr> {
+        let c_country = CountryActiveModel {
+            country_name: Set(data.name),
+            country_initials: Set(data.initials),
+            ..Default::default()
+        };
+        match Country::insert(c_country).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
+    pub async fn delete_country(db: &DbConn, id: Uuid) -> Result<u64, String> {
+        let selected_country = Country::find_by_id(id).one(db).await;
+        match selected_country {
+            Ok(country_opt) => match country_opt {
+                Some(country_model) => match country_model.delete(db).await {
+                    Ok(delete_a) => Ok(delete_a.rows_affected),
+                    Err(err) => Err(err.to_string()),
+                },
+                None => Err(String::from("country doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    pub async fn update_country(db: &DbConn, id: Uuid, data: CCountry) -> Result<CCountry, String> {
+        let selected_country = Country::find_by_id(id).one(db).await;
+        match selected_country {
+            Ok(country_opt) => match country_opt {
+                Some(country_model) => {
+                    let mut country_model: CountryActiveModel = country_model.into();
+                    country_model.country_name = Set(data.name);
+                    country_model.country_initials = Set(data.initials);
+                    match country_model.update(db).await {
+                        Ok(updated_country) => Ok(CCountry {
+                            name: updated_country.country_name,
+                            initials: updated_country.country_initials,
+                        }),
+                        Err(e) => Err(e.to_string()),
+                    }
+                }
+                None => Err(String::from("country doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
+    //
 }
