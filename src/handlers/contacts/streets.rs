@@ -32,6 +32,33 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
+pub async fn get_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+    let res = ServiceQuery::list_streets(
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+        &state.db_conn,
+    )
+    .await;
+    match res {
+        Ok(i) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Streets fetched successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
 pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
     let delete_res = ServiceMutation::delete_street(&state.db_conn, id.into_inner()).await;
 

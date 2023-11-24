@@ -32,6 +32,33 @@ pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
+pub async fn get_districts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+    let res = ServiceQuery::list_districts(
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+        &state.db_conn,
+    )
+    .await;
+    match res {
+        Ok(i) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Districts fetched successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
 pub async fn delete_district(id: IdParam, state: State) -> HttpResponse {
     let delete_res = ServiceMutation::delete_district(&state.db_conn, id.into_inner()).await;
 

@@ -227,12 +227,56 @@ impl ServiceQuery {
 
         match list_cities {
             Ok(cities) => {
-                let maped_cities = cities.into_iter().map(|state| GCity {
-                    id: state.id,
-                    name: state.city_name,
-                    state_id: state.state_id,
+                let maped_cities = cities.into_iter().map(|city| GCity {
+                    id: city.id,
+                    name: city.city_name,
+                    state_id: city.state_id,
                 });
                 Ok(maped_cities.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
+    pub async fn list_districts(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GDistrict>, String> {
+        let list_districts = District::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_state_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_districts {
+            Ok(districts) => {
+                let maped_districts = districts.into_iter().map(|district| GDistrict {
+                    id: district.id,
+                    name: district.district_name,
+                    city_id: district.city_id,
+                });
+                Ok(maped_districts.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
+    pub async fn list_streets(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GStreet>, String> {
+        let list_streets = Street::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_state_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_streets {
+            Ok(streets) => {
+                let maped_streets = streets.into_iter().map(|street| GStreet {
+                    id: street.id,
+                    name: street.street_name,
+                    district_id: street.district_id,
+                    zip_code: street.zip_code,
+                    street_type: street.street_type,
+                });
+                Ok(maped_streets.collect())
             }
             Err(err) => Err(err.to_string()),
         }
