@@ -2,6 +2,7 @@ use super::types::*;
 use super::utils::filters::*;
 use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
+use serde_json::{json, Value as SerdValue};
 
 pub struct ServiceQuery;
 
@@ -140,12 +141,40 @@ impl ServiceQuery {
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             // .filter(generate_state_filters(qf.filters))
-            .into_json()
+            .find_with_related(City)
+            // .into_json()
             .all(db)
             .await;
 
         match list_states {
-            Ok(states) => Ok(states),
+            Ok(states) => {
+                // init result
+                let mut result = Vec::<SerdValue>::new();
+                // map through states
+                for (state, cities) in states {
+                    // populate res
+                    let cities_json = cities
+                        .into_iter()
+                        .map(|city| {
+                            json!({
+                                "id": city.id,
+                                "name": city.city_name,
+                            })
+                        })
+                        .collect::<VecJsonV>();
+
+                    let state_json = json!({
+                        "id": state.id,
+                        "name": state.state_name,
+                        "initials": state.state_initials,
+                        "code": state.state_code,
+                        "cities": cities_json
+                    });
+
+                    result.push(state_json);
+                }
+                Ok(result)
+            }
             Err(err) => Err(err.to_string()),
         }
     }
