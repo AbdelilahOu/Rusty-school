@@ -22,7 +22,7 @@ pub async fn create_city(body: CtBody, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResultResponse {
                 error: None,
-                message: Some("State created successfully".to_string()),
+                message: Some("City created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
         Err(e) => HttpResponse::Ok()
@@ -44,7 +44,7 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResultResponse {
                 error: None,
-                message: Some("State deleted successfully".to_string()),
+                message: Some("City deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -65,7 +65,7 @@ pub async fn update_city(id: IdParam, body: CtBody, state: State) -> HttpRespons
             .content_type(ContentType::json())
             .json(ResultResponse {
                 error: None,
-                message: Some("State updated successfully".to_string()),
+                message: Some("City updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
