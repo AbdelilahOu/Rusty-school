@@ -1,11 +1,12 @@
 use ::entity::contacts_informations::{ActiveModel as ContactActiveModel, Entity as Contact};
 use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};
 use ::entity::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
+use ::entity::states::{ActiveModel as StateActiveModel, Entity as State};
 use ::entity::students::{ActiveModel as StudentActiveModel, Entity as Student};
 use ::entity::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{CContact, CCountry, CParent, CStudent, CTeacher};
+use crate::{CContact, CCountry, CParent, CState, CStudent, CTeacher};
 
 pub struct ServiceMutation;
 
@@ -262,5 +263,56 @@ impl ServiceMutation {
             Err(e) => Err(e.to_string()),
         }
     }
-    //
+    // state
+    pub async fn create_state(db: &DbConn, data: CState) -> Result<Uuid, DbErr> {
+        let c_state = StateActiveModel {
+            state_name: Set(data.name),
+            state_initials: Set(data.initials),
+            state_code: Set(data.code),
+            country_id: Set(data.country_id),
+            ..Default::default()
+        };
+        match State::insert(c_state).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
+    pub async fn delete_state(db: &DbConn, id: Uuid) -> Result<u64, String> {
+        let selected_state = State::find_by_id(id).one(db).await;
+        match selected_state {
+            Ok(state_opt) => match state_opt {
+                Some(state_model) => match state_model.delete(db).await {
+                    Ok(delete_a) => Ok(delete_a.rows_affected),
+                    Err(err) => Err(err.to_string()),
+                },
+                None => Err(String::from("state doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    pub async fn update_state(db: &DbConn, id: Uuid, data: CState) -> Result<CState, String> {
+        let selected_state = State::find_by_id(id).one(db).await;
+        match selected_state {
+            Ok(state_opt) => match state_opt {
+                Some(state_model) => {
+                    let mut state_model: StateActiveModel = state_model.into();
+                    state_model.state_name = Set(data.name);
+                    state_model.state_initials = Set(data.initials);
+                    state_model.state_code = Set(data.code);
+                    state_model.country_id = Set(data.country_id);
+                    match state_model.update(db).await {
+                        Ok(updated_state) => Ok(CState {
+                            name: updated_state.state_name,
+                            initials: updated_state.state_initials,
+                            code: updated_state.state_code,
+                            country_id: updated_state.country_id,
+                        }),
+                        Err(e) => Err(e.to_string()),
+                    }
+                }
+                None => Err(String::from("state doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
 }
