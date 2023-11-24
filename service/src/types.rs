@@ -26,14 +26,6 @@ pub struct CStudent {
     pub level: String,
 }
 
-#[derive(Serialize, Debug)]
-pub struct GStudent {
-    pub id: Uuid,
-    pub first_name: String,
-    pub last_name: String,
-    pub level: String,
-}
-
 pub struct StudentWithAddress {
     pub student: CStudent,
     pub contact: CContact,
@@ -55,22 +47,8 @@ pub struct CTeacher {
     pub last_name: String,
 }
 
-#[derive(Serialize, Debug)]
-pub struct GTeacher {
-    pub id: Uuid,
-    pub first_name: String,
-    pub last_name: String,
-}
-
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CParent {
-    pub first_name: String,
-    pub last_name: String,
-}
-
-#[derive(Serialize, Debug)]
-pub struct GParent {
-    pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
 }
@@ -87,26 +65,7 @@ pub struct CContact {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct GContact {
-    pub id: Uuid,
-    pub email: Option<String>,
-    pub phone: Option<String>,
-    pub country_id: Option<Uuid>,
-    pub state_id: Option<Uuid>,
-    pub city_id: Option<Uuid>,
-    pub district_id: Option<Uuid>,
-    pub street_id: Option<Uuid>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
 pub struct CCountry {
-    pub name: String,
-    pub initials: Option<String>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct GCountry {
-    pub id: Uuid,
     pub name: String,
     pub initials: Option<String>,
 }
@@ -120,23 +79,7 @@ pub struct CState {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct GState {
-    pub id: Uuid,
-    pub name: String,
-    pub initials: Option<String>,
-    pub code: Option<i32>,
-    pub country_id: Option<Uuid>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
 pub struct CCity {
-    pub name: String,
-    pub state_id: Option<Uuid>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct GCity {
-    pub id: Uuid,
     pub name: String,
     pub state_id: Option<Uuid>,
 }
@@ -148,23 +91,7 @@ pub struct CDistrict {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct GDistrict {
-    pub id: Uuid,
-    pub name: String,
-    pub city_id: Option<Uuid>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
 pub struct CStreet {
-    pub name: String,
-    pub zip_code: Option<i32>,
-    pub street_type: Option<String>,
-    pub district_id: Option<Uuid>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct GStreet {
-    pub id: Uuid,
     pub name: String,
     pub zip_code: Option<i32>,
     pub street_type: Option<String>,
