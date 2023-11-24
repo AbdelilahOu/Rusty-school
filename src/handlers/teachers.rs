@@ -1,18 +1,11 @@
-use crate::{models::commen::*, AppState};
+use crate::models::commen::*;
 use actix_web::{
     http::{header::ContentType, StatusCode},
-    web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery},
+    web::Json as ActJson,
     HttpResponse,
 };
-
 use service::*;
-use uuid::Uuid;
-
 // i like my functions to stay inline
-type TFiltersBody = ActJson<FiltersBody>;
-type TQueries = ActQuery<ListQuery>;
-type State = ActData<AppState>;
-type IdParam = ActPath<Uuid>;
 type TeBody = ActJson<CTeacher>;
 
 pub async fn create_teacher(body: TeBody, state: State) -> HttpResponse {

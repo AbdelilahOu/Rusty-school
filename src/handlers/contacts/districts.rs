@@ -1,17 +1,13 @@
-use crate::{models::commen::*, AppState};
+use crate::models::commen::*;
 use actix_web::{
     http::{header::ContentType, StatusCode},
-    web::{Data as ActData, Json as ActJson, Path as ActPath},
+    web::Json as ActJson,
     HttpResponse,
 };
 
 use service::*;
-use uuid::Uuid;
 
 // i like my functions to stay inline
-// type TFiltersBody = ActJson<FiltersBody>;
-type State = ActData<AppState>;
-type IdParam = ActPath<Uuid>;
 type CtBody = ActJson<CDistrict>;
 
 pub async fn create_district(body: CtBody, state: State) -> HttpResponse {

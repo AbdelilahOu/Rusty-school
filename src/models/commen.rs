@@ -1,5 +1,9 @@
-use serde::{Serialize, Deserialize};
-use service::Filters;
+use actix_web::web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery};
+use serde::{Deserialize, Serialize};
+use service::{Filters, ListQuery};
+use uuid::Uuid;
+
+use crate::AppState;
 
 #[derive(Serialize)]
 pub struct ResultResponse<T> {
@@ -12,3 +16,8 @@ pub struct ResultResponse<T> {
 pub struct FiltersBody {
     pub filters: Vec<Filters>,
 }
+
+pub type TFiltersBody = ActJson<FiltersBody>;
+pub type TQueries = ActQuery<ListQuery>;
+pub type State = ActData<AppState>;
+pub type IdParam = ActPath<Uuid>;
