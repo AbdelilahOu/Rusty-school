@@ -110,3 +110,55 @@ pub struct GCountry {
     pub name: String,
     pub initials: Option<String>,
 }
+
+pub struct CState {
+    pub name: String,
+    pub initials: Option<String>,
+    pub code: Option<i32>,
+    pub country_id: Option<Uuid>,
+}
+
+pub struct GState {
+    pub id: Uuid,
+    pub name: String,
+    pub initials: Option<String>,
+    pub code: Option<i32>,
+    pub country_id: Option<Uuid>,
+}
+
+pub struct CCity {
+    pub name: String,
+    pub state_id: Option<Uuid>,
+}
+
+pub struct GCity {
+    pub id: Uuid,
+    pub name: String,
+    pub state_id: Option<Uuid>,
+}
+
+pub struct CDistrict {
+    pub name: String,
+    pub city_id: Option<Uuid>,
+}
+
+pub struct GDistrict {
+    pub id: Uuid,
+    pub name: String,
+    pub city_id: Option<Uuid>,
+}
+
+pub struct CStreet {
+    pub name: String,
+    pub zip_code: Option<i32>,
+    pub street_type: Option<String>,
+    pub district_id: Option<Uuid>,
+}
+
+pub struct GStreet {
+    pub id: Uuid,
+    pub name: String,
+    pub zip_code: Option<i32>,
+    pub street_type: Option<String>,
+    pub district_id: Option<Uuid>,
+}
