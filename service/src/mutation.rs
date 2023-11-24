@@ -1,3 +1,4 @@
+use ::entity::cities::{ActiveModel as CityActiveModel, Entity as City};
 use ::entity::contacts_informations::{ActiveModel as ContactActiveModel, Entity as Contact};
 use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};
 use ::entity::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
@@ -6,7 +7,7 @@ use ::entity::students::{ActiveModel as StudentActiveModel, Entity as Student};
 use ::entity::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{CContact, CCountry, CParent, CState, CStudent, CTeacher};
+use crate::{CCity, CContact, CCountry, CParent, CState, CStudent, CTeacher};
 
 pub struct ServiceMutation;
 
@@ -311,6 +312,52 @@ impl ServiceMutation {
                     }
                 }
                 None => Err(String::from("state doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
+    // city
+    pub async fn create_city(db: &DbConn, data: CCity) -> Result<Uuid, DbErr> {
+        let c_city = CityActiveModel {
+            city_name: Set(data.name),
+            state_id: Set(data.state_id),
+            ..Default::default()
+        };
+        match City::insert(c_city).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
+    pub async fn delete_city(db: &DbConn, id: Uuid) -> Result<u64, String> {
+        let selected_city = City::find_by_id(id).one(db).await;
+        match selected_city {
+            Ok(city_opt) => match city_opt {
+                Some(city_model) => match city_model.delete(db).await {
+                    Ok(delete_a) => Ok(delete_a.rows_affected),
+                    Err(err) => Err(err.to_string()),
+                },
+                None => Err(String::from("city doesnt exist")),
+            },
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    pub async fn update_city(db: &DbConn, id: Uuid, data: CCity) -> Result<CCity, String> {
+        let selected_city = City::find_by_id(id).one(db).await;
+        match selected_city {
+            Ok(city_opt) => match city_opt {
+                Some(city_model) => {
+                    let mut city_model: CityActiveModel = city_model.into();
+                    city_model.city_name = Set(data.name);
+                    city_model.state_id = Set(data.state_id);
+                    match city_model.update(db).await {
+                        Ok(updated_city) => Ok(CCity {
+                            name: updated_city.city_name,
+                            state_id: updated_city.state_id,
+                        }),
+                        Err(e) => Err(e.to_string()),
+                    }
+                }
+                None => Err(String::from("city doesnt exist")),
             },
             Err(e) => Err(e.to_string()),
         }
