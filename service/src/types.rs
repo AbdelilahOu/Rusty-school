@@ -111,6 +111,7 @@ pub struct GCountry {
     pub initials: Option<String>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CState {
     pub name: String,
     pub initials: Option<String>,
@@ -118,6 +119,7 @@ pub struct CState {
     pub country_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct GState {
     pub id: Uuid,
     pub name: String,
@@ -126,28 +128,33 @@ pub struct GState {
     pub country_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CCity {
     pub name: String,
     pub state_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct GCity {
     pub id: Uuid,
     pub name: String,
     pub state_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CDistrict {
     pub name: String,
     pub city_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct GDistrict {
     pub id: Uuid,
     pub name: String,
     pub city_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct CStreet {
     pub name: String,
     pub zip_code: Option<i32>,
@@ -155,6 +162,7 @@ pub struct CStreet {
     pub district_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
 pub struct GStreet {
     pub id: Uuid,
     pub name: String,
