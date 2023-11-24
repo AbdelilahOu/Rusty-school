@@ -1,9 +1,6 @@
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::contacts_informations::Entity as Contact;
-use ::entity::parents::Entity as Parent;
-use ::entity::students::Entity as Student;
-use ::entity::teachers::Entity as Teacher;
+use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
 
 pub struct ServiceQuery;
@@ -134,6 +131,66 @@ impl ServiceQuery {
                 None => Err(String::from("contact doesnt exist")),
             },
             Err(e) => Err(e.to_string()),
+        }
+    }
+    pub async fn list_contacts(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GContact>, String> {
+        let list_contacts = Contact::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_contact_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_contacts {
+            Ok(contacts) => {
+                let maped_contacts = contacts.into_iter().map(|contact| GContact {
+                    id: contact.id,
+                    phone: contact.phone_number,
+                    email: contact.email,
+                    country_id: None,
+                    state_id: None,
+                    city_id: None,
+                    district_id: None,
+                    street_id: None,
+                });
+                Ok(maped_contacts.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
+    pub async fn get_country(id: Uuid, db: &DbConn) -> Result<GCountry, String> {
+        let selected_country = Country::find_by_id(id).one(db).await;
+        match selected_country {
+            Ok(country_op) => match country_op {
+                Some(some_country) => Ok(GCountry {
+                    id: some_country.id,
+                    name: some_country.country_name,
+                    initials: some_country.country_initials,
+                }),
+                None => Err(String::from("country doesnt exist")),
+            },
+            Err(e) => Err(e.to_string()),
+        }
+    }
+    pub async fn list_countries(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GCountry>, String> {
+        let list_countries = Country::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_country_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_countries {
+            Ok(countries) => {
+                let maped_countries = countries.into_iter().map(|country| GCountry {
+                    id: country.id,
+                    name: country.country_name,
+                    initials: country.country_initials,
+                });
+                Ok(maped_countries.collect())
+            }
+            Err(err) => Err(err.to_string()),
         }
     }
 }
