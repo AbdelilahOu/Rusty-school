@@ -8,6 +8,7 @@ pub fn load_contacts_routes() -> Scope {
     web::scope("/contacts")
         .route("/", web::get().to(contacts::get_contacts))
         .route("/", web::post().to(contacts::create_contact))
+        .route("/{id}", web::get().to(contacts::get_contact))
         .route("/{id}", web::put().to(contacts::update_contact))
         .route("/{id}", web::delete().to(contacts::delete_contact))
         .service(load_countries_routes())

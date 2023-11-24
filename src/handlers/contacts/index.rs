@@ -85,6 +85,27 @@ pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
+pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
+    let selected_contact = ServiceQuery::get_contact(id.into_inner(), &state.db_conn).await;
+
+    match selected_contact {
+        Ok(i) => HttpResponse::Created()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Contact selected successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
 pub async fn update_contact(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
         ServiceMutation::update_contact(&state.db_conn, id.into_inner(), body.into_inner()).await;
