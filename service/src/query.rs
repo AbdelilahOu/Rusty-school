@@ -193,4 +193,48 @@ impl ServiceQuery {
             Err(err) => Err(err.to_string()),
         }
     }
+    //
+    pub async fn list_states(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GState>, String> {
+        let list_states = State::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_state_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_states {
+            Ok(states) => {
+                let maped_states = states.into_iter().map(|state| GState {
+                    id: state.id,
+                    name: state.state_name,
+                    initials: state.state_initials,
+                    country_id: state.country_id,
+                    code: state.state_code,
+                });
+                Ok(maped_states.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
+    pub async fn list_cities(qf: QueriesFilters, db: &DbConn) -> Result<Vec<GCity>, String> {
+        let list_cities = City::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_state_filters(qf.filters))
+            .all(db)
+            .await;
+
+        match list_cities {
+            Ok(cities) => {
+                let maped_cities = cities.into_iter().map(|state| GCity {
+                    id: state.id,
+                    name: state.city_name,
+                    state_id: state.state_id,
+                });
+                Ok(maped_cities.collect())
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
 }

@@ -52,6 +52,33 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
+pub async fn get_cities(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+    let res = ServiceQuery::list_cities(
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+        &state.db_conn,
+    )
+    .await;
+    match res {
+        Ok(i) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse {
+                error: None,
+                message: Some("Cities fetched successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
 pub async fn update_city(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
         ServiceMutation::update_city(&state.db_conn, id.into_inner(), body.into_inner()).await;
