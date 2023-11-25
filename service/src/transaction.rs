@@ -127,4 +127,14 @@ impl ServiceTransaction {
         })
         .await
     }
+    pub async fn create_contact(db: DbConn, data: ContactsActiveModel) -> TxnRes {
+        db.transaction::<_, (), DbErr>(|txn| {
+            Box::pin(async move {
+                let _contact = data.save(txn).await?;
+
+                Ok(())
+            })
+        })
+        .await
+    }
 }

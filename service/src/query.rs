@@ -141,8 +141,22 @@ impl ServiceQuery {
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             // .filter(generate_state_filters(qf.filters))
+            .into_json()
+            .all(db)
+            .await;
+
+        match list_states {
+            Ok(states) => Ok(states),
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
+    pub async fn list_states_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+        let list_states = State::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_state_filters(qf.filters))
             .find_with_related(City)
-            // .into_json()
             .all(db)
             .await;
 
@@ -155,12 +169,7 @@ impl ServiceQuery {
                     // populate res
                     let cities_json = cities
                         .into_iter()
-                        .map(|city| {
-                            json!({
-                                "id": city.id,
-                                "name": city.city_name,
-                            })
-                        })
+                        .map(|city| json!({ "id": city.id, "name": city.city_name }))
                         .collect::<VecJsonV>();
 
                     let state_json = json!({
