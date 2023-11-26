@@ -7,7 +7,6 @@ mod handlers;
 mod middlewares;
 mod models;
 mod routes;
-mod utils;
 
 use database::db::establish_connection;
 use routes::{
