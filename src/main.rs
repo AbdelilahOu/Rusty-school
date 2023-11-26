@@ -1,6 +1,7 @@
 use actix_web::{web, App, HttpServer};
 use sea_orm::DatabaseConnection;
 
+mod config;
 mod database;
 mod handlers;
 mod middlewares;
