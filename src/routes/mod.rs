@@ -1,3 +1,4 @@
+pub mod auth;
 pub mod contacts;
 pub mod parents;
 pub mod scans;
