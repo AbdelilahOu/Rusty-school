@@ -458,4 +458,18 @@ impl ServiceMutation {
             Err(e) => Err(e.to_string()),
         }
     }
+    // user
+    pub async fn create_user(db: &DbConn, data: CUser) -> CResult<Uuid> {
+        let c_city = UserActiveModel {
+            first_name: Set(data.first_name),
+            last_name: Set(data.last_name),
+            email: Set(data.email),
+            picture: Set(data.picture),
+            ..Default::default()
+        };
+        match User::insert(c_city).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
+        }
+    }
 }

@@ -7,6 +7,7 @@ use reqwest::{
     self,
     header::{CONTENT_LENGTH, CONTENT_TYPE},
 };
+use service::{CUser, ServiceMutation};
 use url::Url;
 
 pub async fn login(state: State) -> HttpResponse {
@@ -57,14 +58,31 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
     match (res.access_token, res.id_token) {
         (Some(access_token), Some(id_token)) => {
             let user = utils::get_google_user(access_token, id_token).await;
-            println!("{:?}", user);
+            let user_res = ServiceMutation::create_user(
+                &state.db_conn,
+                CUser {
+                    first_name: user.name,
+                    last_name: user.family_name,
+                    email: user.email,
+                    picture: Some(user.picture),
+                },
+            )
+            .await;
+            match user_res {
+                Ok(user) => HttpResponse::Created()
+                    .status(StatusCode::CREATED)
+                    .json(user),
+                Err(e) => HttpResponse::InternalServerError()
+                    .status(StatusCode::INTERNAL_SERVER_ERROR)
+                    .json(e.to_string()),
+            }
         }
-        (None, None) => println!("No token"),
-        _ => println!("No token"),
-    }
+        (None, None) => HttpResponse::InternalServerError()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .finish(),
 
-    HttpResponse::Found()
-        .append_header(("Location", "https://callback-template.vercel.app/"))
-        .status(StatusCode::FOUND)
-        .finish()
+        _ => HttpResponse::InternalServerError()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .finish(),
+    }
 }

@@ -19,7 +19,7 @@ pub async fn create_teacher(body: TeBody, state: State) -> HttpResponse {
                 message: Some("Teacher created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
-        Err(e) => HttpResponse::Ok()
+        Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
             .json(ResultResponse::<Option<String>> {

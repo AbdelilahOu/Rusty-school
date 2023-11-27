@@ -20,7 +20,7 @@ pub async fn create_city(body: CtBody, state: State) -> HttpResponse {
                 message: Some("City created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
-        Err(e) => HttpResponse::Ok()
+        Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
             .json(ResultResponse::<Option<String>> {
@@ -69,7 +69,7 @@ pub async fn get_cities(queries: TQueries, body: TFiltersBody, state: State) -> 
                 message: Some("Cities fetched successfully".to_string()),
                 data: Some(i),
             }),
-        Err(e) => HttpResponse::Ok()
+        Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResultResponse::<Option<String>> {
                 error: Some(e),

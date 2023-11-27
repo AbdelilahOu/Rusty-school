@@ -20,7 +20,7 @@ pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
                 message: Some("Parent created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
-        Err(e) => HttpResponse::Ok()
+        Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
             .json(ResultResponse::<Option<String>> {

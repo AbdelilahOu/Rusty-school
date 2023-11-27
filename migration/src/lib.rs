@@ -24,7 +24,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20231116_234108_c_subject::Migration),
             Box::new(m20231118_095513_c_contact::Migration),
             Box::new(m20231118_162555_c_person::Migration),
-            // Box::new(m20231127_123039_c_user::Migration),
+            Box::new(m20231127_123039_c_user::Migration),
         ]
     }
 }
