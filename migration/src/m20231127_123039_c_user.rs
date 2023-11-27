@@ -1,5 +1,7 @@
 use sea_orm_migration::{prelude::*, sea_query::extension::postgres::PgExpr};
 
+use crate::m20231118_162555_c_person::Person;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -34,6 +36,14 @@ impl MigrationTrait for Migration {
                             true,
                         ),
                     )
+                    .col(ColumnDef::new(Users::PersonId).uuid().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk-person-id")
+                            .from(Users::Table, Users::PersonId)
+                            .to(Person::Table, Person::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
                     .col(ColumnDef::new(Users::Picture).string())
                     .to_owned(),
             )
@@ -59,5 +69,7 @@ enum Users {
     LastName,
     #[sea_orm(iden = "full_name")]
     FullName,
+    #[sea_orm(iden = "person_id")]
+    PersonId,
     Picture,
 }
