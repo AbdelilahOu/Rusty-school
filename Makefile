@@ -32,4 +32,7 @@ mdownrefresh:
 entity:
 	sea-orm-cli generate entity -o entity/src --lib
 
-.PHONY: createdb dropdb mup mdownlatest mdownall mdownfresh mdownrefresh entity
+server:
+	cargo run
+
+.PHONY: server createdb dropdb mup mdownlatest mdownall mdownfresh mdownrefresh entity

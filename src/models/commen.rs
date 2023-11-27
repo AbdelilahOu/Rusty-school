@@ -17,7 +17,34 @@ pub struct FiltersBody {
     pub filters: Vec<Filters>,
 }
 
+#[derive(Deserialize, Clone, Debug)]
+pub struct TokenResponse {
+    pub access_token: Option<String>,
+    pub token_type: Option<String>,
+    pub expires_in: Option<i32>,
+    pub refresh_token: Option<String>,
+    pub scope: Option<String>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct AuthQueryParams {
+    pub code: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct GoogleUser {
+    pub id: String,
+    pub email: String,
+    pub verified_email: bool,
+    pub name: String,
+    pub given_name: String,
+    pub family_name: String,
+    pub picture: String,
+    pub locale: String,
+}
+
 pub type TFiltersBody = ActJson<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;
 pub type IdParam = ActPath<Uuid>;
+pub type AuthQuery = ActQuery<AuthQueryParams>;
