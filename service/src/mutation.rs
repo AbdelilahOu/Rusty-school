@@ -459,7 +459,7 @@ impl ServiceMutation {
         }
     }
     // user
-    pub async fn create_user(db: &DbConn, data: CUser) -> CResult<Uuid> {
+    pub async fn upsert_user(db: &DbConn, data: CUser) -> CResult<Uuid> {
         let c_city = UserActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),

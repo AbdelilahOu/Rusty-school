@@ -3,7 +3,9 @@ use url::Url;
 
 use crate::models::commen::GoogleUser;
 
-pub async fn get_google_user(acc_token: String, id_token: String) -> GoogleUser {
+type Res = Result<GoogleUser, reqwest::Error>;
+
+pub async fn get_google_user(acc_token: String, id_token: String) -> Res {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
     let params = [("alt", "json"), ("access_token", acc_token.as_str())];
     let url = url.query_pairs_mut().extend_pairs(&params).finish();
@@ -15,8 +17,7 @@ pub async fn get_google_user(acc_token: String, id_token: String) -> GoogleUser 
         .await
         .expect("coudnt get user")
         .json::<GoogleUser>()
-        .await
-        .unwrap();
+        .await;
     println!("{:?}", resp);
     resp
 }

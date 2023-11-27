@@ -1,8 +1,11 @@
 use crate::{
-    models::commen::{AuthQuery, State, TokenResponse},
+    models::commen::{AuthQuery, ResultResponse, State, TokenResponse},
     utils,
 };
-use actix_web::{http::StatusCode, HttpResponse};
+use actix_web::{
+    http::{header::ContentType, StatusCode},
+    HttpResponse,
+};
 use reqwest::{
     self,
     header::{CONTENT_LENGTH, CONTENT_TYPE},
@@ -50,39 +53,56 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
         .await
         .expect("Failed to send request")
         .json::<TokenResponse>()
-        .await
-        .unwrap();
+        .await;
 
     println!("{:?}", res);
 
-    match (res.access_token, res.id_token) {
-        (Some(access_token), Some(id_token)) => {
-            let user = utils::get_google_user(access_token, id_token).await;
-            let user_res = ServiceMutation::create_user(
-                &state.db_conn,
-                CUser {
-                    first_name: user.name,
-                    last_name: user.family_name,
-                    email: user.email,
-                    picture: Some(user.picture),
-                },
-            )
-            .await;
-            match user_res {
-                Ok(user) => HttpResponse::Created()
-                    .status(StatusCode::CREATED)
-                    .json(user),
+    match res {
+        Ok(res) => {
+            let user = utils::get_google_user(res.access_token, res.id_token).await;
+            match user {
+                Ok(user) => {
+                    let user_res = ServiceMutation::upsert_user(
+                        &state.db_conn,
+                        CUser {
+                            first_name: user.name,
+                            last_name: user.family_name,
+                            email: user.email,
+                            picture: Some(user.picture),
+                        },
+                    )
+                    .await;
+                    match user_res {
+                        Ok(user) => HttpResponse::Created()
+                            .status(StatusCode::CREATED)
+                            .json(user),
+                        Err(e) => HttpResponse::InternalServerError()
+                            .status(StatusCode::INTERNAL_SERVER_ERROR)
+                            .content_type(ContentType::json())
+                            .json(ResultResponse::<Option<String>> {
+                                error: Some(e.to_string()),
+                                message: None,
+                                data: None,
+                            }),
+                    }
+                }
                 Err(e) => HttpResponse::InternalServerError()
                     .status(StatusCode::INTERNAL_SERVER_ERROR)
-                    .json(e.to_string()),
+                    .content_type(ContentType::json())
+                    .json(ResultResponse::<Option<String>> {
+                        error: Some(e.to_string()),
+                        message: None,
+                        data: None,
+                    }),
             }
         }
-        (None, None) => HttpResponse::InternalServerError()
+        Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .finish(),
-
-        _ => HttpResponse::InternalServerError()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .finish(),
+            .content_type(ContentType::json())
+            .json(ResultResponse::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
     }
 }
