@@ -9,17 +9,17 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Subjects::Table)
+                    .table(Subject::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Subjects::Id)
+                        ColumnDef::new(Subject::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Subjects::Name).string().not_null())
-                    .col(ColumnDef::new(Subjects::Description).string())
+                    .col(ColumnDef::new(Subject::Name).string().not_null())
+                    .col(ColumnDef::new(Subject::Description).string())
                     .to_owned(),
             )
             .await
@@ -27,13 +27,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Subjects::Table).to_owned())
+            .drop_table(Table::drop().table(Subject::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Subjects {
+enum Subject {
     #[sea_orm(iden = "subjects")]
     Table,
     Id,

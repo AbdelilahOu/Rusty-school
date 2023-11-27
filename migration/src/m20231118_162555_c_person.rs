@@ -1,9 +1,9 @@
 use sea_orm_migration::prelude::*;
 
 use super::{
-    m20231109_190937_c_student::Students, m20231113_170500_c_teacher::Teachers,
-    m20231116_165911_c_parents::Parents, m20231116_214011_c_scans::Scans,
-    m20231118_095513_c_contact::ContactInformations,
+    m20231109_190937_c_student::Student, m20231113_170500_c_teacher::Teacher,
+    m20231116_165911_c_parents::Parent, m20231116_214011_c_scans::Scan,
+    m20231118_095513_c_contact::ContactInformation,
 };
 
 #[derive(DeriveMigrationName)]
@@ -30,7 +30,7 @@ impl MigrationTrait for Migration {
                         ForeignKey::create()
                             .name("fk-contact-person_id")
                             .from(Person::Table, Person::ContactId)
-                            .to(ContactInformations::Table, ContactInformations::Id)
+                            .to(ContactInformation::Table, ContactInformation::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -44,13 +44,13 @@ impl MigrationTrait for Migration {
         let person_scan = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Scans::Table)
-                    .add_column(ColumnDef::new(Scans::PersonId).uuid())
+                    .table(Scan::Table)
+                    .add_column(ColumnDef::new(Scan::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
                             .name("fk_scan_person")
-                            .from_tbl(Scans::Table)
-                            .from_col(Scans::PersonId)
+                            .from_tbl(Scan::Table)
+                            .from_col(Scan::PersonId)
                             .to_tbl(Person::Table)
                             .to_col(Person::Id),
                     )
@@ -65,13 +65,13 @@ impl MigrationTrait for Migration {
         let person_student = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Students::Table)
-                    .add_column(ColumnDef::new(Students::PersonId).uuid())
+                    .table(Student::Table)
+                    .add_column(ColumnDef::new(Student::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
                             .name("fk_student_person")
-                            .from_tbl(Students::Table)
-                            .from_col(Students::PersonId)
+                            .from_tbl(Student::Table)
+                            .from_col(Student::PersonId)
                             .to_tbl(Person::Table)
                             .to_col(Person::Id),
                     )
@@ -86,13 +86,13 @@ impl MigrationTrait for Migration {
         let person_parent = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Parents::Table)
-                    .add_column(ColumnDef::new(Parents::PersonId).uuid())
+                    .table(Parent::Table)
+                    .add_column(ColumnDef::new(Parent::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
                             .name("fk_parent_person")
-                            .from_tbl(Parents::Table)
-                            .from_col(Parents::PersonId)
+                            .from_tbl(Parent::Table)
+                            .from_col(Parent::PersonId)
                             .to_tbl(Person::Table)
                             .to_col(Person::Id),
                     )
@@ -107,13 +107,13 @@ impl MigrationTrait for Migration {
         let person_teacher = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Teachers::Table)
-                    .add_column(ColumnDef::new(Teachers::PersonId).uuid())
+                    .table(Teacher::Table)
+                    .add_column(ColumnDef::new(Teacher::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
                             .name("fk_teacher_person")
-                            .from_tbl(Teachers::Table)
-                            .from_col(Teachers::PersonId)
+                            .from_tbl(Teacher::Table)
+                            .from_col(Teacher::PersonId)
                             .to_tbl(Person::Table)
                             .to_col(Person::Id),
                     )
@@ -133,7 +133,7 @@ impl MigrationTrait for Migration {
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
                     .name("fk_scan_person")
-                    .table(Scans::Table)
+                    .table(Scan::Table)
                     .to_owned(),
             )
             .await;
@@ -145,8 +145,8 @@ impl MigrationTrait for Migration {
         let drop_scan_person_id = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Scans::Table)
-                    .drop_column(Scans::PersonId)
+                    .table(Scan::Table)
+                    .drop_column(Scan::PersonId)
                     .to_owned(),
             )
             .await;
@@ -159,7 +159,7 @@ impl MigrationTrait for Migration {
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
                     .name("fk_student_person")
-                    .table(Students::Table)
+                    .table(Student::Table)
                     .to_owned(),
             )
             .await;
@@ -171,8 +171,8 @@ impl MigrationTrait for Migration {
         let drop_student_person_id = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Students::Table)
-                    .drop_column(Students::PersonId)
+                    .table(Student::Table)
+                    .drop_column(Student::PersonId)
                     .to_owned(),
             )
             .await;
@@ -185,7 +185,7 @@ impl MigrationTrait for Migration {
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
                     .name("fk_parent_person")
-                    .table(Parents::Table)
+                    .table(Parent::Table)
                     .to_owned(),
             )
             .await;
@@ -197,8 +197,8 @@ impl MigrationTrait for Migration {
         let drop_parent_person_id = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Parents::Table)
-                    .drop_column(Parents::PersonId)
+                    .table(Parent::Table)
+                    .drop_column(Parent::PersonId)
                     .to_owned(),
             )
             .await;
@@ -211,7 +211,7 @@ impl MigrationTrait for Migration {
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
                     .name("fk_teacher_person")
-                    .table(Teachers::Table)
+                    .table(Teacher::Table)
                     .to_owned(),
             )
             .await;
@@ -223,8 +223,8 @@ impl MigrationTrait for Migration {
         let drop_teacher_person_id = manager
             .alter_table(
                 sea_query::Table::alter()
-                    .table(Teachers::Table)
-                    .drop_column(Teachers::PersonId)
+                    .table(Teacher::Table)
+                    .drop_column(Teacher::PersonId)
                     .to_owned(),
             )
             .await;
@@ -246,7 +246,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Person {
+pub enum Person {
     #[sea_orm(iden = "persons")]
     Table,
     Id,

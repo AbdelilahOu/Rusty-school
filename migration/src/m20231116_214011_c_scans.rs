@@ -9,17 +9,17 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Scans::Table)
+                    .table(Scan::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Scans::Id)
+                        ColumnDef::new(Scan::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
                     .col(
-                        ColumnDef::new(Scans::ScanDate)
+                        ColumnDef::new(Scan::ScanDate)
                             .timestamp()
                             .not_null()
                             .extra("DEFAULT CURRENT_TIMESTAMP"),
@@ -31,13 +31,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Scans::Table).to_owned())
+            .drop_table(Table::drop().table(Scan::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum Scans {
+pub enum Scan {
     #[sea_orm(iden = "scans")]
     Table,
     Id,

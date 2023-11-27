@@ -1,7 +1,7 @@
 use sea_orm_migration::prelude::*;
 
-use super::m20231109_190937_c_student::Students;
-use super::m20231116_165911_c_parents::Parents;
+use super::m20231109_190937_c_student::Student;
+use super::m20231116_165911_c_parents::Parent;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -12,33 +12,33 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Pickups::Table)
+                    .table(Pickup::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Pickups::Id)
+                        ColumnDef::new(Pickup::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Pickups::StudentId).uuid().not_null())
+                    .col(ColumnDef::new(Pickup::StudentId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-pickup-student_id")
-                            .from(Pickups::Table, Pickups::StudentId)
-                            .to(Students::Table, Students::Id)
+                            .from(Pickup::Table, Pickup::StudentId)
+                            .to(Student::Table, Student::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(Pickups::ParentId).uuid().not_null())
+                    .col(ColumnDef::new(Pickup::ParentId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-pickup-parent_id")
-                            .from(Pickups::Table, Pickups::ParentId)
-                            .to(Parents::Table, Parents::Id)
+                            .from(Pickup::Table, Pickup::ParentId)
+                            .to(Parent::Table, Parent::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(
-                        ColumnDef::new(Pickups::CreatedAt)
+                        ColumnDef::new(Pickup::CreatedAt)
                             .timestamp()
                             .not_null()
                             .extra("DEFAULT CURRENT_TIMESTAMP"),
@@ -50,13 +50,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Pickups::Table).to_owned())
+            .drop_table(Table::drop().table(Pickup::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Pickups {
+enum Pickup {
     #[sea_orm(iden = "pickups")]
     Table,
     Id,

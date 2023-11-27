@@ -9,17 +9,17 @@ impl MigrationTrait for Migration {
         let countries_res = manager
             .create_table(
                 Table::create()
-                    .table(Countries::Table)
+                    .table(Country::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Countries::Id)
+                        ColumnDef::new(Country::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Countries::CName).string().not_null())
-                    .col(ColumnDef::new(Countries::Cinitials).string())
+                    .col(ColumnDef::new(Country::CName).string().not_null())
+                    .col(ColumnDef::new(Country::Cinitials).string())
                     .to_owned(),
             )
             .await;
@@ -31,24 +31,24 @@ impl MigrationTrait for Migration {
         let states_res = manager
             .create_table(
                 Table::create()
-                    .table(States::Table)
+                    .table(State::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(States::Id)
+                        ColumnDef::new(State::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(States::SName).string().not_null())
-                    .col(ColumnDef::new(States::Sinitials).string())
-                    .col(ColumnDef::new(States::SCode).integer())
-                    .col(ColumnDef::new(States::CountyId).uuid())
+                    .col(ColumnDef::new(State::SName).string().not_null())
+                    .col(ColumnDef::new(State::Sinitials).string())
+                    .col(ColumnDef::new(State::SCode).integer())
+                    .col(ColumnDef::new(State::CountyId).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-states-country_id")
-                            .from(States::Table, States::CountyId)
-                            .to(Countries::Table, Countries::Id)
+                            .from(State::Table, State::CountyId)
+                            .to(Country::Table, Country::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -62,22 +62,22 @@ impl MigrationTrait for Migration {
         let cities_res = manager
             .create_table(
                 Table::create()
-                    .table(Cities::Table)
+                    .table(City::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Cities::Id)
+                        ColumnDef::new(City::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Cities::CiName).string().not_null())
-                    .col(ColumnDef::new(Cities::StateId).uuid())
+                    .col(ColumnDef::new(City::CiName).string().not_null())
+                    .col(ColumnDef::new(City::StateId).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-cities-state_id")
-                            .from(Cities::Table, Cities::StateId)
-                            .to(States::Table, States::Id)
+                            .from(City::Table, City::StateId)
+                            .to(State::Table, State::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -91,22 +91,22 @@ impl MigrationTrait for Migration {
         let districts_res = manager
             .create_table(
                 Table::create()
-                    .table(Districts::Table)
+                    .table(District::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Districts::Id)
+                        ColumnDef::new(District::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Districts::DName).string().not_null())
-                    .col(ColumnDef::new(Districts::CityId).uuid())
+                    .col(ColumnDef::new(District::DName).string().not_null())
+                    .col(ColumnDef::new(District::CityId).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-districts-city_id")
-                            .from(Districts::Table, Districts::CityId)
-                            .to(Cities::Table, Cities::Id)
+                            .from(District::Table, District::CityId)
+                            .to(City::Table, City::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -120,24 +120,24 @@ impl MigrationTrait for Migration {
         let streets_res = manager
             .create_table(
                 Table::create()
-                    .table(Streets::Table)
+                    .table(Street::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Streets::Id)
+                        ColumnDef::new(Street::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Streets::StName).string().not_null())
-                    .col(ColumnDef::new(Streets::ZipCode).integer())
-                    .col(ColumnDef::new(Streets::StreetType).string())
-                    .col(ColumnDef::new(Streets::DistrictId).uuid())
+                    .col(ColumnDef::new(Street::StName).string().not_null())
+                    .col(ColumnDef::new(Street::ZipCode).integer())
+                    .col(ColumnDef::new(Street::StreetType).string())
+                    .col(ColumnDef::new(Street::DistrictId).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-streets-district_id")
-                            .from(Streets::Table, Streets::DistrictId)
-                            .to(Districts::Table, Districts::Id)
+                            .from(Street::Table, Street::DistrictId)
+                            .to(District::Table, District::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -151,59 +151,59 @@ impl MigrationTrait for Migration {
         let contact_res = manager
             .create_table(
                 Table::create()
-                    .table(ContactInformations::Table)
+                    .table(ContactInformation::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(ContactInformations::Id)
+                        ColumnDef::new(ContactInformation::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(ContactInformations::Phone).string())
+                    .col(ColumnDef::new(ContactInformation::Phone).string())
                     .col(
-                        ColumnDef::new(ContactInformations::Email)
+                        ColumnDef::new(ContactInformation::Email)
                             .string()
                             .unique_key(),
                     )
-                    .col(ColumnDef::new(ContactInformations::Country).uuid())
+                    .col(ColumnDef::new(ContactInformation::Country).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-country_id")
-                            .from(ContactInformations::Table, ContactInformations::Country)
-                            .to(Countries::Table, Countries::Id)
+                            .from(ContactInformation::Table, ContactInformation::Country)
+                            .to(Country::Table, Country::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformations::State).uuid())
+                    .col(ColumnDef::new(ContactInformation::State).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-state_id")
-                            .from(ContactInformations::Table, ContactInformations::State)
-                            .to(States::Table, States::Id)
+                            .from(ContactInformation::Table, ContactInformation::State)
+                            .to(State::Table, State::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformations::City).uuid())
+                    .col(ColumnDef::new(ContactInformation::City).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-city_id")
-                            .from(ContactInformations::Table, ContactInformations::City)
-                            .to(Cities::Table, Cities::Id)
+                            .from(ContactInformation::Table, ContactInformation::City)
+                            .to(City::Table, City::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformations::District).uuid())
+                    .col(ColumnDef::new(ContactInformation::District).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-district_id")
-                            .from(ContactInformations::Table, ContactInformations::District)
-                            .to(Districts::Table, Districts::Id)
+                            .from(ContactInformation::Table, ContactInformation::District)
+                            .to(District::Table, District::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformations::Street).uuid())
+                    .col(ColumnDef::new(ContactInformation::Street).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-street_id")
-                            .from(ContactInformations::Table, ContactInformations::Street)
-                            .to(Streets::Table, Streets::Id)
+                            .from(ContactInformation::Table, ContactInformation::Street)
+                            .to(Street::Table, Street::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .to_owned(),
@@ -219,7 +219,7 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let contacts_drop = manager
-            .drop_table(Table::drop().table(ContactInformations::Table).to_owned())
+            .drop_table(Table::drop().table(ContactInformation::Table).to_owned())
             .await;
 
         if let Err(e) = contacts_drop {
@@ -227,7 +227,7 @@ impl MigrationTrait for Migration {
         }
 
         let streets_drop = manager
-            .drop_table(Table::drop().table(Streets::Table).to_owned())
+            .drop_table(Table::drop().table(Street::Table).to_owned())
             .await;
 
         if let Err(e) = streets_drop {
@@ -235,7 +235,7 @@ impl MigrationTrait for Migration {
         }
 
         let districts_table = manager
-            .drop_table(Table::drop().table(Districts::Table).to_owned())
+            .drop_table(Table::drop().table(District::Table).to_owned())
             .await;
 
         if let Err(e) = districts_table {
@@ -243,7 +243,7 @@ impl MigrationTrait for Migration {
         }
 
         let cities_table = manager
-            .drop_table(Table::drop().table(Cities::Table).to_owned())
+            .drop_table(Table::drop().table(City::Table).to_owned())
             .await;
 
         if let Err(e) = cities_table {
@@ -251,7 +251,7 @@ impl MigrationTrait for Migration {
         }
 
         let states_drop = manager
-            .drop_table(Table::drop().table(States::Table).to_owned())
+            .drop_table(Table::drop().table(State::Table).to_owned())
             .await;
 
         if let Err(e) = states_drop {
@@ -259,7 +259,7 @@ impl MigrationTrait for Migration {
         }
 
         let coutries_drop = manager
-            .drop_table(Table::drop().table(Countries::Table).to_owned())
+            .drop_table(Table::drop().table(Country::Table).to_owned())
             .await;
 
         if let Err(e) = coutries_drop {
@@ -271,7 +271,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-pub enum ContactInformations {
+pub enum ContactInformation {
     #[sea_orm(iden = "contacts_informations")]
     Table,
     Id,
@@ -291,7 +291,7 @@ pub enum ContactInformations {
 }
 
 #[derive(DeriveIden)]
-enum Countries {
+enum Country {
     #[sea_orm(iden = "countries")]
     Table,
     Id,
@@ -302,7 +302,7 @@ enum Countries {
 }
 
 #[derive(DeriveIden)]
-enum States {
+enum State {
     #[sea_orm(iden = "states")]
     Table,
     Id,
@@ -317,7 +317,7 @@ enum States {
 }
 
 #[derive(DeriveIden)]
-enum Cities {
+enum City {
     #[sea_orm(iden = "cities")]
     Table,
     Id,
@@ -328,7 +328,7 @@ enum Cities {
 }
 
 #[derive(DeriveIden)]
-enum Districts {
+enum District {
     #[sea_orm(iden = "districts")]
     Table,
     Id,
@@ -339,7 +339,7 @@ enum Districts {
 }
 
 #[derive(DeriveIden)]
-enum Streets {
+enum Street {
     #[sea_orm(iden = "streets")]
     Table,
     Id,

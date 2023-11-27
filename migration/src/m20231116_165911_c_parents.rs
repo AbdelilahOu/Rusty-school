@@ -9,22 +9,22 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Parents::Table)
+                    .table(Parent::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Parents::Id)
+                        ColumnDef::new(Parent::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Parents::FirstName).string().not_null())
-                    .col(ColumnDef::new(Parents::LastName).string().not_null())
+                    .col(ColumnDef::new(Parent::FirstName).string().not_null())
+                    .col(ColumnDef::new(Parent::LastName).string().not_null())
                     .col(
-                        ColumnDef::new(Parents::FullName).string().generated(
-                            Expr::col(Parents::FirstName)
+                        ColumnDef::new(Parent::FullName).string().generated(
+                            Expr::col(Parent::FirstName)
                                 .concat(" ")
-                                .concat(Expr::col(Parents::LastName)),
+                                .concat(Expr::col(Parent::LastName)),
                             true,
                         ),
                     )
@@ -35,13 +35,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Parents::Table).to_owned())
+            .drop_table(Table::drop().table(Parent::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum Parents {
+pub enum Parent {
     #[sea_orm(iden = "parents")]
     Table,
     Id,

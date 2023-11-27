@@ -9,22 +9,22 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Teachers::Table)
+                    .table(Teacher::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Teachers::Id)
+                        ColumnDef::new(Teacher::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Teachers::FirstName).string().not_null())
-                    .col(ColumnDef::new(Teachers::LastName).string().not_null())
+                    .col(ColumnDef::new(Teacher::FirstName).string().not_null())
+                    .col(ColumnDef::new(Teacher::LastName).string().not_null())
                     .col(
-                        ColumnDef::new(Teachers::FullName).string().generated(
-                            Expr::col(Teachers::FirstName)
+                        ColumnDef::new(Teacher::FullName).string().generated(
+                            Expr::col(Teacher::FirstName)
                                 .concat(" ")
-                                .concat(Expr::col(Teachers::LastName)),
+                                .concat(Expr::col(Teacher::LastName)),
                             true,
                         ),
                     )
@@ -35,13 +35,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Teachers::Table).to_owned())
+            .drop_table(Table::drop().table(Teacher::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-pub enum Teachers {
+pub enum Teacher {
     #[sea_orm(iden = "teachers")]
     Table,
     Id,
