@@ -16,6 +16,9 @@ use routes::{
 
 pub struct AppState {
     db_conn: DatabaseConnection,
+    client_id: String,
+    client_secret: String,
+    redirect_uri: String,
 }
 
 #[actix_web::main]
@@ -25,9 +28,15 @@ async fn main() -> std::io::Result<()> {
         Ok(conn) => {
             // start server
             let _ = HttpServer::new(move || {
+                // load config
+                let loaded_config = config::load_config();
+                // start app
                 App::new()
                     .app_data(web::Data::new(AppState {
                         db_conn: conn.clone(),
+                        client_id: loaded_config.client_id,
+                        client_secret: loaded_config.client_secret,
+                        redirect_uri: loaded_config.redirect_uri,
                     }))
                     .service(load_students_routes())
                     .service(load_teachers_routes())
