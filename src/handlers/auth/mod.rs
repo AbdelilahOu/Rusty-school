@@ -1,4 +1,7 @@
-use crate::models::commen::{AuthQuery, State, TokenResponse};
+use crate::{
+    models::commen::{AuthQuery, State, TokenResponse},
+    utils,
+};
 use actix_web::{http::StatusCode, HttpResponse};
 use reqwest::{
     self,
@@ -50,15 +53,18 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
         .unwrap();
 
     println!("{:?}", res);
-    match res.access_token {
-        Some(token) => println!("{}", token),
-        None => println!("No token"),
+
+    match (res.access_token, res.id_token) {
+        (Some(access_token), Some(id_token)) => {
+            let user = utils::get_google_user(access_token, id_token).await;
+            println!("{:?}", user);
+        }
+        (None, None) => println!("No token"),
+        _ => println!("No token"),
     }
 
-    HttpResponse::Ok().body("ok")
-
-    // HttpResponse::Found()
-    //     .append_header(("Location", "https://callback-template.vercel.app/"))
-    //     .status(StatusCode::FOUND)
-    //     .finish()
+    HttpResponse::Found()
+        .append_header(("Location", "https://callback-template.vercel.app/"))
+        .status(StatusCode::FOUND)
+        .finish()
 }

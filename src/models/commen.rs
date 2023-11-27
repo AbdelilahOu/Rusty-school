@@ -19,6 +19,7 @@ pub struct FiltersBody {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct TokenResponse {
+    pub id_token: Option<String>,
     pub access_token: Option<String>,
     pub token_type: Option<String>,
     pub expires_in: Option<i32>,
