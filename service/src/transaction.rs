@@ -1,7 +1,10 @@
 use super::{ParentWithAddress, StudentWithAddress, TeacherWithAddress};
 use crate::CUser;
 use ::entity::prelude::*;
-use sea_orm::{ActiveModelTrait, DbConn, DbErr, Set, TransactionError, TransactionTrait};
+use sea_orm::{
+    ActiveModelTrait, ColumnTrait, DbConn, DbErr, EntityTrait, QueryFilter, Set, TransactionError,
+    TransactionTrait,
+};
 
 pub struct ServiceTransaction;
 
@@ -126,6 +129,18 @@ impl ServiceTransaction {
     pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
+                // check if user exists
+                let user = User::find()
+                    .filter(users::Column::Email.eq(&data.email))
+                    .one(txn)
+                    .await?;
+
+                if user.is_some() {
+                    println!("user already exists");
+                    // upsert the user first
+                    return Ok(());
+                }
+                // create contact first
                 let c_person = PersonActiveModel {
                     person_type: Set("NOT DEFINED".to_owned()),
                     ..Default::default()
