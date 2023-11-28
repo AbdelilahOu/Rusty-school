@@ -1,14 +1,12 @@
 use super::{ParentWithAddress, StudentWithAddress, TeacherWithAddress};
 use crate::CUser;
 use ::entity::prelude::*;
-use sea_orm::{
-    ActiveModelTrait, ColumnTrait, DbConn, DbErr, EntityTrait, QueryFilter, Set, TransactionError,
-    TransactionTrait,
-};
+use sea_orm::{prelude::Uuid, *};
 
 pub struct ServiceTransaction;
 
 type TxnRes = Result<(), TransactionError<DbErr>>;
+type TxnResUuid = Result<Uuid, TransactionError<DbErr>>;
 
 impl ServiceTransaction {
     pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes {
@@ -126,8 +124,8 @@ impl ServiceTransaction {
         })
         .await
     }
-    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnRes {
-        db.transaction::<_, (), DbErr>(|txn| {
+    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnResUuid {
+        db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
                 let user = User::find()
@@ -138,7 +136,7 @@ impl ServiceTransaction {
                 if user.is_some() {
                     println!("user already exists");
                     // upsert the user first
-                    return Ok(());
+                    return Ok(user.unwrap().id.to_owned());
                 }
                 // create contact first
                 let c_person = PersonActiveModel {
@@ -159,7 +157,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
 
-                Ok(())
+                Ok(_c_user.id.unwrap())
             })
         })
         .await

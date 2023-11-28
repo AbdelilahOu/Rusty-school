@@ -31,7 +31,6 @@ pub async fn login(state: State) -> HttpResponse {
 }
 
 pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
-    println!("{:?}", q);
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
     // define params
@@ -55,8 +54,6 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
         .json::<TokenResponse>()
         .await;
 
-    println!("{:?}", res);
-
     match res {
         Ok(res) => {
             let user = utils::get_google_user(res.access_token, res.id_token).await;
@@ -73,9 +70,12 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     )
                     .await;
                     match user_res {
-                        Ok(user) => HttpResponse::Created()
-                            .status(StatusCode::CREATED)
-                            .json(user),
+                        Ok(user) => {
+                            // create sessions
+                            HttpResponse::Created()
+                                .status(StatusCode::CREATED)
+                                .json(user)
+                        }
                         Err(e) => HttpResponse::InternalServerError()
                             .status(StatusCode::INTERNAL_SERVER_ERROR)
                             .content_type(ContentType::json())
