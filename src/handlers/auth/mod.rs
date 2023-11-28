@@ -10,7 +10,7 @@ use reqwest::{
     self,
     header::{CONTENT_LENGTH, CONTENT_TYPE},
 };
-use service::{CUser, ServiceMutation};
+use service::{CUser, ServiceTransaction};
 use url::Url;
 
 pub async fn login(state: State) -> HttpResponse {
@@ -62,7 +62,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
             let user = utils::get_google_user(res.access_token, res.id_token).await;
             match user {
                 Ok(user) => {
-                    let user_res = ServiceMutation::upsert_user(
+                    let user_res = ServiceTransaction::upsert_user(
                         &state.db_conn,
                         CUser {
                             first_name: user.name,

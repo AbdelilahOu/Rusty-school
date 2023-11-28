@@ -1,11 +1,7 @@
-use sea_orm::{ActiveModelTrait, DbConn, DbErr, Set, TransactionError, TransactionTrait};
-
 use super::{ParentWithAddress, StudentWithAddress, TeacherWithAddress};
-use ::entity::contacts_informations::ActiveModel as ContactsActiveModel;
-use ::entity::parents::ActiveModel as ParentsActiveModel;
-use ::entity::persons::ActiveModel as PersonsActiveModel;
-use ::entity::students::ActiveModel as StudentsActiveModel;
-use ::entity::teachers::ActiveModel as TeachersActiveModel;
+use crate::CUser;
+use ::entity::prelude::*;
+use sea_orm::{ActiveModelTrait, DbConn, DbErr, Set, TransactionError, TransactionTrait};
 
 pub struct ServiceTransaction;
 
@@ -16,7 +12,7 @@ impl ServiceTransaction {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create contact first
-                let contact = ContactsActiveModel {
+                let contact = ContactActiveModel {
                     email: Set(data.contact.email),
                     phone_number: Set(data.contact.phone),
                     country_id: Set(data.contact.country_id),
@@ -28,7 +24,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create person
-                let person = PersonsActiveModel {
+                let person = PersonActiveModel {
                     contact_id: Set(Some(contact.id.unwrap())),
                     person_type: Set("student".to_owned()),
                     ..Default::default()
@@ -36,7 +32,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create student
-                let _student = StudentsActiveModel {
+                let _student = StudentActiveModel {
                     first_name: Set(data.student.first_name),
                     last_name: Set(data.student.last_name),
                     level: Set(data.student.level),
@@ -55,7 +51,7 @@ impl ServiceTransaction {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create contact first
-                let contact = ContactsActiveModel {
+                let contact = ContactActiveModel {
                     email: Set(data.contact.email),
                     phone_number: Set(data.contact.phone),
                     country_id: Set(data.contact.country_id),
@@ -67,7 +63,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create person
-                let person = PersonsActiveModel {
+                let person = PersonActiveModel {
                     contact_id: Set(Some(contact.id.unwrap())),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
@@ -75,7 +71,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create student
-                let _teacher = TeachersActiveModel {
+                let _teacher = TeacherActiveModel {
                     first_name: Set(data.teacher.first_name),
                     last_name: Set(data.teacher.last_name),
                     person_id: Set(Some(person.id.unwrap())),
@@ -93,7 +89,7 @@ impl ServiceTransaction {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create contact first
-                let contact = ContactsActiveModel {
+                let contact = ContactActiveModel {
                     email: Set(data.contact.email),
                     phone_number: Set(data.contact.phone),
                     country_id: Set(data.contact.country_id),
@@ -105,7 +101,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create person
-                let person = PersonsActiveModel {
+                let person = PersonActiveModel {
                     contact_id: Set(Some(contact.id.unwrap())),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
@@ -113,7 +109,7 @@ impl ServiceTransaction {
                 .save(txn)
                 .await?;
                 // create student
-                let _parent = ParentsActiveModel {
+                let _parent = ParentActiveModel {
                     first_name: Set(data.parent.first_name),
                     last_name: Set(data.parent.last_name),
                     person_id: Set(Some(person.id.unwrap())),
@@ -127,10 +123,26 @@ impl ServiceTransaction {
         })
         .await
     }
-    pub async fn create_contact(db: DbConn, data: ContactsActiveModel) -> TxnRes {
+    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                let _contact = data.save(txn).await?;
+                let c_person = PersonActiveModel {
+                    person_type: Set("NOT DEFINED".to_owned()),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
+
+                let _c_user = UserActiveModel {
+                    first_name: Set(data.first_name),
+                    last_name: Set(data.last_name),
+                    email: Set(data.email),
+                    picture: Set(data.picture),
+                    person_id: Set(c_person.id.unwrap()),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
 
                 Ok(())
             })

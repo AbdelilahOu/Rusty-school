@@ -11,4 +11,4 @@ pub use super::streets::{ActiveModel as StreetActiveModel, Entity as Street};
 pub use super::students::{ActiveModel as StudentActiveModel, Entity as Student};
 pub use super::subjects::{ActiveModel as SubjectActiveModel, Entity as Subjects};
 pub use super::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
-pub use super::users::{ActiveModel as UserActiveModel, Entity as User};
+pub use super::users::{self, ActiveModel as UserActiveModel, Entity as User};
