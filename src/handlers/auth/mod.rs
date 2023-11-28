@@ -81,7 +81,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             .content_type(ContentType::json())
                             .json(ResultResponse::<Option<String>> {
                                 error: Some(e.to_string()),
-                                message: None,
+                                message: Some(String::from("coudnt insert user into db")),
                                 data: None,
                             }),
                     }
@@ -91,7 +91,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     .content_type(ContentType::json())
                     .json(ResultResponse::<Option<String>> {
                         error: Some(e.to_string()),
-                        message: None,
+                        message: Some(String::from("coudnt get user profile from google")),
                         data: None,
                     }),
             }
@@ -101,7 +101,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResultResponse::<Option<String>> {
                 error: Some(e.to_string()),
-                message: None,
+                message: Some(String::from("coudnt get access token from google")),
                 data: None,
             }),
     }
