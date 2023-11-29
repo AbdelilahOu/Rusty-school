@@ -72,6 +72,8 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     match user_res {
                         Ok(user) => {
                             // create sessions
+                            // create access token
+                            // create refresh token
                             HttpResponse::Created()
                                 .status(StatusCode::CREATED)
                                 .json(user)
