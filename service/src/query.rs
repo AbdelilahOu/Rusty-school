@@ -136,6 +136,41 @@ impl ServiceQuery {
         }
     }
     //
+    pub async fn list_countries_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+        let list_countries = Country::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_countrie_filters(qf.filters))
+            .find_with_related(State)
+            .all(db)
+            .await;
+
+        match list_countries {
+            Ok(countries) => {
+                // init result
+                let mut result = Vec::<SerdValue>::new();
+                // map through countries
+                for (country, states) in countries {
+                    // populate res
+                    let states_json = states
+                        .into_iter()
+                        .map(|state| json!({ "id": state.id, "name": state.state_name, "initiales": state.state_initials, "code": state.state_code  }))
+                        .collect::<VecJsonV>();
+
+                    let countries_json = json!({
+                        "id": country.id,
+                        "name": country.country_name,
+                        "states": states_json
+                    });
+
+                    result.push(countries_json);
+                }
+                Ok(result)
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
     pub async fn list_states(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
         let list_states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
