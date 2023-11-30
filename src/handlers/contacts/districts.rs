@@ -34,11 +34,11 @@ pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
 
 pub async fn get_districts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_districts(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
