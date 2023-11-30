@@ -44,11 +44,11 @@ pub async fn create_contact(body: CtBody, state: State) -> HttpResponse {
 
 pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_contacts(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
@@ -91,7 +91,7 @@ pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
 }
 
 pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
-    let selected_contact = ServiceQuery::get_contact(id.into_inner(), &state.db_conn).await;
+    let selected_contact = ServiceQuery::get_contact(&state.db_conn, id.into_inner()).await;
 
     match selected_contact {
         Ok(i) => HttpResponse::Created()
