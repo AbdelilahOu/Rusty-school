@@ -115,6 +115,69 @@ impl ServiceQuery {
         }
     }
     //
+    pub async fn list_contacts_ex(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
+        let list_contacts = Contact::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_contact_filters(qf.filters))
+            // .into_json()
+            .all(db)
+            .await;
+
+        match list_contacts {
+            Ok(contacts) => {
+                let mut result = Vec::<SerdValue>::new();
+                for contact in contacts {
+                    let country = contact
+                        .find_related(Country)
+                        .into_json()
+                        .all(db)
+                        .await
+                        .unwrap_or(Vec::new());
+                    let state = contact
+                        .find_related(State)
+                        .into_json()
+                        .all(db)
+                        .await
+                        .unwrap_or(Vec::new());
+                    let city = contact
+                        .find_related(City)
+                        .into_json()
+                        .all(db)
+                        .await
+                        .unwrap_or(Vec::new());
+
+                    let ditsrict = contact
+                        .find_related(District)
+                        .into_json()
+                        .all(db)
+                        .await
+                        .unwrap_or(Vec::new());
+
+                    let street = contact
+                        .find_related(Street)
+                        .into_json()
+                        .all(db)
+                        .await
+                        .unwrap_or(Vec::new());
+
+                    result.push(json!({
+                        "id": contact.id,
+                        "phone": contact.phone_number,
+                        "email": contact.email,
+                        "country": country,
+                        "state": state,
+                        "city": city,
+                        "district": ditsrict,
+                        "street": street,
+                    }));
+                }
+                Ok(result)
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
     pub async fn get_country(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_country = Country::find_by_id(id).into_json().one(db).await;
         match selected_country {
