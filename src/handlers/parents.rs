@@ -53,7 +53,7 @@ pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
 }
 
 pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
-    let selected_parent = ServiceQuery::get_parent(id.into_inner(), &state.db_conn).await;
+    let selected_parent = ServiceQuery::get_parent(&state.db_conn, id.into_inner()).await;
 
     match selected_parent {
         Ok(i) => HttpResponse::Created()
@@ -75,11 +75,11 @@ pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn get_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let parents = ServiceQuery::list_parents(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
 
