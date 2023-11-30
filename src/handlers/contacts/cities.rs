@@ -54,11 +54,11 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn get_cities(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_cities(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
