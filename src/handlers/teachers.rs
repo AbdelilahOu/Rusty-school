@@ -52,7 +52,7 @@ pub async fn delete_teacher(id: IdParam, state: State) -> HttpResponse {
 }
 
 pub async fn get_teacher(id: IdParam, state: State) -> HttpResponse {
-    let selected_teacher = ServiceQuery::get_teacher(id.into_inner(), &state.db_conn).await;
+    let selected_teacher = ServiceQuery::get_teacher(&state.db_conn, id.into_inner()).await;
 
     match selected_teacher {
         Ok(i) => HttpResponse::Created()
@@ -74,11 +74,11 @@ pub async fn get_teacher(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn get_teachers(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let teachers = ServiceQuery::list_teachers(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
 
