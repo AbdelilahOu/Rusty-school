@@ -33,11 +33,11 @@ pub async fn create_state(body: CtBody, state: State) -> HttpResponse {
 
 pub async fn get_states(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_states(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
