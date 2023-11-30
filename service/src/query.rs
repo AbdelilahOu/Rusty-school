@@ -238,6 +238,41 @@ impl ServiceQuery {
         }
     }
     //
+    pub async fn list_cities_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+        let list_cities = City::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            // .filter(generate_countrie_filters(qf.filters))
+            .find_with_related(District)
+            .all(db)
+            .await;
+
+        match list_cities {
+            Ok(cities) => {
+                // init result
+                let mut result = Vec::<SerdValue>::new();
+                // map through cities
+                for (city, districts) in cities {
+                    // populate res
+                    let districts_json = districts
+                        .into_iter()
+                        .map(|district| json!({ "id": district.id, "name": district.district_name  }))
+                        .collect::<VecJsonV>();
+
+                    let cities_json = json!({
+                        "id": city.id,
+                        "name": city.city_name,
+                        "districts": districts_json
+                    });
+
+                    result.push(cities_json);
+                }
+                Ok(result)
+            }
+            Err(err) => Err(err.to_string()),
+        }
+    }
+    //
     pub async fn list_districts(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
         let list_districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
