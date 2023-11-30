@@ -34,11 +34,11 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
 
 pub async fn get_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_streets(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
