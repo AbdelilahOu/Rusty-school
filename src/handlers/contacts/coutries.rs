@@ -32,11 +32,11 @@ pub async fn create_country(body: CtBody, state: State) -> HttpResponse {
 
 pub async fn get_countries(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_countries(
+        &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
             filters: body.clone().filters,
         },
-        &state.db_conn,
     )
     .await;
     match res {
