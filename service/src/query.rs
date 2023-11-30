@@ -11,7 +11,7 @@ type VecJsonV = Vec<JsonV>;
 
 impl ServiceQuery {
     // students entity
-    pub async fn list_students(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_students(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_students = Student::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -25,7 +25,8 @@ impl ServiceQuery {
             Err(err) => Err(err.to_string()),
         }
     }
-    pub async fn get_student(id: Uuid, db: &DbConn) -> Result<JsonV, String> {
+    //
+    pub async fn get_student(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_student = Student::find_by_id(id).into_json().one(db).await;
         match selected_student {
             Ok(student_op) => match student_op {
@@ -36,7 +37,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_teachers(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_teachers(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_teachers = Teacher::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -50,7 +51,8 @@ impl ServiceQuery {
             Err(err) => Err(err.to_string()),
         }
     }
-    pub async fn get_teacher(id: Uuid, db: &DbConn) -> Result<JsonV, String> {
+    //
+    pub async fn get_teacher(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_teacher = Teacher::find_by_id(id).into_json().one(db).await;
         match selected_teacher {
             Ok(teacher_op) => match teacher_op {
@@ -61,7 +63,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_parents(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_parents(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_parents = Parent::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -75,7 +77,8 @@ impl ServiceQuery {
             Err(err) => Err(err.to_string()),
         }
     }
-    pub async fn get_parent(id: Uuid, db: &DbConn) -> Result<JsonV, String> {
+    //
+    pub async fn get_parent(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_parent = Parent::find_by_id(id).into_json().one(db).await;
         match selected_parent {
             Ok(parent_op) => match parent_op {
@@ -86,7 +89,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn get_contact(id: Uuid, db: &DbConn) -> Result<JsonV, String> {
+    pub async fn get_contact(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_contact = Contact::find_by_id(id).into_json().one(db).await;
         match selected_contact {
             Ok(contact_op) => match contact_op {
@@ -96,7 +99,8 @@ impl ServiceQuery {
             Err(e) => Err(e.to_string()),
         }
     }
-    pub async fn list_contacts(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    //
+    pub async fn list_contacts(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_contacts = Contact::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -111,7 +115,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn get_country(id: Uuid, db: &DbConn) -> Result<JsonV, String> {
+    pub async fn get_country(db: &DbConn, id: Uuid) -> Result<JsonV, String> {
         let selected_country = Country::find_by_id(id).into_json().one(db).await;
         match selected_country {
             Ok(country_op) => match country_op {
@@ -121,7 +125,8 @@ impl ServiceQuery {
             Err(e) => Err(e.to_string()),
         }
     }
-    pub async fn list_countries(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    //
+    pub async fn list_countries(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_countries = Country::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -136,7 +141,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_countries_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_countries_ex(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_countries = Country::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -171,7 +176,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_states(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_states(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -186,7 +191,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_states_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_states_ex(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -223,7 +228,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_cities(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_cities(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_cities = City::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -238,7 +243,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_cities_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_cities_ex(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_cities = City::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -273,7 +278,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_districts(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_districts(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -288,7 +293,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_districts_ex(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_districts_ex(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
@@ -323,7 +328,7 @@ impl ServiceQuery {
         }
     }
     //
-    pub async fn list_streets(qf: QueriesFilters, db: &DbConn) -> Result<VecJsonV, String> {
+    pub async fn list_streets(db: &DbConn, qf: QueriesFilters) -> Result<VecJsonV, String> {
         let list_streets = Street::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
