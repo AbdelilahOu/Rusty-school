@@ -1,4 +1,6 @@
+pub mod tokens;
 use crate::models::commen::{ConfigObj, GoogleUser, TokenResponse};
+
 use reqwest::{
     self,
     header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE},
@@ -6,7 +8,7 @@ use reqwest::{
 use url::Url;
 
 type Res<T> = Result<T, String>;
-
+// #1
 pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url {
     let mut url = Url::parse("https://accounts.google.com/o/oauth2/v2/auth").unwrap();
     let params = [
@@ -20,27 +22,7 @@ pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url
     let url = url.query_pairs_mut().extend_pairs(&params).finish();
     url.to_owned()
 }
-
-pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
-    let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
-    let params = [("alt", "json"), ("access_token", acc_token.as_str())];
-    let url = url.query_pairs_mut().extend_pairs(&params).finish();
-    let client = reqwest::Client::new();
-    let req = client
-        .get(url.as_str())
-        .header(AUTHORIZATION, format!("Bearer {}", id_token.as_str()))
-        .send()
-        .await
-        .expect("coudnt get user");
-    //
-    if req.status().is_success() {
-        let resp = req.json::<GoogleUser>().await.expect("coudnt parse user");
-        return Ok(resp);
-    } else {
-        Err(String::from("Error getting user"))
-    }
-}
-
+// #2
 pub async fn request_tokens(code: String, secrets: ConfigObj) -> Res<TokenResponse> {
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
@@ -71,5 +53,25 @@ pub async fn request_tokens(code: String, secrets: ConfigObj) -> Res<TokenRespon
         return Ok(resp);
     } else {
         Err(String::from("Error getting tokens"))
+    }
+}
+// #3
+pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
+    let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
+    let params = [("alt", "json"), ("access_token", acc_token.as_str())];
+    let url = url.query_pairs_mut().extend_pairs(&params).finish();
+    let client = reqwest::Client::new();
+    let req = client
+        .get(url.as_str())
+        .header(AUTHORIZATION, format!("Bearer {}", id_token.as_str()))
+        .send()
+        .await
+        .expect("coudnt get user");
+    //
+    if req.status().is_success() {
+        let resp = req.json::<GoogleUser>().await.expect("coudnt parse user");
+        return Ok(resp);
+    } else {
+        Err(String::from("Error getting user"))
     }
 }

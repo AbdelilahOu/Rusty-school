@@ -44,9 +44,11 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     .await;
                     match user_res {
                         Ok(user) => {
-                            // create sessions
                             // create access token
+                            let token = utils::tokens::generate_tokens(user);
                             // create refresh token
+                            let verified_token = utils::tokens::verify_token(token.clone());
+                            println!("verified token {:?}", verified_token);
                             HttpResponse::Created()
                                 .status(StatusCode::CREATED)
                                 .json(user)

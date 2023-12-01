@@ -26,3 +26,4 @@ serde = { version = "1.0.192", features = ["derive"] }
 uuid = { version = "1.5.0", features = ["v4"] }
 dotenv = "0.15.0"
 url = "2.5.0"
+jsonwebtoken = "9"

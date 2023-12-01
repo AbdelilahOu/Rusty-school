@@ -50,6 +50,13 @@ pub struct ConfigObj {
     pub redirect_uri: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Claims {
+    pub uuid: Uuid,
+    pub exp: usize,
+    pub sub: String,
+}
+
 pub type TFiltersBody = ActJson<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;
