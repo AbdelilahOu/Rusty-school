@@ -1,25 +1,15 @@
 use crate::{
     models::commen::{AuthQuery, ConfigObj, ResultResponse, State},
-    utils,
+    utils::{self, get_google_auth_url},
 };
 use actix_web::{
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
 use service::{CUser, ServiceTransaction};
-use url::Url;
 
 pub async fn login(state: State) -> HttpResponse {
-    let mut url = Url::parse("https://accounts.google.com/o/oauth2/v2/auth").unwrap();
-    let params = [
-        ("response_type", "code"),
-        ("client_id", state.client_id.as_str()),
-        ("scope", "email profile"),
-        ("redirect_uri", state.redirect_uri.as_str()),
-        ("access_type", "offline"),
-        ("prompt", "consent"),
-    ];
-    let url = url.query_pairs_mut().extend_pairs(&params).finish();
+    let url = get_google_auth_url(state.client_id.clone(), state.redirect_uri.clone()).await;
     HttpResponse::Found()
         .append_header(("Location", url.as_str()))
         .status(StatusCode::FOUND)

@@ -7,6 +7,20 @@ use url::Url;
 
 type Res<T> = Result<T, String>;
 
+pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url {
+    let mut url = Url::parse("https://accounts.google.com/o/oauth2/v2/auth").unwrap();
+    let params = [
+        ("response_type", "code"),
+        ("client_id", client_id.as_str()),
+        ("scope", "email profile"),
+        ("redirect_uri", redirect_uri.as_str()),
+        ("access_type", "offline"),
+        ("prompt", "consent"),
+    ];
+    let url = url.query_pairs_mut().extend_pairs(&params).finish();
+    url.to_owned()
+}
+
 pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
     let params = [("alt", "json"), ("access_token", acc_token.as_str())];
