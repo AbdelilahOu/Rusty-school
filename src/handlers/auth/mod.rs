@@ -27,7 +27,7 @@ pub async fn login(state: State) -> HttpResponse {
 }
 
 pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
-    let res = utils::get_google_tokens(
+    let res = utils::request_tokens(
         q.code.clone(),
         ConfigObj {
             client_id: state.client_id.clone(),

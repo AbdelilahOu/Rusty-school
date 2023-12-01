@@ -5,26 +5,29 @@ use reqwest::{
 };
 use url::Url;
 
-type Res<T> = Result<T, reqwest::Error>;
+type Res<T> = Result<T, String>;
 
 pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
     let params = [("alt", "json"), ("access_token", acc_token.as_str())];
     let url = url.query_pairs_mut().extend_pairs(&params).finish();
     let client = reqwest::Client::new();
-    let resp = client
+    let req = client
         .get(url.as_str())
         .header(AUTHORIZATION, format!("Bearer {}", id_token.as_str()))
         .send()
         .await
-        .expect("coudnt get user")
-        .json::<GoogleUser>()
-        .await;
-    println!("{:?}", resp);
-    resp
+        .expect("coudnt get user");
+    //
+    if req.status().is_success() {
+        let resp = req.json::<GoogleUser>().await.expect("coudnt parse user");
+        return Ok(resp);
+    } else {
+        Err(String::from("Error getting user"))
+    }
 }
 
-pub async fn get_google_tokens(code: String, secrets: ConfigObj) -> Res<TokenResponse> {
+pub async fn request_tokens(code: String, secrets: ConfigObj) -> Res<TokenResponse> {
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
     // define params
@@ -44,9 +47,15 @@ pub async fn get_google_tokens(code: String, secrets: ConfigObj) -> Res<TokenRes
         .header(CONTENT_LENGTH, 0)
         .send()
         .await
-        .expect("Failed to send request")
-        .json::<TokenResponse>()
-        .await;
-
-    res
+        .expect("Failed to send request");
+    //
+    if res.status().is_success() {
+        let resp = res
+            .json::<TokenResponse>()
+            .await
+            .expect("Failed to parse response");
+        return Ok(resp);
+    } else {
+        Err(String::from("Error getting tokens"))
+    }
 }
