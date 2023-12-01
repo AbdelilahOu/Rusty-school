@@ -44,6 +44,12 @@ pub struct GoogleUser {
     pub locale: String,
 }
 
+pub struct ConfigObj {
+    pub client_id: String,
+    pub client_secret: String,
+    pub redirect_uri: String,
+}
+
 pub type TFiltersBody = ActJson<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;

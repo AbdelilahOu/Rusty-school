@@ -1,13 +1,9 @@
+use crate::models::commen::{ConfigObj, GoogleUser, TokenResponse};
 use reqwest::{
     self,
     header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE},
 };
 use url::Url;
-
-use crate::{
-    config::ConfigObj,
-    models::commen::{GoogleUser, TokenResponse},
-};
 
 type Res<T> = Result<T, reqwest::Error>;
 

@@ -1,6 +1,5 @@
 use crate::{
-    config::ConfigObj,
-    models::commen::{AuthQuery, ResultResponse, State},
+    models::commen::{AuthQuery, ConfigObj, ResultResponse, State},
     utils,
 };
 use actix_web::{

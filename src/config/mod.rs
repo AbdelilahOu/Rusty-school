@@ -1,8 +1,4 @@
-pub struct ConfigObj {
-    pub client_id: String,
-    pub client_secret: String,
-    pub redirect_uri: String,
-}
+use crate::models::commen::ConfigObj;
 
 pub fn load_config() -> ConfigObj {
     // load vars
