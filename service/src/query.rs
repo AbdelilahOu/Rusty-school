@@ -104,7 +104,6 @@ impl ServiceQuery {
         let list_contacts = Contact::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_contact_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
@@ -119,7 +118,6 @@ impl ServiceQuery {
         let list_contacts = Contact::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_contact_filters(qf.filters))
             // .into_json()
             .all(db)
             .await;
@@ -193,7 +191,6 @@ impl ServiceQuery {
         let list_countries = Country::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_country_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
@@ -208,7 +205,6 @@ impl ServiceQuery {
         let list_countries = Country::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_countrie_filters(qf.filters))
             .find_with_related(State)
             .all(db)
             .await;
@@ -243,7 +239,6 @@ impl ServiceQuery {
         let list_states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_state_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
@@ -258,7 +253,6 @@ impl ServiceQuery {
         let list_states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_state_filters(qf.filters))
             .find_with_related(City)
             .all(db)
             .await;
@@ -295,7 +289,6 @@ impl ServiceQuery {
         let list_cities = City::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_state_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
@@ -310,7 +303,6 @@ impl ServiceQuery {
         let list_cities = City::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_countrie_filters(qf.filters))
             .find_with_related(District)
             .all(db)
             .await;
@@ -345,7 +337,6 @@ impl ServiceQuery {
         let list_districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_state_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
@@ -360,7 +351,6 @@ impl ServiceQuery {
         let list_districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_countrie_filters(qf.filters))
             .find_with_related(Street)
             .all(db)
             .await;
@@ -395,7 +385,6 @@ impl ServiceQuery {
         let list_streets = Street::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .filter(generate_state_filters(qf.filters))
             .into_json()
             .all(db)
             .await;
