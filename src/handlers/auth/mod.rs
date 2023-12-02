@@ -23,6 +23,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
             client_id: state.client_id.clone(),
             client_secret: state.client_secret.clone(),
             redirect_uri: state.redirect_uri.clone(),
+            jwt_secret: state.jwt_secret.clone(),
         },
     )
     .await;
@@ -45,10 +46,14 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     match user_res {
                         Ok(user) => {
                             // create access token
-                            let token = utils::tokens::generate_tokens(user);
+                            let token =
+                                utils::tokens::generate_tokens(user, state.jwt_secret.clone());
                             // create refresh token
-                            let verified_token = utils::tokens::verify_token(token.clone());
-                            println!("verified token {:?}", verified_token);
+                            let verified_token = utils::tokens::verify_token(
+                                token.clone(),
+                                state.jwt_secret.clone(),
+                            );
+                            println!("verified token {:?} {:?}", verified_token, token);
                             HttpResponse::Created()
                                 .status(StatusCode::CREATED)
                                 .json(user)

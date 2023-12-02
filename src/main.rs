@@ -20,6 +20,7 @@ pub struct AppState {
     client_id: String,
     client_secret: String,
     redirect_uri: String,
+    jwt_secret: String,
 }
 
 #[actix_web::main]
@@ -38,6 +39,7 @@ async fn main() -> std::io::Result<()> {
                         client_id: loaded_config.client_id,
                         client_secret: loaded_config.client_secret,
                         redirect_uri: loaded_config.redirect_uri,
+                        jwt_secret: loaded_config.jwt_secret,
                     }))
                     .service(load_students_routes())
                     .service(load_teachers_routes())

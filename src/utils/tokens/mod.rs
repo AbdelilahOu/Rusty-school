@@ -1,19 +1,17 @@
 use chrono::Utc;
 use jsonwebtoken::{encode, EncodingKey, Header};
-use sea_orm::Value;
 use uuid::Uuid;
 
 use crate::models::commen::Claims;
 
-pub fn generate_tokens(id: Uuid) -> String {
-    //
-    let _ = dotenv::dotenv();
+use super::Res;
+
+pub fn generate_tokens(id: Uuid, secret: String) -> String {
     // time
     let current_time = Utc::now();
     let expiration_time = current_time + chrono::Duration::hours(24);
     //
-    let secret = std::env::var("RANDOM_KEY").unwrap();
-    let mut header = Header::new(jsonwebtoken::Algorithm::HS512);
+    let header = Header::new(jsonwebtoken::Algorithm::HS512);
     let token = encode(
         &header,
         &Claims {
@@ -27,4 +25,14 @@ pub fn generate_tokens(id: Uuid) -> String {
     token
 }
 
-pub fn verify_token(token: String) {}
+pub fn verify_token(token: String, secret: String) -> Res<Claims> {
+    let token_res = jsonwebtoken::decode::<Claims>(
+        &token,
+        &jsonwebtoken::DecodingKey::from_secret(secret.as_ref()),
+        &jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS512),
+    );
+    match token_res {
+        Ok(t) => Ok(t.claims),
+        Err(e) => Err(e.to_string()),
+    }
+}
