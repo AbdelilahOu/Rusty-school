@@ -3,7 +3,7 @@ use sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
 use std::time::Duration;
 
 pub async fn establish_connection() -> Result<DbConn, DbErr> {
-    dotenv::from_filename(".env").ok();
+    dotenv::dotenv().ok();
     // get database url from env
     let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
     // init connection options

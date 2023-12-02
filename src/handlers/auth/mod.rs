@@ -1,6 +1,9 @@
 use crate::{
     models::commen::{AuthQuery, ResultResponse, State},
-    utils::{self, get_google_auth_url},
+    utils::{
+        auth::{get_google_auth_url, get_google_user, request_tokens},
+        token::generate_tokens,
+    },
 };
 use actix_web::{
     cookie::{time::Duration, Cookie},
@@ -19,11 +22,11 @@ pub async fn login(state: State) -> HttpResponse {
 }
 
 pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
-    let res = utils::request_tokens(q.code.clone(), state.env.clone()).await;
+    let res = request_tokens(q.code.clone(), state.env.clone()).await;
 
     match res {
         Ok(res) => {
-            let user = utils::get_google_user(res.access_token, res.id_token).await;
+            let user = get_google_user(res.access_token, res.id_token).await;
             match user {
                 Ok(user) => {
                     let user_res = ServiceTransaction::upsert_user(
@@ -39,7 +42,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     match user_res {
                         Ok(user_uuid) => {
                             // create access token
-                            let token = utils::tokens::generate_tokens(
+                            let token = generate_tokens(
                                 user_uuid,
                                 state.env.jwt_secret.clone(),
                                 state.env.jwt_max_age.clone(),
