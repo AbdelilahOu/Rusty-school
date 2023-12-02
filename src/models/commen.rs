@@ -44,11 +44,13 @@ pub struct GoogleUser {
     pub locale: String,
 }
 
+#[derive(Debug, Clone)]
 pub struct ConfigObj {
     pub client_id: String,
     pub client_secret: String,
     pub redirect_uri: String,
     pub jwt_secret: String,
+    pub jwt_max_age: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -1,15 +1,17 @@
 use crate::{
-    models::commen::{AuthQuery, ConfigObj, ResultResponse, State},
+    models::commen::{AuthQuery, ResultResponse, State},
     utils::{self, get_google_auth_url},
 };
 use actix_web::{
+    cookie::{time::Duration, Cookie},
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
 use service::{CUser, ServiceTransaction};
 
 pub async fn login(state: State) -> HttpResponse {
-    let url = get_google_auth_url(state.client_id.clone(), state.redirect_uri.clone()).await;
+    let url =
+        get_google_auth_url(state.env.client_id.clone(), state.env.redirect_uri.clone()).await;
     HttpResponse::Found()
         .append_header(("Location", url.as_str()))
         .status(StatusCode::FOUND)
@@ -17,16 +19,7 @@ pub async fn login(state: State) -> HttpResponse {
 }
 
 pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
-    let res = utils::request_tokens(
-        q.code.clone(),
-        ConfigObj {
-            client_id: state.client_id.clone(),
-            client_secret: state.client_secret.clone(),
-            redirect_uri: state.redirect_uri.clone(),
-            jwt_secret: state.jwt_secret.clone(),
-        },
-    )
-    .await;
+    let res = utils::request_tokens(q.code.clone(), state.env.clone()).await;
 
     match res {
         Ok(res) => {
@@ -44,19 +37,23 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     )
                     .await;
                     match user_res {
-                        Ok(user) => {
+                        Ok(user_uuid) => {
                             // create access token
-                            let token =
-                                utils::tokens::generate_tokens(user, state.jwt_secret.clone());
-                            // create refresh token
-                            let verified_token = utils::tokens::verify_token(
-                                token.clone(),
-                                state.jwt_secret.clone(),
+                            let token = utils::tokens::generate_tokens(
+                                user_uuid,
+                                state.env.jwt_secret.clone(),
+                                state.env.jwt_max_age.clone(),
                             );
-                            println!("verified token {:?} {:?}", verified_token, token);
-                            HttpResponse::Created()
-                                .status(StatusCode::CREATED)
-                                .json(user)
+                            // create cookie
+                            let cookie = Cookie::build("token", token)
+                                .path("/")
+                                .max_age(Duration::hours(48))
+                                .http_only(true)
+                                .finish();
+                            let mut response = HttpResponse::Found();
+                            response.append_header(("Location", "/"));
+                            response.cookie(cookie);
+                            response.finish()
                         }
                         Err(e) => HttpResponse::InternalServerError()
                             .status(StatusCode::INTERNAL_SERVER_ERROR)

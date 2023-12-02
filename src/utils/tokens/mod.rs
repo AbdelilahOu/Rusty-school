@@ -6,12 +6,12 @@ use crate::models::commen::Claims;
 
 use super::Res;
 
-pub fn generate_tokens(id: Uuid, secret: String) -> String {
+pub fn generate_tokens(id: Uuid, secret: String, age: i64) -> String {
     // time
     let current_time = Utc::now();
-    let expiration_time = current_time + chrono::Duration::hours(24);
+    let expiration_time = current_time + chrono::Duration::hours(age);
     //
-    let header = Header::new(jsonwebtoken::Algorithm::HS512);
+    let header = Header::default();
     let token = encode(
         &header,
         &Claims {

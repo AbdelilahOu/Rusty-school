@@ -1,4 +1,5 @@
 use actix_web::{web, App, HttpServer};
+use models::commen::ConfigObj;
 use sea_orm::DatabaseConnection;
 
 mod config;
@@ -17,10 +18,7 @@ use routes::{
 
 pub struct AppState {
     db_conn: DatabaseConnection,
-    client_id: String,
-    client_secret: String,
-    redirect_uri: String,
-    jwt_secret: String,
+    env: ConfigObj,
 }
 
 #[actix_web::main]
@@ -36,10 +34,7 @@ async fn main() -> std::io::Result<()> {
                 App::new()
                     .app_data(web::Data::new(AppState {
                         db_conn: conn.clone(),
-                        client_id: loaded_config.client_id,
-                        client_secret: loaded_config.client_secret,
-                        redirect_uri: loaded_config.redirect_uri,
-                        jwt_secret: loaded_config.jwt_secret,
+                        env: loaded_config,
                     }))
                     .service(load_students_routes())
                     .service(load_teachers_routes())
