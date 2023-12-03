@@ -50,7 +50,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             // create cookie
                             let cookie = Cookie::build("token", token)
                                 .path("/")
-                                .max_age(Duration::hours(48))
+                                .max_age(Duration::hours(state.env.jwt_max_age.clone()))
                                 .http_only(true)
                                 .finish();
                             let mut response = HttpResponse::Found();
