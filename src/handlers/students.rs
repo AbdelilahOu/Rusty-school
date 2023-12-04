@@ -1,4 +1,4 @@
-use crate::models::commen::*;
+use crate::{models::commen::*, utils::response::create_response};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
@@ -11,22 +11,22 @@ type StBody = ActJson<CStudent>;
 pub async fn create_student(body: StBody, state: State) -> HttpResponse {
     let res = ServiceMutation::create_student(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Ok()
-            .status(StatusCode::CREATED)
-            .content_type(ContentType::json())
-            .json(ResponseData {
+        Ok(id) => create_response::<String>(
+            StatusCode::CREATED,
+            ResponseData {
                 error: None,
                 message: Some("Student created successfully".to_string()),
                 data: Some(id.to_string()),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
+            },
+        ),
+        Err(e) => create_response::<Option<String>>(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            ResponseData {
                 error: Some(e.to_string()),
                 message: None,
                 data: None,
-            }),
+            },
+        ),
     }
 }
 
