@@ -26,7 +26,7 @@ pub async fn create_contact(body: CtBody, state: State) -> HttpResponse {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Contact created successfully".to_string()),
                 data: Some(id.to_string()),
@@ -34,7 +34,7 @@ pub async fn create_contact(body: CtBody, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
                 message: None,
                 data: None,
@@ -54,14 +54,14 @@ pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -
     match res {
         Ok(i) => HttpResponse::Ok()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Contacts fetched successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -75,14 +75,14 @@ pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
     match delete_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Contact deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -96,14 +96,14 @@ pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
     match selected_contact {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Contact selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -117,14 +117,14 @@ pub async fn update_contact(id: IdParam, body: CtBody, state: State) -> HttpResp
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Contact updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,

@@ -1,5 +1,5 @@
 use crate::{
-    models::commen::{AuthQuery, ResultResponse, State},
+    models::commen::{AuthQuery, ResponseData, State},
     utils::{
         auth::{get_google_auth_url, get_google_user, request_tokens},
         token::generate_tokens,
@@ -61,7 +61,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                         Err(e) => HttpResponse::InternalServerError()
                             .status(StatusCode::INTERNAL_SERVER_ERROR)
                             .content_type(ContentType::json())
-                            .json(ResultResponse::<Option<String>> {
+                            .json(ResponseData::<Option<String>> {
                                 error: Some(e.to_string()),
                                 message: Some(String::from("coudnt insert user into db")),
                                 data: None,
@@ -71,7 +71,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                 Err(e) => HttpResponse::InternalServerError()
                     .status(StatusCode::INTERNAL_SERVER_ERROR)
                     .content_type(ContentType::json())
-                    .json(ResultResponse::<Option<String>> {
+                    .json(ResponseData::<Option<String>> {
                         error: Some(e.to_string()),
                         message: Some(String::from("coudnt get user profile from google")),
                         data: None,
@@ -81,7 +81,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
                 message: Some(String::from("coudnt get access token from google")),
                 data: None,

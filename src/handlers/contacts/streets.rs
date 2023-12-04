@@ -16,7 +16,7 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Street created successfully".to_string()),
                 data: Some(id.to_string()),
@@ -24,7 +24,7 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
                 message: None,
                 data: None,
@@ -44,14 +44,14 @@ pub async fn get_streets(queries: TQueries, body: TFiltersBody, state: State) ->
     match res {
         Ok(i) => HttpResponse::Ok()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Streets fetched successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -65,14 +65,14 @@ pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
     match delete_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Street deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -86,14 +86,14 @@ pub async fn update_street(id: IdParam, body: CtBody, state: State) -> HttpRespo
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Street updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,

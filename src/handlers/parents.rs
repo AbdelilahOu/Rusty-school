@@ -15,7 +15,7 @@ pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Parent created successfully".to_string()),
                 data: Some(id.to_string()),
@@ -23,7 +23,7 @@ pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
                 message: None,
                 data: None,
@@ -37,14 +37,14 @@ pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
     match delete_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Parent deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -58,14 +58,14 @@ pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
     match selected_parent {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Parent selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -86,14 +86,14 @@ pub async fn get_parents(queries: TQueries, body: TFiltersBody, state: State) ->
     match parents {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Parents selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -107,14 +107,14 @@ pub async fn update_parent(id: IdParam, body: StBody, state: State) -> HttpRespo
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Parent updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,

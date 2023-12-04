@@ -14,7 +14,7 @@ pub async fn create_student(body: StBody, state: State) -> HttpResponse {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Student created successfully".to_string()),
                 data: Some(id.to_string()),
@@ -22,7 +22,7 @@ pub async fn create_student(body: StBody, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
                 message: None,
                 data: None,
@@ -36,14 +36,14 @@ pub async fn delete_student(id: IdParam, state: State) -> HttpResponse {
     match delete_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Student deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -57,14 +57,14 @@ pub async fn get_student(id: IdParam, state: State) -> HttpResponse {
     match selected_student {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Student selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -85,14 +85,14 @@ pub async fn get_students(queries: TQueries, body: TFiltersBody, state: State) -
     match students {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Students selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,
@@ -106,14 +106,14 @@ pub async fn update_student(id: IdParam, body: StBody, state: State) -> HttpResp
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
-            .json(ResultResponse {
+            .json(ResponseData {
                 error: None,
                 message: Some("Student updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
-            .json(ResultResponse::<Option<String>> {
+            .json(ResponseData::<Option<String>> {
                 error: Some(e),
                 message: None,
                 data: None,

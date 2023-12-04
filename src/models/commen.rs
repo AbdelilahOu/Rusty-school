@@ -6,7 +6,7 @@ use uuid::Uuid;
 use crate::AppState;
 
 #[derive(Serialize)]
-pub struct ResultResponse<T> {
+pub struct ResponseData<T> {
     pub error: Option<String>,
     pub message: Option<String>,
     pub data: Option<T>,
