@@ -1,4 +1,5 @@
 use ::entity::prelude::*;
+use chrono::Utc;
 use sea_orm::{prelude::Uuid, *};
 
 use super::types::*;
@@ -456,6 +457,19 @@ impl ServiceMutation {
                 None => Err(String::from("city doesnt exist")),
             },
             Err(e) => Err(e.to_string()),
+        }
+    }
+    // scans
+    pub async fn create_scan(db: &DbConn, data: CScan) -> CResult<Uuid> {
+        let now = Utc::now();
+        let c_scan = ScanActiveModel {
+            person_id: Set(Some(data.person_id)),
+            scan_date: Set(now.naive_utc()),
+            ..Default::default()
+        };
+        match Scans::insert(c_scan).exec(db).await {
+            Ok(res) => Ok(res.last_insert_id),
+            Err(err) => return Err(err),
         }
     }
 }

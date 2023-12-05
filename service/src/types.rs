@@ -105,3 +105,7 @@ pub struct CUser {
     pub email: String,
     pub picture: Option<String>,
 }
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CScan {
+    pub person_id: Uuid,
+}
