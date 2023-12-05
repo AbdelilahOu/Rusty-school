@@ -45,7 +45,7 @@ impl MigrationTrait for Migration {
             .alter_table(
                 sea_query::Table::alter()
                     .table(Scan::Table)
-                    .add_column(ColumnDef::new(Scan::PersonId).uuid())
+                    .add_column(ColumnDef::new(Scan::PersonId).uuid().not_null())
                     .add_foreign_key(
                         TableForeignKey::new()
                             .name("fk_scan_person")
