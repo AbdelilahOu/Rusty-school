@@ -51,7 +51,7 @@ pub async fn get_states(queries: TQueries, body: TFiltersBody, state: State) -> 
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -72,7 +72,7 @@ pub async fn delete_state(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -93,7 +93,7 @@ pub async fn update_state(id: IdParam, body: CtBody, state: State) -> HttpRespon
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
