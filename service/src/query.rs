@@ -82,7 +82,6 @@ impl ServiceQuery {
         let contacts = Contact::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .into_json()
             .all(db)
             .await?;
 
