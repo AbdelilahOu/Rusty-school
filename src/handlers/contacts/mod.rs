@@ -62,7 +62,7 @@ pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -83,7 +83,7 @@ pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -104,7 +104,7 @@ pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -125,7 +125,7 @@ pub async fn update_contact(id: IdParam, body: CtBody, state: State) -> HttpResp
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),

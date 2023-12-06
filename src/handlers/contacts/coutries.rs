@@ -50,7 +50,7 @@ pub async fn get_countries(queries: TQueries, body: TFiltersBody, state: State) 
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -71,7 +71,7 @@ pub async fn delete_country(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -92,7 +92,7 @@ pub async fn update_country(id: IdParam, body: CtBody, state: State) -> HttpResp
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),

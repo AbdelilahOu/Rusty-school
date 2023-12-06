@@ -44,7 +44,7 @@ pub async fn delete_teacher(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -65,7 +65,7 @@ pub async fn get_teacher(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -93,7 +93,7 @@ pub async fn get_teachers(queries: TQueries, body: TFiltersBody, state: State) -
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -114,7 +114,7 @@ pub async fn update_teacher(id: IdParam, body: TeBody, state: State) -> HttpResp
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),

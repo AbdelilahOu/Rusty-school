@@ -45,7 +45,7 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -72,7 +72,7 @@ pub async fn get_cities(queries: TQueries, body: TFiltersBody, state: State) -> 
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),
@@ -93,7 +93,7 @@ pub async fn update_city(id: IdParam, body: CtBody, state: State) -> HttpRespons
         Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
-                error: Some(e),
+                error: Some(e.to_string()),
                 message: None,
                 data: None,
             }),

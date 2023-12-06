@@ -29,3 +29,31 @@ pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
             }),
     }
 }
+
+pub async fn get_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+    let scans = ServiceQuery::list_scans(
+        &state.db_conn,
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+    )
+    .await;
+
+    match scans {
+        Ok(i) => HttpResponse::Created()
+            .content_type(ContentType::json())
+            .json(ResponseData {
+                error: None,
+                message: Some("Scans selected successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResponseData::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
+    }
+}
