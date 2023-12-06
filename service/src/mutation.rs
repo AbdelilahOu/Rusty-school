@@ -6,157 +6,130 @@ use super::types::*;
 
 pub struct ServiceMutation;
 
-type CResult<T> = Result<T, DbErr>;
-type GResult<T> = Result<T, String>;
+type DyResult<T> = Result<T, DbErr>;
 
 impl ServiceMutation {
     // students entity
-    pub async fn create_student(db: &DbConn, data: CStudent) -> CResult<Uuid> {
+    pub async fn create_student(db: &DbConn, data: CStudent) -> DyResult<Uuid> {
         let c_student = StudentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             level: Set(data.level),
             ..Default::default()
         };
-        match Student::insert(c_student).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let student = Student::insert(c_student).exec(db).await?;
+        Ok(student.last_insert_id)
+    }
+    pub async fn delete_student(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let student_model = Student::find_by_id(id).one(db).await?;
+        match student_model {
+            Some(student_model) => {
+                let student = student_model.delete(db).await?;
+                Ok(student.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_student(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_student = Student::find_by_id(id).one(db).await;
-        match selected_student {
-            Ok(student_opt) => match student_opt {
-                Some(student_model) => match student_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("student doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> GResult<CStudent> {
-        let selected_student = Student::find_by_id(id).one(db).await;
-        match selected_student {
-            Ok(student_opt) => match student_opt {
-                Some(student_model) => {
-                    let mut student_model: StudentActiveModel = student_model.into();
-                    student_model.first_name = Set(data.first_name);
-                    student_model.last_name = Set(data.last_name);
-                    student_model.level = Set(data.level);
-                    student_model.id = Set(id);
-                    match student_model.update(db).await {
-                        Ok(updated_student) => Ok(CStudent {
-                            first_name: updated_student.first_name,
-                            last_name: updated_student.last_name,
-                            level: updated_student.level,
-                        }),
-                        Err(err) => Err(err.to_string()),
-                    }
-                }
-                None => Err(String::from("student doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
+    pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> DyResult<CStudent> {
+        let student_model = Student::find_by_id(id).one(db).await?;
+        match student_model {
+            Some(student_model) => {
+                let mut student_model: StudentActiveModel = student_model.into();
+                // set new feild
+                student_model.first_name = Set(data.first_name);
+                student_model.last_name = Set(data.last_name);
+                student_model.level = Set(data.level);
+                student_model.id = Set(id);
+                //
+                let student = student_model.update(db).await?;
+                Ok(CStudent {
+                    first_name: student.first_name,
+                    last_name: student.last_name,
+                    level: student.level,
+                })
+            }
+            None => Ok(data),
         }
     }
     // teachers entity
-    pub async fn create_teacher(db: &DbConn, data: CTeacher) -> CResult<Uuid> {
-        let c_teacher = TeacherActiveModel {
+    pub async fn create_teacher(db: &DbConn, data: CTeacher) -> DyResult<Uuid> {
+        let teacher_model = TeacherActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             ..Default::default()
         };
-        match Teacher::insert(c_teacher).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let teacher = Teacher::insert(teacher_model).exec(db).await?;
+        Ok(teacher.last_insert_id)
+    }
+    pub async fn delete_teacher(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let teacher_model = Teacher::find_by_id(id).one(db).await?;
+        match teacher_model {
+            Some(teacher_model) => {
+                let teacher = teacher_model.delete(db).await?;
+                Ok(teacher.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_teacher(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_teacher = Teacher::find_by_id(id).one(db).await;
-        match selected_teacher {
-            Ok(teacher_opt) => match teacher_opt {
-                Some(teacher_model) => match teacher_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("teacher doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_teacher(db: &DbConn, id: Uuid, data: CTeacher) -> GResult<CTeacher> {
-        let selected_teacher = Teacher::find_by_id(id).one(db).await;
-        match selected_teacher {
-            Ok(teacher_opt) => match teacher_opt {
-                Some(teacher_model) => {
-                    let mut teacher_model: TeacherActiveModel = teacher_model.into();
-                    teacher_model.first_name = Set(data.first_name);
-                    teacher_model.last_name = Set(data.last_name);
-                    teacher_model.id = Set(id);
-                    match teacher_model.update(db).await {
-                        Ok(updated_teacher) => Ok(CTeacher {
-                            first_name: updated_teacher.first_name,
-                            last_name: updated_teacher.last_name,
-                        }),
-                        Err(err) => Err(err.to_string()),
-                    }
-                }
-                None => Err(String::from("teacher doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
+    pub async fn update_teacher(db: &DbConn, id: Uuid, data: CTeacher) -> DyResult<CTeacher> {
+        let teacher_model = Teacher::find_by_id(id).one(db).await?;
+        match teacher_model {
+            Some(teacher_model) => {
+                //
+                let mut teacher_model: TeacherActiveModel = teacher_model.into();
+                teacher_model.first_name = Set(data.first_name);
+                teacher_model.last_name = Set(data.last_name);
+                teacher_model.id = Set(id);
+                //
+                let teacher = teacher_model.update(db).await?;
+                Ok(CTeacher {
+                    first_name: teacher.first_name,
+                    last_name: teacher.last_name,
+                })
+            }
+            None => Ok(data),
         }
     }
     // parents entity
-    pub async fn create_parent(db: &DbConn, data: CParent) -> CResult<Uuid> {
-        let c_parent = ParentActiveModel {
+    pub async fn create_parent(db: &DbConn, data: CParent) -> DyResult<Uuid> {
+        let parent_model = ParentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             ..Default::default()
         };
-        match Parent::insert(c_parent).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let parent = Parent::insert(parent_model).exec(db).await?;
+        Ok(parent.last_insert_id)
+    }
+    pub async fn delete_parent(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let parent_model = Parent::find_by_id(id).one(db).await?;
+        match parent_model {
+            Some(parent_model) => {
+                let parent = parent_model.delete(db).await?;
+                Ok(parent.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_parent(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_parent = Parent::find_by_id(id).one(db).await;
-        match selected_parent {
-            Ok(parent_opt) => match parent_opt {
-                Some(parent_model) => match parent_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("parent doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> GResult<CParent> {
-        let selected_parent = Parent::find_by_id(id).one(db).await;
-        match selected_parent {
-            Ok(parent_opt) => match parent_opt {
-                Some(parent_model) => {
-                    let mut parent_model: ParentActiveModel = parent_model.into();
-                    parent_model.first_name = Set(data.first_name);
-                    parent_model.last_name = Set(data.last_name);
-                    parent_model.id = Set(id);
-                    match parent_model.update(db).await {
-                        Ok(updated_parent) => Ok(CParent {
-                            first_name: updated_parent.first_name,
-                            last_name: updated_parent.last_name,
-                        }),
-                        Err(err) => Err(err.to_string()),
-                    }
-                }
-                None => Err(String::from("parent doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
+    pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> DyResult<CParent> {
+        let parent_model = Parent::find_by_id(id).one(db).await?;
+        match parent_model {
+            Some(parent_model) => {
+                let mut parent_model: ParentActiveModel = parent_model.into();
+                parent_model.first_name = Set(data.first_name);
+                parent_model.last_name = Set(data.last_name);
+                parent_model.id = Set(id);
+                let parent = parent_model.update(db).await?;
+                Ok(CParent {
+                    first_name: parent.first_name,
+                    last_name: parent.last_name,
+                })
+            }
+            None => Ok(data),
         }
     }
     // contacts
-    pub async fn create_contact(db: &DbConn, data: CContact) -> CResult<Uuid> {
-        let c_contact = ContactActiveModel {
+    pub async fn create_contact(db: &DbConn, data: CContact) -> DyResult<Uuid> {
+        let contact_model = ContactActiveModel {
             phone_number: Set(data.phone),
             email: Set(data.email),
             country_id: Set(data.country_id),
@@ -166,310 +139,260 @@ impl ServiceMutation {
             street_id: Set(data.street_id),
             ..Default::default()
         };
-        match Contact::insert(c_contact).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let contacts = Contact::insert(contact_model).exec(db).await?;
+        Ok(contacts.last_insert_id)
+    }
+    pub async fn delete_contact(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let contact_model = Contact::find_by_id(id).one(db).await?;
+        match contact_model {
+            Some(contact_model) => {
+                let contact = contact_model.delete(db).await?;
+                Ok(contact.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_contact(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_contact = Contact::find_by_id(id).one(db).await;
-        match selected_contact {
-            Ok(contact_opt) => match contact_opt {
-                Some(contact_model) => match contact_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("contact doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_contact(db: &DbConn, id: Uuid, data: CContact) -> GResult<CContact> {
-        let selected_contact = Contact::find_by_id(id).one(db).await;
-        match selected_contact {
-            Ok(contact_opt) => match contact_opt {
-                Some(contact_model) => {
-                    let mut contact_model: ContactActiveModel = contact_model.into();
-                    contact_model.phone_number = Set(data.phone);
-                    contact_model.email = Set(data.email);
-                    contact_model.country_id = Set(data.country_id);
-                    contact_model.state_id = Set(data.state_id);
-                    contact_model.city_id = Set(data.city_id);
-                    contact_model.district_id = Set(data.district_id);
-                    contact_model.street_id = Set(data.street_id);
-                    contact_model.id = Set(id);
-                    match contact_model.update(db).await {
-                        Ok(updated_contact) => Ok(CContact {
-                            phone: updated_contact.phone_number,
-                            email: updated_contact.email,
-                            country_id: updated_contact.country_id,
-                            state_id: updated_contact.state_id,
-                            city_id: updated_contact.city_id,
-                            district_id: updated_contact.district_id,
-                            street_id: updated_contact.street_id,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("contact doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_contact(db: &DbConn, id: Uuid, data: CContact) -> DyResult<CContact> {
+        let contact_model = Contact::find_by_id(id).one(db).await?;
+        match contact_model {
+            Some(contact_model) => {
+                //
+                let mut contact_model: ContactActiveModel = contact_model.into();
+                contact_model.phone_number = Set(data.phone);
+                contact_model.email = Set(data.email);
+                contact_model.country_id = Set(data.country_id);
+                contact_model.state_id = Set(data.state_id);
+                contact_model.city_id = Set(data.city_id);
+                contact_model.district_id = Set(data.district_id);
+                contact_model.street_id = Set(data.street_id);
+                contact_model.id = Set(id);
+                //
+                let contact = contact_model.update(db).await?;
+                Ok(CContact {
+                    phone: contact.phone_number,
+                    email: contact.email,
+                    country_id: contact.country_id,
+                    state_id: contact.state_id,
+                    city_id: contact.city_id,
+                    district_id: contact.district_id,
+                    street_id: contact.street_id,
+                })
+            }
+            None => Ok(data),
         }
     }
     // country
-    pub async fn create_country(db: &DbConn, data: CCountry) -> CResult<Uuid> {
-        let c_country = CountryActiveModel {
+    pub async fn create_country(db: &DbConn, data: CCountry) -> DyResult<Uuid> {
+        let country_model = CountryActiveModel {
             country_name: Set(data.name),
             country_initials: Set(data.initials),
             ..Default::default()
         };
-        match Country::insert(c_country).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let country = Country::insert(country_model).exec(db).await?;
+        Ok(country.last_insert_id)
+    }
+    pub async fn delete_country(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let country_model = Country::find_by_id(id).one(db).await?;
+        match country_model {
+            Some(country_model) => {
+                let country = country_model.delete(db).await?;
+                Ok(country.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_country(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_country = Country::find_by_id(id).one(db).await;
-        match selected_country {
-            Ok(country_opt) => match country_opt {
-                Some(country_model) => match country_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("country doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_country(db: &DbConn, id: Uuid, data: CCountry) -> GResult<CCountry> {
-        let selected_country = Country::find_by_id(id).one(db).await;
-        match selected_country {
-            Ok(country_opt) => match country_opt {
-                Some(country_model) => {
-                    let mut country_model: CountryActiveModel = country_model.into();
-                    country_model.country_name = Set(data.name);
-                    country_model.country_initials = Set(data.initials);
-                    match country_model.update(db).await {
-                        Ok(updated_country) => Ok(CCountry {
-                            name: updated_country.country_name,
-                            initials: updated_country.country_initials,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("country doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_country(db: &DbConn, id: Uuid, data: CCountry) -> DyResult<CCountry> {
+        let country_model = Country::find_by_id(id).one(db).await?;
+        match country_model {
+            Some(country_model) => {
+                //
+                let mut country_model: CountryActiveModel = country_model.into();
+                country_model.country_name = Set(data.name);
+                country_model.country_initials = Set(data.initials);
+                //
+                let country = country_model.update(db).await?;
+                Ok(CCountry {
+                    name: country.country_name,
+                    initials: country.country_initials,
+                })
+            }
+            None => Ok(data),
         }
     }
     // districts
-    pub async fn create_district(db: &DbConn, data: CDistrict) -> CResult<Uuid> {
-        let c_district = DistrictActiveModel {
+    pub async fn create_district(db: &DbConn, data: CDistrict) -> DyResult<Uuid> {
+        let district_model = DistrictActiveModel {
             district_name: Set(data.name),
             city_id: Set(data.city_id),
             ..Default::default()
         };
-        match District::insert(c_district).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let district = District::insert(district_model).exec(db).await?;
+        Ok(district.last_insert_id)
+    }
+    pub async fn delete_district(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let district_model = District::find_by_id(id).one(db).await?;
+        match district_model {
+            Some(district_model) => {
+                let district = district_model.delete(db).await?;
+                Ok(district.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_district(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_district = District::find_by_id(id).one(db).await;
-        match selected_district {
-            Ok(district_opt) => match district_opt {
-                Some(district_model) => match district_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("district doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_district(db: &DbConn, id: Uuid, data: CDistrict) -> GResult<CDistrict> {
-        let selected_district = District::find_by_id(id).one(db).await;
-        match selected_district {
-            Ok(district_opt) => match district_opt {
-                Some(district_model) => {
-                    let mut district_model: DistrictActiveModel = district_model.into();
-                    district_model.district_name = Set(data.name);
-                    district_model.city_id = Set(data.city_id);
-                    match district_model.update(db).await {
-                        Ok(updated_district) => Ok(CDistrict {
-                            name: updated_district.district_name,
-                            city_id: updated_district.city_id,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("district doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_district(db: &DbConn, id: Uuid, data: CDistrict) -> DyResult<CDistrict> {
+        let district_model = District::find_by_id(id).one(db).await?;
+        match district_model {
+            Some(district_model) => {
+                //
+                let mut district_model: DistrictActiveModel = district_model.into();
+                district_model.district_name = Set(data.name);
+                district_model.city_id = Set(data.city_id);
+                //
+                let district = district_model.update(db).await?;
+                Ok(CDistrict {
+                    name: district.district_name,
+                    city_id: district.city_id,
+                })
+            }
+            None => Ok(data),
         }
     }
     // steets
-    pub async fn create_street(db: &DbConn, data: CStreet) -> CResult<Uuid> {
-        let c_street = StreetActiveModel {
+    pub async fn create_street(db: &DbConn, data: CStreet) -> DyResult<Uuid> {
+        let street_model = StreetActiveModel {
             street_name: Set(data.name),
             district_id: Set(data.district_id),
             street_type: Set(data.street_type),
             zip_code: Set(data.zip_code),
             ..Default::default()
         };
-        match Street::insert(c_street).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        //
+        let street = Street::insert(street_model).exec(db).await?;
+        Ok(street.last_insert_id)
+    }
+    pub async fn delete_street(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let street_model = Street::find_by_id(id).one(db).await?;
+        match street_model {
+            Some(street_model) => {
+                let street = street_model.delete(db).await?;
+                Ok(street.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_street(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_street = Street::find_by_id(id).one(db).await;
-        match selected_street {
-            Ok(street_opt) => match street_opt {
-                Some(street_model) => match street_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("street doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_street(db: &DbConn, id: Uuid, data: CStreet) -> GResult<CStreet> {
-        let selected_street = Street::find_by_id(id).one(db).await;
-        match selected_street {
-            Ok(street_opt) => match street_opt {
-                Some(street_model) => {
-                    let mut street_model: StreetActiveModel = street_model.into();
-                    street_model.street_name = Set(data.name);
-                    street_model.district_id = Set(data.district_id);
-                    street_model.street_type = Set(data.street_type);
-                    street_model.zip_code = Set(data.zip_code);
-
-                    match street_model.update(db).await {
-                        Ok(updated_street) => Ok(CStreet {
-                            name: updated_street.street_name,
-                            district_id: updated_street.district_id,
-                            street_type: updated_street.street_type,
-                            zip_code: updated_street.zip_code,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("street doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_street(db: &DbConn, id: Uuid, data: CStreet) -> DyResult<CStreet> {
+        let street_model = Street::find_by_id(id).one(db).await?;
+        match street_model {
+            Some(street_model) => {
+                //
+                let mut street_model: StreetActiveModel = street_model.into();
+                street_model.street_name = Set(data.name);
+                street_model.district_id = Set(data.district_id);
+                street_model.street_type = Set(data.street_type);
+                street_model.zip_code = Set(data.zip_code);
+                //
+                let street = street_model.update(db).await?;
+                Ok(CStreet {
+                    name: street.street_name,
+                    district_id: street.district_id,
+                    zip_code: street.zip_code,
+                    street_type: street.street_type,
+                })
+            }
+            None => Ok(data),
         }
     }
     // state
-    pub async fn create_state(db: &DbConn, data: CState) -> CResult<Uuid> {
-        let c_state = StateActiveModel {
+    pub async fn create_state(db: &DbConn, data: CState) -> DyResult<Uuid> {
+        let state_model = StateActiveModel {
             state_name: Set(data.name),
             state_initials: Set(data.initials),
             state_code: Set(data.code),
             country_id: Set(data.country_id),
             ..Default::default()
         };
-        match State::insert(c_state).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let state = State::insert(state_model).exec(db).await?;
+        Ok(state.last_insert_id)
+    }
+    pub async fn delete_state(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let state_model = State::find_by_id(id).one(db).await?;
+        match state_model {
+            Some(state_model) => {
+                let state = state_model.delete(db).await?;
+                Ok(state.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_state(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_state = State::find_by_id(id).one(db).await;
-        match selected_state {
-            Ok(state_opt) => match state_opt {
-                Some(state_model) => match state_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("state doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_state(db: &DbConn, id: Uuid, data: CState) -> GResult<CState> {
-        let selected_state = State::find_by_id(id).one(db).await;
-        match selected_state {
-            Ok(state_opt) => match state_opt {
-                Some(state_model) => {
-                    let mut state_model: StateActiveModel = state_model.into();
-                    state_model.state_name = Set(data.name);
-                    state_model.state_initials = Set(data.initials);
-                    state_model.state_code = Set(data.code);
-                    state_model.country_id = Set(data.country_id);
-                    match state_model.update(db).await {
-                        Ok(updated_state) => Ok(CState {
-                            name: updated_state.state_name,
-                            initials: updated_state.state_initials,
-                            code: updated_state.state_code,
-                            country_id: updated_state.country_id,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("state doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_state(db: &DbConn, id: Uuid, data: CState) -> DyResult<CState> {
+        let state_model = State::find_by_id(id).one(db).await?;
+        match state_model {
+            Some(state_model) => {
+                //
+                let mut state_model: StateActiveModel = state_model.into();
+                state_model.state_name = Set(data.name);
+                state_model.state_initials = Set(data.initials);
+                state_model.state_code = Set(data.code);
+                state_model.country_id = Set(data.country_id);
+                //
+                let state = state_model.update(db).await?;
+                Ok(CState {
+                    name: state.state_name,
+                    initials: state.state_initials,
+                    code: state.state_code,
+                    country_id: state.country_id,
+                })
+            }
+            None => Ok(data),
         }
     }
     // city
-    pub async fn create_city(db: &DbConn, data: CCity) -> CResult<Uuid> {
-        let c_city = CityActiveModel {
+    pub async fn create_city(db: &DbConn, data: CCity) -> DyResult<Uuid> {
+        let city_model = CityActiveModel {
             city_name: Set(data.name),
             state_id: Set(data.state_id),
             ..Default::default()
         };
-        match City::insert(c_city).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
+        let city = City::insert(city_model).exec(db).await?;
+        Ok(city.last_insert_id)
+    }
+    pub async fn delete_city(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let city_model = City::find_by_id(id).one(db).await?;
+        match city_model {
+            Some(city_model) => {
+                let city = city_model.delete(db).await?;
+                Ok(city.rows_affected)
+            }
+            None => Ok(0),
         }
     }
-    pub async fn delete_city(db: &DbConn, id: Uuid) -> GResult<u64> {
-        let selected_city = City::find_by_id(id).one(db).await;
-        match selected_city {
-            Ok(city_opt) => match city_opt {
-                Some(city_model) => match city_model.delete(db).await {
-                    Ok(delete_a) => Ok(delete_a.rows_affected),
-                    Err(err) => Err(err.to_string()),
-                },
-                None => Err(String::from("city doesnt exist")),
-            },
-            Err(err) => Err(err.to_string()),
-        }
-    }
-    pub async fn update_city(db: &DbConn, id: Uuid, data: CCity) -> GResult<CCity> {
-        let selected_city = City::find_by_id(id).one(db).await;
-        match selected_city {
-            Ok(city_opt) => match city_opt {
-                Some(city_model) => {
-                    let mut city_model: CityActiveModel = city_model.into();
-                    city_model.city_name = Set(data.name);
-                    city_model.state_id = Set(data.state_id);
-                    match city_model.update(db).await {
-                        Ok(updated_city) => Ok(CCity {
-                            name: updated_city.city_name,
-                            state_id: updated_city.state_id,
-                        }),
-                        Err(e) => Err(e.to_string()),
-                    }
-                }
-                None => Err(String::from("city doesnt exist")),
-            },
-            Err(e) => Err(e.to_string()),
+    pub async fn update_city(db: &DbConn, id: Uuid, data: CCity) -> DyResult<CCity> {
+        let city_model = City::find_by_id(id).one(db).await?;
+        match city_model {
+            Some(city_model) => {
+                //
+                let mut city_model: CityActiveModel = city_model.into();
+                city_model.city_name = Set(data.name);
+                city_model.state_id = Set(data.state_id);
+                //
+                let city = city_model.update(db).await?;
+                Ok(CCity {
+                    name: city.city_name,
+                    state_id: city.state_id,
+                })
+            }
+            None => Ok(data),
         }
     }
     // scans
-    pub async fn create_scan(db: &DbConn, data: CScan) -> CResult<Uuid> {
+    pub async fn create_scan(db: &DbConn, data: CScan) -> DyResult<Uuid> {
         let now = Utc::now();
-        let c_scan = ScanActiveModel {
-            person_id: Set(Some(data.person_id)),
+        let scan_model = ScanActiveModel {
+            person_id: Set(data.person_id),
             scan_date: Set(now.naive_utc()),
             ..Default::default()
         };
-        match Scans::insert(c_scan).exec(db).await {
-            Ok(res) => Ok(res.last_insert_id),
-            Err(err) => return Err(err),
-        }
+        let scan = Scans::insert(scan_model).exec(db).await?;
+        Ok(scan.last_insert_id)
     }
 }
