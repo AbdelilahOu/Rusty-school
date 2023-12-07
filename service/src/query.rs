@@ -348,7 +348,7 @@ impl ServiceQuery {
                         .await?;
                     teacher
                 }
-                _ => continue,
+                _ => None,
             };
 
             result.push(json!({
