@@ -151,58 +151,54 @@ impl MigrationTrait for Migration {
         let contact_res = manager
             .create_table(
                 Table::create()
-                    .table(ContactInformation::Table)
+                    .table(PersonDetails::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(ContactInformation::Id)
+                        ColumnDef::new(PersonDetails::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(ContactInformation::Phone).string())
-                    .col(
-                        ColumnDef::new(ContactInformation::Email)
-                            .string()
-                            .unique_key(),
-                    )
-                    .col(ColumnDef::new(ContactInformation::Country).uuid())
+                    .col(ColumnDef::new(PersonDetails::Phone).string())
+                    .col(ColumnDef::new(PersonDetails::Email).string().unique_key())
+                    .col(ColumnDef::new(PersonDetails::Country).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-country_id")
-                            .from(ContactInformation::Table, ContactInformation::Country)
+                            .from(PersonDetails::Table, PersonDetails::Country)
                             .to(Country::Table, Country::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformation::State).uuid())
+                    .col(ColumnDef::new(PersonDetails::State).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-state_id")
-                            .from(ContactInformation::Table, ContactInformation::State)
+                            .from(PersonDetails::Table, PersonDetails::State)
                             .to(State::Table, State::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformation::City).uuid())
+                    .col(ColumnDef::new(PersonDetails::City).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-city_id")
-                            .from(ContactInformation::Table, ContactInformation::City)
+                            .from(PersonDetails::Table, PersonDetails::City)
                             .to(City::Table, City::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformation::District).uuid())
+                    .col(ColumnDef::new(PersonDetails::District).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-district_id")
-                            .from(ContactInformation::Table, ContactInformation::District)
+                            .from(PersonDetails::Table, PersonDetails::District)
                             .to(District::Table, District::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(ContactInformation::Street).uuid())
+                    .col(ColumnDef::new(PersonDetails::Street).uuid())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-contacts-street_id")
-                            .from(ContactInformation::Table, ContactInformation::Street)
+                            .from(PersonDetails::Table, PersonDetails::Street)
                             .to(Street::Table, Street::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
@@ -219,7 +215,7 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let contacts_drop = manager
-            .drop_table(Table::drop().table(ContactInformation::Table).to_owned())
+            .drop_table(Table::drop().table(PersonDetails::Table).to_owned())
             .await;
 
         if let Err(e) = contacts_drop {
@@ -271,8 +267,8 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-pub enum ContactInformation {
-    #[sea_orm(iden = "contacts_informations")]
+pub enum PersonDetails {
+    #[sea_orm(iden = "person_details")]
     Table,
     Id,
     #[sea_orm(iden = "phone_number")]
