@@ -8,6 +8,8 @@ members = [".", "migration", "entity", "service"]
 
 [workspace.dependencies]
 chrono = { version = "0.4.31", features = ["serde"] }
+serde = { version = "1.0.192", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
 
 
 [dependencies]

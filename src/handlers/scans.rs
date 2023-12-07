@@ -11,7 +11,7 @@ type ScBody = ActJson<CScan>;
 pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
     let res = ServiceMutation::create_scan(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Ok()
+        Ok(id) => HttpResponse::Created()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
@@ -31,7 +31,7 @@ pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
 }
 
 pub async fn get_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let scans = ServiceQuery::list_scans(
+    let scans = ServiceQuery::list_scans_related(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -41,7 +41,7 @@ pub async fn get_scans(queries: TQueries, body: TFiltersBody, state: State) -> H
     .await;
 
     match scans {
-        Ok(i) => HttpResponse::Created()
+        Ok(i) => HttpResponse::Ok()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
