@@ -21,8 +21,8 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Cities,
-    #[sea_orm(has_many = "super::contacts_informations::Entity")]
-    ContactsInformations,
+    #[sea_orm(has_many = "super::person_details::Entity")]
+    PersonDetails,
     #[sea_orm(has_many = "super::streets::Entity")]
     Streets,
 }
@@ -33,9 +33,9 @@ impl Related<super::cities::Entity> for Entity {
     }
 }
 
-impl Related<super::contacts_informations::Entity> for Entity {
+impl Related<super::person_details::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::ContactsInformations.def()
+        Relation::PersonDetails.def()
     }
 }
 

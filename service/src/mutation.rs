@@ -127,9 +127,9 @@ impl ServiceMutation {
             None => Ok(data),
         }
     }
-    // contacts
-    pub async fn create_contact(db: &DbConn, data: CContact) -> DyResult<Uuid> {
-        let contact_model = ContactActiveModel {
+    // detailss
+    pub async fn create_details(db: &DbConn, data: CPDetails) -> DyResult<Uuid> {
+        let details_model = PersonDetailsActiveModel {
             phone_number: Set(data.phone),
             email: Set(data.email),
             country_id: Set(data.country_id),
@@ -139,43 +139,43 @@ impl ServiceMutation {
             street_id: Set(data.street_id),
             ..Default::default()
         };
-        let contacts = Contact::insert(contact_model).exec(db).await?;
-        Ok(contacts.last_insert_id)
+        let detailss = PersonDetails::insert(details_model).exec(db).await?;
+        Ok(detailss.last_insert_id)
     }
-    pub async fn delete_contact(db: &DbConn, id: Uuid) -> DyResult<u64> {
-        let contact_model = Contact::find_by_id(id).one(db).await?;
-        match contact_model {
-            Some(contact_model) => {
-                let contact = contact_model.delete(db).await?;
-                Ok(contact.rows_affected)
+    pub async fn delete_details(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let details_model = PersonDetails::find_by_id(id).one(db).await?;
+        match details_model {
+            Some(details_model) => {
+                let details = details_model.delete(db).await?;
+                Ok(details.rows_affected)
             }
             None => Ok(0),
         }
     }
-    pub async fn update_contact(db: &DbConn, id: Uuid, data: CContact) -> DyResult<CContact> {
-        let contact_model = Contact::find_by_id(id).one(db).await?;
-        match contact_model {
-            Some(contact_model) => {
+    pub async fn update_details(db: &DbConn, id: Uuid, data: CPDetails) -> DyResult<CPDetails> {
+        let details_model = PersonDetails::find_by_id(id).one(db).await?;
+        match details_model {
+            Some(details_model) => {
                 //
-                let mut contact_model: ContactActiveModel = contact_model.into();
-                contact_model.phone_number = Set(data.phone);
-                contact_model.email = Set(data.email);
-                contact_model.country_id = Set(data.country_id);
-                contact_model.state_id = Set(data.state_id);
-                contact_model.city_id = Set(data.city_id);
-                contact_model.district_id = Set(data.district_id);
-                contact_model.street_id = Set(data.street_id);
-                contact_model.id = Set(id);
+                let mut details_model: PersonDetailsActiveModel = details_model.into();
+                details_model.phone_number = Set(data.phone);
+                details_model.email = Set(data.email);
+                details_model.country_id = Set(data.country_id);
+                details_model.state_id = Set(data.state_id);
+                details_model.city_id = Set(data.city_id);
+                details_model.district_id = Set(data.district_id);
+                details_model.street_id = Set(data.street_id);
+                details_model.id = Set(id);
                 //
-                let contact = contact_model.update(db).await?;
-                Ok(CContact {
-                    phone: contact.phone_number,
-                    email: contact.email,
-                    country_id: contact.country_id,
-                    state_id: contact.state_id,
-                    city_id: contact.city_id,
-                    district_id: contact.district_id,
-                    street_id: contact.street_id,
+                let details = details_model.update(db).await?;
+                Ok(CPDetails {
+                    phone: details.phone_number,
+                    email: details.email,
+                    country_id: details.country_id,
+                    state_id: details.state_id,
+                    city_id: details.city_id,
+                    district_id: details.district_id,
+                    street_id: details.street_id,
                 })
             }
             None => Ok(data),

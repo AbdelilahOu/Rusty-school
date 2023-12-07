@@ -8,21 +8,21 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub person_type: String,
-    pub contact_id: Option<Uuid>,
+    pub details_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::parents::Entity")]
+    Parents,
     #[sea_orm(
-        belongs_to = "super::contacts_informations::Entity",
-        from = "Column::ContactId",
-        to = "super::contacts_informations::Column::Id",
+        belongs_to = "super::person_details::Entity",
+        from = "Column::DetailsId",
+        to = "super::person_details::Column::Id",
         on_update = "NoAction",
         on_delete = "Cascade"
     )]
-    ContactsInformations,
-    #[sea_orm(has_many = "super::parents::Entity")]
-    Parents,
+    PersonDetails,
     #[sea_orm(has_many = "super::scans::Entity")]
     Scans,
     #[sea_orm(has_many = "super::students::Entity")]
@@ -33,15 +33,15 @@ pub enum Relation {
     Users,
 }
 
-impl Related<super::contacts_informations::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::ContactsInformations.def()
-    }
-}
-
 impl Related<super::parents::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Parents.def()
+    }
+}
+
+impl Related<super::person_details::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PersonDetails.def()
     }
 }
 

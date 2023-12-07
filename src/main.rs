@@ -12,7 +12,7 @@ mod utils;
 
 use database::establish_connection;
 use routes::{
-    auth::load_auth_routes, contacts::load_contacts_routes, parents::load_parents_routes,
+    auth::load_auth_routes, details::load_details_routes, parents::load_parents_routes,
     scans::load_scans_routes, students::load_students_routes, teachers::load_teachers_routes,
 };
 
@@ -39,7 +39,7 @@ async fn main() -> std::io::Result<()> {
                     .route("/", web::get().to(handlers::health_check::healthy))
                     .service(load_students_routes())
                     .service(load_teachers_routes())
-                    .service(load_contacts_routes())
+                    .service(load_details_routes())
                     .service(load_parents_routes())
                     .service(load_scans_routes())
                     .service(load_auth_routes())

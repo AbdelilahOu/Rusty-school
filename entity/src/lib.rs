@@ -3,16 +3,15 @@
 pub mod prelude;
 
 pub mod cities;
-pub mod contacts_informations;
 pub mod countries;
 pub mod districts;
 pub mod parents;
+pub mod person_details;
 pub mod persons;
 pub mod pickups;
 pub mod scans;
 pub mod states;
 pub mod streets;
 pub mod students;
-pub mod subjects;
 pub mod teachers;
 pub mod users;

@@ -17,8 +17,6 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::cities::Entity")]
     Cities,
-    #[sea_orm(has_many = "super::contacts_informations::Entity")]
-    ContactsInformations,
     #[sea_orm(
         belongs_to = "super::countries::Entity",
         from = "Column::CountryId",
@@ -27,6 +25,8 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Countries,
+    #[sea_orm(has_many = "super::person_details::Entity")]
+    PersonDetails,
 }
 
 impl Related<super::cities::Entity> for Entity {
@@ -35,15 +35,15 @@ impl Related<super::cities::Entity> for Entity {
     }
 }
 
-impl Related<super::contacts_informations::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::ContactsInformations.def()
-    }
-}
-
 impl Related<super::countries::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Countries.def()
+    }
+}
+
+impl Related<super::person_details::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::PersonDetails.def()
     }
 }
 

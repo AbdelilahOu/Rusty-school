@@ -18,17 +18,17 @@ use actix_web::{
 };
 use service::*;
 // i like my functions to stay inline
-type CtBody = ActJson<CContact>;
+type CtBody = ActJson<CPDetails>;
 
-pub async fn create_contact(body: CtBody, state: State) -> HttpResponse {
-    let res = ServiceMutation::create_contact(&state.db_conn, body.into_inner()).await;
+pub async fn create_details(body: CtBody, state: State) -> HttpResponse {
+    let res = ServiceMutation::create_details(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Contact created successfully".to_string()),
+                message: Some("Details created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -42,8 +42,8 @@ pub async fn create_contact(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let res = ServiceQuery::list_contacts(
+pub async fn get_detailss(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+    let res = ServiceQuery::list_details(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -56,7 +56,7 @@ pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Contacts fetched successfully".to_string()),
+                message: Some("Detailss fetched successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -69,15 +69,15 @@ pub async fn get_contacts(queries: TQueries, body: TFiltersBody, state: State) -
     }
 }
 
-pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_contact(&state.db_conn, id.into_inner()).await;
+pub async fn delete_details(id: IdParam, state: State) -> HttpResponse {
+    let delete_res = ServiceMutation::delete_details(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Contact deleted successfully".to_string()),
+                message: Some("Details deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -90,15 +90,15 @@ pub async fn delete_contact(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
-    let selected_contact = ServiceQuery::get_contact(&state.db_conn, id.into_inner()).await;
+pub async fn get_details(id: IdParam, state: State) -> HttpResponse {
+    let selected_details = ServiceQuery::get_details(&state.db_conn, id.into_inner()).await;
 
-    match selected_contact {
+    match selected_details {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Contact selected successfully".to_string()),
+                message: Some("Details selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -111,15 +111,15 @@ pub async fn get_contact(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update_contact(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update_details(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
-        ServiceMutation::update_contact(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        ServiceMutation::update_details(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Contact updated successfully".to_string()),
+                message: Some("Details updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpResponse::InternalServerError()

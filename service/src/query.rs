@@ -62,58 +62,58 @@ impl ServiceQuery {
         Ok(parent)
     }
     //
-    pub async fn get_contact(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let contact = Contact::find_by_id(id).into_json().one(db).await?;
-        Ok(contact)
+    pub async fn get_details(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
+        let details = PersonDetails::find_by_id(id).into_json().one(db).await?;
+        Ok(details)
     }
     //
-    pub async fn list_contacts(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let contacts = Contact::find()
+    pub async fn list_details(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let details = PersonDetails::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
             .all(db)
             .await?;
 
-        Ok(contacts)
+        Ok(details)
     }
     //
-    pub async fn list_contacts_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let contacts = Contact::find()
+    pub async fn list_details_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let details = PersonDetails::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .all(db)
             .await?;
 
         let mut result = Vec::<SerdValue>::new();
-        for contact in contacts {
-            let country = contact
+        for details in details {
+            let country = details
                 .find_related(Country)
                 .into_json()
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
-            let state = contact
+            let state = details
                 .find_related(State)
                 .into_json()
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
-            let city = contact
+            let city = details
                 .find_related(City)
                 .into_json()
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
 
-            let ditsrict = contact
+            let ditsrict = details
                 .find_related(District)
                 .into_json()
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
 
-            let street = contact
+            let street = details
                 .find_related(Street)
                 .into_json()
                 .all(db)
@@ -121,9 +121,9 @@ impl ServiceQuery {
                 .unwrap_or(Vec::new());
 
             result.push(json!({
-                "id": contact.id,
-                "phone": contact.phone_number,
-                "email": contact.email,
+                "id": details.id,
+                "phone": details.phone_number,
+                "email": details.email,
                 "country": country,
                 "state": state,
                 "city": city,

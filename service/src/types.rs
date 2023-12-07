@@ -28,17 +28,17 @@ pub struct CStudent {
 
 pub struct StudentWithAddress {
     pub student: CStudent,
-    pub contact: CContact,
+    pub details: CPDetails,
 }
 
 pub struct ParentWithAddress {
     pub parent: CParent,
-    pub contact: CContact,
+    pub details: CPDetails,
 }
 
 pub struct TeacherWithAddress {
     pub teacher: CTeacher,
-    pub contact: CContact,
+    pub details: CPDetails,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -54,7 +54,7 @@ pub struct CParent {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CContact {
+pub struct CPDetails {
     pub email: Option<String>,
     pub phone: Option<String>,
     pub country_id: Option<Uuid>,

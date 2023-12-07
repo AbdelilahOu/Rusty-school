@@ -12,21 +12,21 @@ impl ServiceTransaction {
     pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create contact first
-                let contact = ContactActiveModel {
-                    email: Set(data.contact.email),
-                    phone_number: Set(data.contact.phone),
-                    country_id: Set(data.contact.country_id),
-                    state_id: Set(data.contact.state_id),
-                    city_id: Set(data.contact.city_id),
-                    street_id: Set(data.contact.street_id),
+                // create details first
+                let details = PersonDetailsActiveModel {
+                    email: Set(data.details.email),
+                    phone_number: Set(data.details.phone),
+                    country_id: Set(data.details.country_id),
+                    state_id: Set(data.details.state_id),
+                    city_id: Set(data.details.city_id),
+                    street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
                 .save(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    contact_id: Set(Some(contact.id.unwrap())),
+                    details_id: Set(Some(details.id.unwrap())),
                     person_type: Set("student".to_owned()),
                     ..Default::default()
                 }
@@ -51,21 +51,21 @@ impl ServiceTransaction {
     pub async fn create_teacher(db: DbConn, data: TeacherWithAddress) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create contact first
-                let contact = ContactActiveModel {
-                    email: Set(data.contact.email),
-                    phone_number: Set(data.contact.phone),
-                    country_id: Set(data.contact.country_id),
-                    state_id: Set(data.contact.state_id),
-                    city_id: Set(data.contact.city_id),
-                    street_id: Set(data.contact.street_id),
+                // create details first
+                let details = PersonDetailsActiveModel {
+                    email: Set(data.details.email),
+                    phone_number: Set(data.details.phone),
+                    country_id: Set(data.details.country_id),
+                    state_id: Set(data.details.state_id),
+                    city_id: Set(data.details.city_id),
+                    street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
                 .save(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    contact_id: Set(Some(contact.id.unwrap())),
+                    details_id: Set(Some(details.id.unwrap())),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }
@@ -89,21 +89,21 @@ impl ServiceTransaction {
     pub async fn create_parent(db: DbConn, data: ParentWithAddress) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create contact first
-                let contact = ContactActiveModel {
-                    email: Set(data.contact.email),
-                    phone_number: Set(data.contact.phone),
-                    country_id: Set(data.contact.country_id),
-                    state_id: Set(data.contact.state_id),
-                    city_id: Set(data.contact.city_id),
-                    street_id: Set(data.contact.street_id),
+                // create details first
+                let details = PersonDetailsActiveModel {
+                    email: Set(data.details.email),
+                    phone_number: Set(data.details.phone),
+                    country_id: Set(data.details.country_id),
+                    state_id: Set(data.details.state_id),
+                    city_id: Set(data.details.city_id),
+                    street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
                 .save(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    contact_id: Set(Some(contact.id.unwrap())),
+                    details_id: Set(Some(details.id.unwrap())),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }
@@ -138,7 +138,7 @@ impl ServiceTransaction {
                     // upsert the user first
                     return Ok(user.unwrap().id.to_owned());
                 }
-                // create contact first
+                // create details first
                 let c_person = PersonActiveModel {
                     person_type: Set("NOT DEFINED".to_owned()),
                     ..Default::default()

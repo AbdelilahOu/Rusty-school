@@ -1,5 +1,5 @@
 pub mod auth;
-pub mod contacts;
+pub mod details;
 pub mod health_check;
 pub mod parents;
 pub mod scans;
