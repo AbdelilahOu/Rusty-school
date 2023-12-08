@@ -30,7 +30,7 @@ pub async fn create_country(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_countries(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_countries(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_countries(
         &state.db_conn,
         QueriesFilters {

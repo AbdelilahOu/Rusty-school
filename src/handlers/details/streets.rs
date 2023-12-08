@@ -32,7 +32,7 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_streets(
         &state.db_conn,
         QueriesFilters {

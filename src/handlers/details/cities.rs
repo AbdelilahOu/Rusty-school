@@ -52,7 +52,7 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_cities(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_cities(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_cities(
         &state.db_conn,
         QueriesFilters {

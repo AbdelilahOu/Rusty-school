@@ -42,7 +42,7 @@ pub async fn create_details(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_detailss(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_details(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = ServiceQuery::list_details(
         &state.db_conn,
         QueriesFilters {

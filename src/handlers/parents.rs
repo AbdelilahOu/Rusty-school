@@ -73,7 +73,7 @@ pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let parents = ServiceQuery::list_parents(
         &state.db_conn,
         QueriesFilters {

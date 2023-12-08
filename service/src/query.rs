@@ -93,12 +93,14 @@ impl ServiceQuery {
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
+
             let state = details
                 .find_related(State)
                 .into_json()
                 .all(db)
                 .await
                 .unwrap_or(Vec::new());
+
             let city = details
                 .find_related(City)
                 .into_json()

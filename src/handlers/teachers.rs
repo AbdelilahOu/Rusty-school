@@ -72,7 +72,7 @@ pub async fn get_teacher(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_teachers(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_teachers(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let teachers = ServiceQuery::list_teachers(
         &state.db_conn,
         QueriesFilters {

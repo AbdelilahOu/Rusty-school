@@ -30,7 +30,7 @@ pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let scans = ServiceQuery::list_scans_related(
         &state.db_conn,
         QueriesFilters {
