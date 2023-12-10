@@ -1,3 +1,4 @@
+use ::migration::{Migrator, MigratorTrait};
 use dotenv;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
 use std::time::Duration;
@@ -22,4 +23,10 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
         }
         Err(db_err) => Err(db_err),
     }
+}
+
+pub async fn run_migrations() -> Result<(), DbErr> {
+    let db = establish_connection().await?;
+    Migrator::up(&db, None).await?;
+    Ok(())
 }
