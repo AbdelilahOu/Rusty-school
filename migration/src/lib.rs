@@ -7,7 +7,8 @@ mod m20231116_171406_c_pickups;
 mod m20231116_214011_c_scans;
 mod m20231118_095513_c_details;
 mod m20231118_162555_c_person;
-mod m20231127_123039_c_user;
+mod m20231127_123039_c_user;mod m20231211_172237_level;
+
 
 pub struct Migrator;
 

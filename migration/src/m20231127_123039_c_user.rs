@@ -11,40 +11,35 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Users::Table)
+                    .table(User::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Users::Id)
+                        ColumnDef::new(User::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
+                    .col(ColumnDef::new(User::Email).string().unique_key().not_null())
+                    .col(ColumnDef::new(User::FirstName).string().not_null())
+                    .col(ColumnDef::new(User::LastName).string().not_null())
                     .col(
-                        ColumnDef::new(Users::Email)
-                            .string()
-                            .unique_key()
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(Users::FirstName).string().not_null())
-                    .col(ColumnDef::new(Users::LastName).string().not_null())
-                    .col(
-                        ColumnDef::new(Users::FullName).string().generated(
-                            Expr::col(Users::FirstName)
+                        ColumnDef::new(User::FullName).string().generated(
+                            Expr::col(User::FirstName)
                                 .concat(" ")
-                                .concat(Expr::col(Users::LastName)),
+                                .concat(Expr::col(User::LastName)),
                             true,
                         ),
                     )
-                    .col(ColumnDef::new(Users::PersonId).uuid().not_null())
+                    .col(ColumnDef::new(User::PersonId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk-person-id")
-                            .from(Users::Table, Users::PersonId)
+                            .from(User::Table, User::PersonId)
                             .to(Person::Table, Person::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(Users::Picture).string())
+                    .col(ColumnDef::new(User::Picture).string())
                     .to_owned(),
             )
             .await
@@ -52,13 +47,13 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Users::Table).to_owned())
+            .drop_table(Table::drop().table(User::Table).to_owned())
             .await
     }
 }
 
 #[derive(DeriveIden)]
-enum Users {
+enum User {
     #[sea_orm(iden = "users")]
     Table,
     Id,
