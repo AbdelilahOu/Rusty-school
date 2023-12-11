@@ -2426,6 +2426,7 @@ dependencies = [
  "sea-orm",
  "serde",
  "service",
+ "sqlx",
  "tokio",
  "url",
  "uuid",
