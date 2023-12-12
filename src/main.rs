@@ -12,8 +12,9 @@ mod utils;
 
 use database::establish_connection;
 use routes::{
-    auth::load_auth_routes, details::load_details_routes, parents::load_parents_routes,
-    scans::load_scans_routes, students::load_students_routes, teachers::load_teachers_routes,
+    auth::load_auth_routes, details::load_details_routes, levels::load_levels_routes,
+    parents::load_parents_routes, scans::load_scans_routes, students::load_students_routes,
+    teachers::load_teachers_routes,
 };
 
 pub struct AppState {
@@ -43,7 +44,7 @@ async fn main() -> std::io::Result<()> {
                     .service(load_parents_routes())
                     .service(load_scans_routes())
                     .service(load_auth_routes())
-                    .service(load_leve)
+                    .service(load_levels_routes())
             })
             .bind(("127.0.0.1", 8080))?
             .run()
