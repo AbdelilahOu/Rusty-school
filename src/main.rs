@@ -43,6 +43,7 @@ async fn main() -> std::io::Result<()> {
                     .service(load_parents_routes())
                     .service(load_scans_routes())
                     .service(load_auth_routes())
+                    .service(load_leve)
             })
             .bind(("127.0.0.1", 8080))?
             .run()
