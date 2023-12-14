@@ -395,4 +395,42 @@ impl ServiceMutation {
         let scan = Scans::insert(scan_model).exec(db).await?;
         Ok(scan.last_insert_id)
     }
+    //
+    pub async fn create_level(db: &DbConn, data: CLevel) -> DyResult<Uuid> {
+        let level_model = LevelActiveModel {
+            level_name: Set(data.name),
+            level_description: Set(data.description),
+            ..Default::default()
+        };
+        let level = Level::insert(level_model).exec(db).await?;
+        Ok(level.last_insert_id)
+    }
+    pub async fn delete_level(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let level_model = Level::find_by_id(id).one(db).await?;
+        match level_model {
+            Some(level_model) => {
+                let level = level_model.delete(db).await?;
+                Ok(level.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    pub async fn update_level(db: &DbConn, id: Uuid, data: CLevel) -> DyResult<CLevel> {
+        let level_model = Level::find_by_id(id).one(db).await?;
+        match level_model {
+            Some(level_model) => {
+                //
+                let mut level_model: LevelActiveModel = level_model.into();
+                level_model.level_name = Set(data.name);
+                level_model.level_description = Set(data.description);
+                //
+                let level = level_model.update(db).await?;
+                Ok(CLevel {
+                    name: level.level_name,
+                    description: level.level_description,
+                })
+            }
+            None => Ok(data),
+        }
+    }
 }
