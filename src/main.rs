@@ -6,7 +6,6 @@ mod config;
 mod database;
 mod guards;
 mod handlers;
-mod middlewares;
 mod models;
 mod routes;
 mod utils;
