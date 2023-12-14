@@ -23,7 +23,7 @@ pub fn generate_tokens(id: Uuid, secret: String, age: i64) -> String {
     token
 }
 
-pub fn verify_token(token: String, secret: String) -> Res<Claims> {
+pub fn verify_token(token: &str, secret: String) -> Res<Claims> {
     let token_res = jsonwebtoken::decode::<Claims>(
         &token,
         &jsonwebtoken::DecodingKey::from_secret(secret.as_ref()),

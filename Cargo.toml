@@ -10,6 +10,7 @@ members = [".", "migration", "entity", "service"]
 chrono = { version = "0.4.31", features = ["serde"] }
 serde = { version = "1.0.192", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
+serde_json = "1.0"
 
 
 [dependencies]
@@ -33,3 +34,4 @@ uuid = { version = "1.5.0", features = ["v4"] }
 dotenv = "0.15.0"
 url = "2.5.0"
 jsonwebtoken = "9"
+serde_json = "1.0"

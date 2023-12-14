@@ -2425,6 +2425,7 @@ dependencies = [
  "reqwest",
  "sea-orm",
  "serde",
+ "serde_json",
  "service",
  "sqlx",
  "tokio",
