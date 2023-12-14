@@ -10,7 +10,7 @@ mod models;
 mod routes;
 mod utils;
 
-use database::establish_connection;
+use database::{establish_connection, run_migrations};
 use routes::{
     auth::load_auth_routes, details::load_details_routes, levels::load_levels_routes,
     parents::load_parents_routes, scans::load_scans_routes, students::load_students_routes,
@@ -25,8 +25,10 @@ pub struct AppState {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let conn_res = establish_connection().await;
+    // run migrations
     match conn_res {
         Ok(conn) => {
+            let _ = run_migrations(&conn).await;
             // start server
             let _ = HttpServer::new(move || {
                 // load config
