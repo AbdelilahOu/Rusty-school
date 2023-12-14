@@ -34,7 +34,7 @@ impl MigrationTrait for Migration {
 
 #[derive(DeriveIden)]
 enum Level {
-    #[sea_orm(Iden = "levels")]
+    #[sea_orm(iden = "levels")]
     Table,
     Id,
     #[sea_orm(iden = "level_name")]
