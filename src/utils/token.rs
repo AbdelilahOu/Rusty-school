@@ -27,7 +27,7 @@ pub fn verify_token(token: &str, secret: String) -> Res<Claims> {
     let token_res = jsonwebtoken::decode::<Claims>(
         &token,
         &jsonwebtoken::DecodingKey::from_secret(secret.as_ref()),
-        &jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS512),
+        &jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS256),
     );
     match token_res {
         Ok(t) => Ok(t.claims),

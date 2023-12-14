@@ -35,10 +35,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(AppState {
                 db_conn: conn.clone(),
-                env: loaded_config,
+                env: loaded_config.clone(),
             }))
             .route("/", web::get().to(handlers::health_check::healthy))
-            .service(load_students_routes())
+            .service(load_students_routes(loaded_config.jwt_secret))
             .service(load_teachers_routes())
             .service(load_details_routes())
             .service(load_parents_routes())
