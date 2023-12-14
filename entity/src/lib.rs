@@ -5,6 +5,7 @@ pub mod prelude;
 pub mod cities;
 pub mod countries;
 pub mod districts;
+pub mod levels;
 pub mod parents;
 pub mod person_details;
 pub mod persons;
