@@ -52,27 +52,6 @@ pub async fn delete_level(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_level(id: IdParam, state: State) -> HttpResponse {
-    let selected_level = ServiceQuery::get_level(&state.db_conn, id.into_inner()).await;
-
-    match selected_level {
-        Ok(i) => HttpResponse::Created()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Level selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn list_levels(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let levels = ServiceQuery::list_levels(
         &state.db_conn,
