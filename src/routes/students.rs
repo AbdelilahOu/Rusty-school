@@ -12,3 +12,5 @@ pub fn load_students_routes(secret: String) -> Scope {
         .route("/filters", web::post().to(students::list_students))
         .route("/{id}", web::delete().to(students::delete_student))
 }
+
+// make other custom guards
