@@ -10,6 +10,14 @@ pub fn check_token(ctx: &GuardContext) -> bool {
         Some(header) => {
             //get header as str value
             let header = header.to_str().unwrap();
+            // check header is valid
+            if header.is_empty() {
+                return false;
+            }
+            // check header
+            if header.split(" ").collect::<Vec<&str>>().len() != 2 {
+                return false;
+            }
             // get token
             let token = header.split(" ").collect::<Vec<&str>>()[1];
             // get auth type
@@ -24,6 +32,6 @@ pub fn check_token(ctx: &GuardContext) -> bool {
             }
             false
         }
-        None => false,
+        None => return false,
     }
 }

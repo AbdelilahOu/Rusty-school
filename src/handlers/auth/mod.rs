@@ -48,7 +48,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                                 state.env.jwt_max_age.clone(),
                             );
                             // create cookie
-                            let cookie = Cookie::build("token", token)
+                            let cookie = Cookie::build("token", token.clone())
                                 .path("/")
                                 .max_age(Duration::hours(state.env.jwt_max_age.clone()))
                                 .http_only(true)
@@ -56,6 +56,11 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             let mut response = HttpResponse::Found();
                             response.append_header(("Location", "/"));
                             response.cookie(cookie);
+                            response.json(ResponseData::<String> {
+                                error: None,
+                                message: Some(String::from("user logged in successfully")),
+                                data: Some(token.clone()),
+                            });
                             response.finish()
                         }
                         Err(e) => HttpResponse::InternalServerError()

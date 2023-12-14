@@ -27,7 +27,7 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     let conn = establish_connection().await.unwrap();
     // run migrations
-    // let _ = run_migrations(&conn).await;
+    let _ = run_migrations(&conn).await.unwrap();
     // start server
     let _ = HttpServer::new(move || {
         // load config
