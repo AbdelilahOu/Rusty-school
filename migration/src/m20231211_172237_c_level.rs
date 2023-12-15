@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::m20231109_190937_c_student::Student;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -22,7 +24,26 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Level::Description).string())
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Student::Table)
+                    .add_column(ColumnDef::new(Student::LevelId).uuid())
+                    .add_foreign_key(
+                        TableForeignKey::new()
+                            .name("fk_student_level_id")
+                            .from_tbl(Student::Table)
+                            .from_col(Student::LevelId)
+                            .to_tbl(Level::Table)
+                            .to_col(Level::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {

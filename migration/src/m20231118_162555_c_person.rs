@@ -12,7 +12,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let person_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(Person::Table)
@@ -35,13 +35,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = person_res {
-            return Err(e);
-        }
-
-        let person_scan = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Scan::Table)
@@ -56,13 +52,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = person_scan {
-            return Err(e);
-        }
-
-        let person_student = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Student::Table)
@@ -77,13 +69,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = person_student {
-            return Err(e);
-        }
-
-        let person_parent = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Parent::Table)
@@ -98,13 +86,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = person_parent {
-            return Err(e);
-        }
-
-        let person_teacher = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Teacher::Table)
@@ -119,11 +103,7 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
-
-        if let Err(e) = person_teacher {
-            return Err(e);
-        }
+            .await?;
 
         Ok(())
     }

@@ -6,7 +6,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let countries_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(Country::Table)
@@ -22,13 +22,9 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Country::Cinitials).string())
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = countries_res {
-            return Err(e);
-        }
-
-        let states_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(State::Table)
@@ -53,13 +49,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = states_res {
-            return Err(e);
-        }
-
-        let cities_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(City::Table)
@@ -82,13 +74,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = cities_res {
-            return Err(e);
-        }
-
-        let districts_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(District::Table)
@@ -111,13 +99,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = districts_res {
-            return Err(e);
-        }
-
-        let streets_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(Street::Table)
@@ -142,13 +126,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = streets_res {
-            return Err(e);
-        }
-
-        let contact_res = manager
+        manager
             .create_table(
                 Table::create()
                     .table(PersonDetails::Table)
@@ -204,63 +184,35 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await;
-
-        if let Err(e) = contact_res {
-            return Err(e);
-        }
+            .await?;
 
         Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let contacts_drop = manager
+        manager
             .drop_table(Table::drop().table(PersonDetails::Table).to_owned())
-            .await;
+            .await?;
 
-        if let Err(e) = contacts_drop {
-            return Err(e);
-        }
-
-        let streets_drop = manager
+        manager
             .drop_table(Table::drop().table(Street::Table).to_owned())
-            .await;
+            .await?;
 
-        if let Err(e) = streets_drop {
-            return Err(e);
-        }
-
-        let districts_table = manager
+        manager
             .drop_table(Table::drop().table(District::Table).to_owned())
-            .await;
+            .await?;
 
-        if let Err(e) = districts_table {
-            return Err(e);
-        }
-
-        let cities_table = manager
+        manager
             .drop_table(Table::drop().table(City::Table).to_owned())
-            .await;
+            .await?;
 
-        if let Err(e) = cities_table {
-            return Err(e);
-        }
-
-        let states_drop = manager
+        manager
             .drop_table(Table::drop().table(State::Table).to_owned())
-            .await;
+            .await?;
 
-        if let Err(e) = states_drop {
-            return Err(e);
-        }
-
-        let coutries_drop = manager
+        manager
             .drop_table(Table::drop().table(Country::Table).to_owned())
-            .await;
-
-        if let Err(e) = coutries_drop {
-            return Err(e);
-        }
+            .await?;
 
         Ok(())
     }
