@@ -53,4 +53,6 @@ pub enum Teacher {
     FullName,
     #[sea_orm(iden = "person_id")]
     PersonId,
+    #[sea_orm(iden = "level_id")]
+    LevelId,
 }

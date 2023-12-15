@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::m20231109_190937_c_student::Student;
+use crate::{m20231109_190937_c_student::Student, m20231113_170500_c_teacher::Teacher};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -33,9 +33,26 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Student::LevelId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk_student_level_id")
+                            .name("fk-student-level_id")
                             .from_tbl(Student::Table)
                             .from_col(Student::LevelId)
+                            .to_tbl(Level::Table)
+                            .to_col(Level::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Teacher::Table)
+                    .add_column(ColumnDef::new(Teacher::LevelId).uuid())
+                    .add_foreign_key(
+                        TableForeignKey::new()
+                            .name("fk-teacher-level_id")
+                            .from_tbl(Teacher::Table)
+                            .from_col(Teacher::LevelId)
                             .to_tbl(Level::Table)
                             .to_col(Level::Id),
                     )
@@ -48,8 +65,46 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk-teacher-level_id")
+                    .table(Teacher::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Teacher::Table)
+                    .drop_column(Teacher::LevelId)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk-student-level_id")
+                    .table(Student::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Student::Table)
+                    .drop_column(Student::LevelId)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .drop_table(Table::drop().table(Level::Table).to_owned())
-            .await
+            .await?;
+
+        Ok(())
     }
 }
 

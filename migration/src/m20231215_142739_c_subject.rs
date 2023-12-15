@@ -25,7 +25,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Subject::LevelId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk_subject_level_id")
+                            .name("fk-subject-level_id")
                             .from(Subject::Table, Subject::LevelId)
                             .to(Level::Table, Level::Id)
                             .on_delete(ForeignKeyAction::Cascade),

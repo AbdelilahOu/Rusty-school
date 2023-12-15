@@ -34,7 +34,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(User::PersonId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-person-id")
+                            .name("fk-user-person_id")
                             .from(User::Table, User::PersonId)
                             .to(Person::Table, Person::Id)
                             .on_delete(ForeignKeyAction::Cascade),

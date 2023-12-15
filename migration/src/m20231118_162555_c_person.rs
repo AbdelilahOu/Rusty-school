@@ -44,7 +44,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Scan::PersonId).uuid().not_null())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk_scan_person")
+                            .name("fk-scan-person_id")
                             .from_tbl(Scan::Table)
                             .from_col(Scan::PersonId)
                             .to_tbl(Person::Table)
@@ -61,7 +61,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Student::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk_student_person")
+                            .name("fk-student-person_id")
                             .from_tbl(Student::Table)
                             .from_col(Student::PersonId)
                             .to_tbl(Person::Table)
@@ -78,7 +78,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Parent::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk_parent_person")
+                            .name("fk-parent-person_id")
                             .from_tbl(Parent::Table)
                             .from_col(Parent::PersonId)
                             .to_tbl(Person::Table)
@@ -95,7 +95,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Teacher::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk_teacher_person")
+                            .name("fk-teacher-person_id")
                             .from_tbl(Teacher::Table)
                             .from_col(Teacher::PersonId)
                             .to_tbl(Person::Table)
@@ -109,117 +109,81 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let drop_fk_scan = manager
+        manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk_scan_person")
+                    .name("fk-scan-person_id")
                     .table(Scan::Table)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_fk_scan {
-            return Err(e);
-        }
-
-        let drop_scan_person_id = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Scan::Table)
                     .drop_column(Scan::PersonId)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_scan_person_id {
-            return Err(e);
-        }
-
-        let drop_fk_student = manager
+        manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk_student_person")
+                    .name("fk-student-person_id")
                     .table(Student::Table)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_fk_student {
-            return Err(e);
-        }
-
-        let drop_student_person_id = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Student::Table)
                     .drop_column(Student::PersonId)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_student_person_id {
-            return Err(e);
-        }
-
-        let drop_fk_parent = manager
+        manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk_parent_person")
+                    .name("fk-parent-person_id")
                     .table(Parent::Table)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_fk_parent {
-            return Err(e);
-        }
-
-        let drop_parent_person_id = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Parent::Table)
                     .drop_column(Parent::PersonId)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_parent_person_id {
-            return Err(e);
-        }
-
-        let drop_fk_teacher = manager
+        manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk_teacher_person")
+                    .name("fk-teacher-person_id")
                     .table(Teacher::Table)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_fk_teacher {
-            return Err(e);
-        }
-
-        let drop_teacher_person_id = manager
+        manager
             .alter_table(
                 sea_query::Table::alter()
                     .table(Teacher::Table)
                     .drop_column(Teacher::PersonId)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        if let Err(e) = drop_teacher_person_id {
-            return Err(e);
-        }
-
-        let drop_table = manager
+        manager
             .drop_table(Table::drop().table(Person::Table).to_owned())
-            .await;
-
-        if let Err(e) = drop_table {
-            return Err(e);
-        }
+            .await?;
 
         Ok(())
     }
