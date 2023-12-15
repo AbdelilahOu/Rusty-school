@@ -38,14 +38,14 @@ async fn main() -> std::io::Result<()> {
                 env: loaded_config.clone(),
             }))
             .route("/", web::get().to(handlers::health_check::healthy))
-            .service(load_students_routes(loaded_config.jwt_secret))
+            .service(load_students_routes())
             .service(load_teachers_routes())
             .service(load_details_routes())
             .service(load_parents_routes())
             .service(load_scans_routes())
             .service(load_auth_routes())
             .service(load_levels_routes())
-            .default_service(web::to(|| HttpResponse::Unauthorized()))
+            .default_service(web::to(|| HttpResponse::NotFound()))
     })
     .bind(("127.0.0.1", 8080))?
     .run()

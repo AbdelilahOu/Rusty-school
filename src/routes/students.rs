@@ -1,11 +1,11 @@
-use crate::{guards::auth::check_token, handlers::students};
-use actix_web::{guard, web, Scope};
+use crate::handlers::students;
+use actix_web::{web, Scope};
 
-pub fn load_students_routes(secret: String) -> Scope {
+pub fn load_students_routes() -> Scope {
     web::scope("/students")
-        .guard(guard::fn_guard(move |ctx| {
-            return check_token(ctx, secret.clone());
-        }))
+        // .guard(guard::fn_guard(move |ctx| {
+        //     return check_token(ctx, secret.clone());
+        // }))
         .route("/", web::post().to(students::create_student))
         .route("/{id}", web::get().to(students::get_student))
         .route("/{id}", web::put().to(students::update_student))
