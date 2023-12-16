@@ -55,7 +55,6 @@ impl MigrationTrait for Migration {
                     |_| {},
                 )
                 .limit(2)
-                // .order_by_expr(SimpleExpr::FunctionCall(Func::random()), Order::Asc)
                 .to_owned()
                 .build(PostgresQueryBuilder);
             //
