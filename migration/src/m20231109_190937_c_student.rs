@@ -20,7 +20,6 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Student::FirstName).string().not_null())
                     .col(ColumnDef::new(Student::LastName).string().not_null())
-                    .col(ColumnDef::new(Student::Level).string().not_null())
                     .col(
                         ColumnDef::new(Student::FullName).string().generated(
                             Expr::col(Student::FirstName)
@@ -52,7 +51,6 @@ pub enum Student {
     LastName,
     #[sea_orm(iden = "full_name")]
     FullName,
-    Level,
     #[sea_orm(iden = "person_id")]
     PersonId,
     #[sea_orm(iden = "level_id")]
