@@ -12,6 +12,8 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let parent_alias = Alias::new("parents");
+        let students_alias = Alias::new("students");
+
         let (sql, values) = Query::select()
             .from(Parent::Table)
             .column((parent_alias, Parent::Id))
@@ -38,10 +40,9 @@ impl MigrationTrait for Migration {
         //
         for row in rows {
             let id = row.try_get::<Uuid>("", "id").unwrap();
-            let students_alias = Alias::new("students");
             let (sql, values) = Query::select()
                 .from(Student::Table)
-                .column((students_alias, Student::Id))
+                .column((students_alias.clone(), Student::Id))
                 .left_join(
                     Pickup::Table,
                     Expr::col((Student::Table, Student::Id))
