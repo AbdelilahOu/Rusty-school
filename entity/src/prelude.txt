@@ -1,6 +1,7 @@
 pub use super::cities::{ActiveModel as CityActiveModel, Entity as City};
 pub use super::countries::{ActiveModel as CountryActiveModel, Entity as Country};
 pub use super::districts::{ActiveModel as DistrictActiveModel, Entity as District};
+pub use super::levels::{ActiveModel as LevelActiveModel, Entity as Level};
 pub use super::parents::{ActiveModel as ParentActiveModel, Entity as Parent};
 pub use super::person_details::{ActiveModel as PersonDetailsActiveModel, Entity as PersonDetails};
 pub use super::persons::{ActiveModel as PersonActiveModel, Entity as Persons};

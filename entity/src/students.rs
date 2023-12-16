@@ -9,13 +9,21 @@ pub struct Model {
     pub id: Uuid,
     pub first_name: String,
     pub last_name: String,
-    pub level: String,
     pub full_name: Option<String>,
     pub person_id: Option<Uuid>,
+    pub level_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::levels::Entity",
+        from = "Column::LevelId",
+        to = "super::levels::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    Levels,
     #[sea_orm(
         belongs_to = "super::persons::Entity",
         from = "Column::PersonId",
@@ -26,6 +34,12 @@ pub enum Relation {
     Persons,
     #[sea_orm(has_many = "super::pickups::Entity")]
     Pickups,
+}
+
+impl Related<super::levels::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Levels.def()
+    }
 }
 
 impl Related<super::persons::Entity> for Entity {

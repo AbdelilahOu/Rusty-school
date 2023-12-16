@@ -23,7 +23,7 @@ pub struct QueriesFilters {
 pub struct CStudent {
     pub first_name: String,
     pub last_name: String,
-    pub level: String,
+    pub level_id: Option<Uuid>,
 }
 
 pub struct StudentWithAddress {
