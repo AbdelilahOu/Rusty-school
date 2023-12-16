@@ -45,7 +45,9 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
@@ -56,7 +58,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Pickup {
+pub enum Pickup {
     #[sea_orm(iden = "pickups")]
     Table,
     Id,

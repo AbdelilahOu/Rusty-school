@@ -10,6 +10,10 @@ mod m20231118_162555_c_person;
 mod m20231127_123039_c_user;
 mod m20231211_172237_c_level;
 mod m20231215_142739_c_subject;
+mod m20231216_182506_seed_students;
+mod m20231216_182513_seed_parents;
+mod m20231216_182522_seed_teachers;
+mod m20231216_183159_seed_pickup;
 
 //
 mod utils;
@@ -29,6 +33,11 @@ impl MigratorTrait for Migrator {
             Box::new(m20231118_162555_c_person::Migration),
             Box::new(m20231127_123039_c_user::Migration),
             Box::new(m20231211_172237_c_level::Migration),
+            // Box::new(m20231215_142739_c_subject::Migration),
+            Box::new(m20231216_182506_seed_students::Migration),
+            Box::new(m20231216_182513_seed_parents::Migration),
+            Box::new(m20231216_182522_seed_teachers::Migration),
+            Box::new(m20231216_183159_seed_pickup::Migration),
         ]
     }
 }
