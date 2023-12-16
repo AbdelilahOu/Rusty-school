@@ -5,37 +5,29 @@ use fake::{
     },
     Fake, Faker,
 };
-use sea_orm_migration::sea_orm::prelude::Uuid;
+use sea_orm::prelude::Uuid;
 
 pub struct RandStudent {
     pub first_name: String,
     pub last_name: String,
-    pub level_id: Uuid,
-    pub person_id: Uuid,
 }
 
-pub fn generate_random_student(level_id: Uuid, person_id: Uuid) -> RandStudent {
+pub fn generate_random_student() -> RandStudent {
     return RandStudent {
         first_name: FirstName().fake(),
         last_name: LastName().fake(),
-        level_id,
-        person_id,
     };
 }
 
 pub struct RandTeacher {
     pub first_name: String,
     pub last_name: String,
-    pub level_id: Uuid,
-    pub person_id: Uuid,
 }
 
-pub fn generate_random_teacher(level_id: Uuid, person_id: Uuid) -> RandTeacher {
+pub fn generate_random_teacher() -> RandTeacher {
     return RandTeacher {
         first_name: FirstName().fake(),
         last_name: LastName().fake(),
-        level_id,
-        person_id,
     };
 }
 

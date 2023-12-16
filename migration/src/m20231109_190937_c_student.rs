@@ -1,5 +1,7 @@
 use sea_orm_migration::{prelude::*, sea_query::extension::postgres::PgExpr};
 
+use crate::utils::generate_random_student;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -30,7 +32,20 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        for _ in 1..=200 {
+            let student = generate_random_student();
+            let insert = Query::insert()
+                .into_table(Student::Table)
+                .columns([Student::FirstName, Student::LastName])
+                .values_panic([student.first_name.into(), student.last_name.into()])
+                .to_owned();
+
+            manager.exec_stmt(insert).await?;
+        }
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {

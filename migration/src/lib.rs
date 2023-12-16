@@ -11,6 +11,9 @@ mod m20231127_123039_c_user;
 mod m20231211_172237_c_level;
 mod m20231215_142739_c_subject;
 
+//
+mod utils;
+
 pub struct Migrator;
 
 #[async_trait::async_trait]
