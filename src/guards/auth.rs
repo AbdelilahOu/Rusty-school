@@ -1,9 +1,8 @@
 use crate::{models::commen::Claims, utils};
-use actix_web::guard::GuardContext;
+use actix_web::http::header::HeaderMap;
 
-pub fn check_token(ctx: &GuardContext, secret: String) -> Option<Claims> {
+pub fn check_token(headers: &HeaderMap, secret: String) -> Option<Claims> {
     // get headers
-    let headers = ctx.head().headers();
     let auth_header = headers.get("Authorization");
     // check if auth header exists
     match auth_header {
