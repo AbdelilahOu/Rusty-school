@@ -1,7 +1,7 @@
-use crate::utils;
+use crate::{models::commen::Claims, utils};
 use actix_web::guard::GuardContext;
 
-pub fn check_token(ctx: &GuardContext, secret: String) -> bool {
+pub fn check_token(ctx: &GuardContext, secret: String) -> Option<Claims> {
     // get headers
     let headers = ctx.head().headers();
     let auth_header = headers.get("Authorization");
@@ -13,12 +13,12 @@ pub fn check_token(ctx: &GuardContext, secret: String) -> bool {
             // check header is valid
             if header.is_empty() {
                 println!("header is empty");
-                return false;
+                return None;
             }
             // check header
             if header.split(" ").collect::<Vec<&str>>().len() != 2 {
                 println!("header is not valid");
-                return false;
+                return None;
             }
             // get token
             let token = header.split(" ").collect::<Vec<&str>>()[1];
@@ -28,22 +28,22 @@ pub fn check_token(ctx: &GuardContext, secret: String) -> bool {
             if authorization_type == "Bearer".to_string() {
                 let payload_res = utils::token::verify_token(token, secret);
                 match payload_res {
-                    Ok(_) => {
+                    Ok(payload) => {
                         println!("Valid token");
-                        return true;
+                        return Some(payload);
                     }
                     Err(err) => {
                         println!("Invalid token {}", err);
-                        return false;
+                        return None;
                     }
                 }
             }
             println!("Unsupported auth type");
-            false
+            return None;
         }
         None => {
             println!("No auth header");
-            return false;
+            return None;
         }
     }
 }
