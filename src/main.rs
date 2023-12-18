@@ -32,12 +32,10 @@ async fn main() -> std::io::Result<()> {
     //
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // start server
+    println!("Server started on http://127.0.0.1:8080");
     let _ = HttpServer::new(move || {
-        // start app
-        println!("Server started on http://127.0.0.1:8080");
-        //
         App::new()
-            .wrap(Logger::new("> %r status: %s took: %T s"))
+            .wrap(Logger::new("> %r status: [%s] took: %T s"))
             .app_data(web::Data::new(AppState {
                 db_conn: conn.clone(),
                 env: loaded_config.clone(),
