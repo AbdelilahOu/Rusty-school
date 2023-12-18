@@ -29,17 +29,19 @@ async fn main() -> std::io::Result<()> {
     let loaded_config = config::load_config();
     // run migrations
     let _ = run_migrations(&conn).await.unwrap();
+    //
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // start server
     let _ = HttpServer::new(move || {
         // start app
         println!("Server started on http://127.0.0.1:8080");
         //
         App::new()
+            .wrap(Logger::new("> %r status: %s took: %T s"))
             .app_data(web::Data::new(AppState {
                 db_conn: conn.clone(),
                 env: loaded_config.clone(),
             }))
-            .wrap(Logger::default())
             .route("/", web::get().to(handlers::health_check::healthy))
             .service(load_students_routes())
             .service(load_teachers_routes())
