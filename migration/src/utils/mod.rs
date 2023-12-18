@@ -129,8 +129,10 @@ pub struct RandDetails {
 }
 
 pub fn generate_random_details() -> RandDetails {
+    let email: String = FreeEmail().fake();
+    let rand_number: u32 = Faker.fake();
     return RandDetails {
         phone_number: PhoneNumber().fake(),
-        email: FreeEmail().fake(),
+        email: format!("{}{}", rand_number, email),
     };
 }

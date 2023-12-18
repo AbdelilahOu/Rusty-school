@@ -16,7 +16,7 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
-        for _ in 0..10 {
+        for _ in 0..5 {
             let rand_country = generate_random_country();
             let (sql, values) = Query::insert()
                 .into_table(Country::Table)
@@ -57,7 +57,7 @@ impl MigrationTrait for Migration {
                 let row = db.query_one(statment).await?;
                 let state_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
 
-                for _ in 0..7 {
+                for _ in 0..5 {
                     let rand_city = generate_random_city(state_id);
                     let (sql, values) = Query::insert()
                         .into_table(City::Table)
@@ -77,7 +77,7 @@ impl MigrationTrait for Migration {
 
                     let row = db.query_one(statment).await?;
                     let city_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
-                    for _ in 0..10 {
+                    for _ in 0..5 {
                         let rand_district = generate_random_district(city_id);
                         let (sql, values) = Query::insert()
                             .into_table(District::Table)
@@ -100,7 +100,7 @@ impl MigrationTrait for Migration {
 
                         let row = db.query_one(statment).await?;
                         let district_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
-                        for _ in 0..20 {
+                        for _ in 0..5 {
                             let rand_street = generate_random_street(district_id);
                             let (sql, values) = Query::insert()
                                 .into_table(Street::Table)
@@ -143,8 +143,8 @@ impl MigrationTrait for Migration {
                                     PersonDetails::Street,
                                 ])
                                 .values_panic([
-                                    details.email.into(),
                                     details.phone_number.into(),
+                                    details.email.into(),
                                     country_id.into(),
                                     state_id.into(),
                                     city_id.into(),
