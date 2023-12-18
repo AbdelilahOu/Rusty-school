@@ -26,6 +26,7 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
 }
 
 pub async fn run_migrations(db: &DbConn) -> Result<(), DbErr> {
+    println!("Running migrations...");
     Migrator::up(db, None).await?;
     Ok(())
 }

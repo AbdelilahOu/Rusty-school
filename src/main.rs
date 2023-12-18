@@ -32,6 +32,8 @@ async fn main() -> std::io::Result<()> {
         // load config
         let loaded_config = config::load_config();
         // start app
+        println!("Server started on http://127.0.0.1:8080");
+        //
         App::new()
             .app_data(web::Data::new(AppState {
                 db_conn: conn.clone(),
@@ -50,6 +52,5 @@ async fn main() -> std::io::Result<()> {
     .bind(("127.0.0.1", 8080))?
     .run()
     .await;
-
     Ok(())
 }
