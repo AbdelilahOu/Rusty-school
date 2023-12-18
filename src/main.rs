@@ -1,4 +1,4 @@
-use actix_web::{web, App, HttpResponse, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use models::commen::ConfigObj;
 use sea_orm::DatabaseConnection;
 
@@ -39,6 +39,7 @@ async fn main() -> std::io::Result<()> {
                 db_conn: conn.clone(),
                 env: loaded_config.clone(),
             }))
+            .wrap(Logger::default())
             .route("/", web::get().to(handlers::health_check::healthy))
             .service(load_students_routes())
             .service(load_teachers_routes())
