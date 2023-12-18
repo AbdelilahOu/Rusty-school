@@ -35,4 +35,7 @@ entity:
 server:
 	cargo run
 
-.PHONY: server createdb dropdb mup mdownlatest mdownall mdownfresh mdownrefresh entity
+build:
+	cargo build --verbose --workspace --release
+
+.PHONY: build server createdb dropdb mup mdownlatest mdownall mdownfresh mdownrefresh entity
