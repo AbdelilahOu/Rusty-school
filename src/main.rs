@@ -25,12 +25,12 @@ pub struct AppState {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let conn = establish_connection().await.unwrap();
+    // load config
+    let loaded_config = config::load_config();
     // run migrations
     let _ = run_migrations(&conn).await.unwrap();
     // start server
     let _ = HttpServer::new(move || {
-        // load config
-        let loaded_config = config::load_config();
         // start app
         println!("Server started on http://127.0.0.1:8080");
         //
