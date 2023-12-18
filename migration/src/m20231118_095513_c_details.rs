@@ -38,7 +38,6 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(State::SName).string().not_null())
                     .col(ColumnDef::new(State::Sinitials).string())
-                    .col(ColumnDef::new(State::SCode).integer())
                     .col(ColumnDef::new(State::CountyId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -114,7 +113,7 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Street::StName).string().not_null())
-                    .col(ColumnDef::new(Street::ZipCode).integer())
+                    .col(ColumnDef::new(Street::ZipCode).string())
                     .col(ColumnDef::new(Street::StreetType).string())
                     .col(ColumnDef::new(Street::DistrictId).uuid())
                     .foreign_key(
@@ -239,7 +238,7 @@ pub enum PersonDetails {
 }
 
 #[derive(DeriveIden)]
-enum Country {
+pub enum Country {
     #[sea_orm(iden = "countries")]
     Table,
     Id,
@@ -250,7 +249,7 @@ enum Country {
 }
 
 #[derive(DeriveIden)]
-enum State {
+pub enum State {
     #[sea_orm(iden = "states")]
     Table,
     Id,
@@ -258,14 +257,12 @@ enum State {
     SName,
     #[sea_orm(iden = "state_initials")]
     Sinitials,
-    #[sea_orm(iden = "state_code")]
-    SCode,
     #[sea_orm(iden = "country_id")]
     CountyId,
 }
 
 #[derive(DeriveIden)]
-enum City {
+pub enum City {
     #[sea_orm(iden = "cities")]
     Table,
     Id,
@@ -276,7 +273,7 @@ enum City {
 }
 
 #[derive(DeriveIden)]
-enum District {
+pub enum District {
     #[sea_orm(iden = "districts")]
     Table,
     Id,
@@ -287,7 +284,7 @@ enum District {
 }
 
 #[derive(DeriveIden)]
-enum Street {
+pub enum Street {
     #[sea_orm(iden = "streets")]
     Table,
     Id,

@@ -70,7 +70,6 @@ pub fn generate_random_country() -> RandCountry {
 pub struct RandState {
     pub state_name: String,
     pub state_initials: String,
-    pub state_code: String,
     pub country_id: Uuid,
 }
 
@@ -78,7 +77,6 @@ pub fn generate_random_state(country_id: Uuid) -> RandState {
     return RandState {
         state_name: StateName().fake(),
         state_initials: StateAbbr().fake(),
-        state_code: ZipCode().fake(),
         country_id,
     };
 }
