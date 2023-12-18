@@ -2,10 +2,10 @@ use sea_orm::{prelude::Uuid, Statement};
 use sea_orm_migration::prelude::*;
 
 use crate::{
-    m20231118_095513_c_details::{City, Country, District, State, Street},
+    m20231118_095513_c_details::{City, Country, District, PersonDetails, State, Street},
     utils::{
-        generate_random_city, generate_random_country, generate_random_district,
-        generate_random_state, generate_random_street,
+        generate_random_city, generate_random_country, generate_random_details,
+        generate_random_district, generate_random_state, generate_random_street,
     },
 };
 
@@ -100,9 +100,9 @@ impl MigrationTrait for Migration {
 
                         let row = db.query_one(statment).await?;
                         let district_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
-                        for _ in 0..10 {
+                        for _ in 0..20 {
                             let rand_street = generate_random_street(district_id);
-                            let street_insert = Query::insert()
+                            let (sql, values) = Query::insert()
                                 .into_table(Street::Table)
                                 .columns([
                                     Street::StName,
@@ -116,9 +116,43 @@ impl MigrationTrait for Migration {
                                     rand_street.street_type.into(),
                                     rand_street.district_id.into(),
                                 ])
-                                .to_owned();
+                                .returning(ReturningClause::Columns(vec![ColumnRef::Column(
+                                    SeaRc::new(Street::Id),
+                                )]))
+                                .to_owned()
+                                .build(PostgresQueryBuilder);
 
-                            manager.exec_stmt(street_insert).await?
+                            let statment = Statement::from_sql_and_values(
+                                sea_orm::DatabaseBackend::Postgres,
+                                sql,
+                                values,
+                            );
+
+                            let row = db.query_one(statment).await?;
+                            let street_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
+                            let details = generate_random_details();
+                            let insert_details = Query::insert()
+                                .into_table(PersonDetails::Table)
+                                .columns([
+                                    PersonDetails::Phone,
+                                    PersonDetails::Email,
+                                    PersonDetails::Country,
+                                    PersonDetails::State,
+                                    PersonDetails::City,
+                                    PersonDetails::District,
+                                    PersonDetails::Street,
+                                ])
+                                .values_panic([
+                                    details.email.into(),
+                                    details.phone_number.into(),
+                                    country_id.into(),
+                                    state_id.into(),
+                                    city_id.into(),
+                                    district_id.into(),
+                                    street_id.into(),
+                                ])
+                                .to_owned();
+                            manager.exec_stmt(insert_details).await?;
                         }
                     }
                 }

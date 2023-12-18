@@ -1,7 +1,9 @@
 use fake::{
     faker::{
         address::en::{CityName, CountryCode, CountryName, StateAbbr, StateName, ZipCode},
+        internet::en::FreeEmail,
         name::en::{FirstName, LastName},
+        phone_number::en::PhoneNumber,
     },
     Fake, Faker,
 };
@@ -118,5 +120,17 @@ pub fn generate_random_street(district_id: Uuid) -> RandStreet {
         zip_code: ZipCode().fake(),
         street_type: Faker.fake(),
         district_id,
+    };
+}
+
+pub struct RandDetails {
+    pub phone_number: String,
+    pub email: String,
+}
+
+pub fn generate_random_details() -> RandDetails {
+    return RandDetails {
+        phone_number: PhoneNumber().fake(),
+        email: FreeEmail().fake(),
     };
 }
