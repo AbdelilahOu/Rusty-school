@@ -33,17 +33,17 @@ pub fn generate_random_teacher() -> RandTeacher {
     };
 }
 
-pub struct RandLevel {
-    pub level_name: String,
-    pub level_description: String,
-}
+// pub struct RandLevel {
+//     pub level_name: String,
+//     pub level_description: String,
+// }
 
-pub fn generate_random_level() -> RandLevel {
-    return RandLevel {
-        level_name: Faker.fake(),
-        level_description: Faker.fake(),
-    };
-}
+// pub fn generate_random_level() -> RandLevel {
+//     return RandLevel {
+//         level_name: Faker.fake(),
+//         level_description: Faker.fake(),
+//     };
+// }
 
 pub struct RandParent {
     pub first_name: String,
