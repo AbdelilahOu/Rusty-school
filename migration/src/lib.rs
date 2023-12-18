@@ -13,8 +13,9 @@ mod m20231215_142739_c_subject;
 mod m20231216_182506_seed_students;
 mod m20231216_182513_seed_parents;
 mod m20231216_182522_seed_teachers;
-mod m20231216_183159_seed_pickup;
+mod m20231216_183159_seed_pickups;
 mod m20231217_065513_seed_details;
+mod m20231218_133921_seed_levels;
 
 //
 mod utils;
@@ -38,7 +39,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20231216_182506_seed_students::Migration),
             Box::new(m20231216_182513_seed_parents::Migration),
             Box::new(m20231216_182522_seed_teachers::Migration),
-            Box::new(m20231216_183159_seed_pickup::Migration),
+            Box::new(m20231216_183159_seed_pickups::Migration),
             Box::new(m20231217_065513_seed_details::Migration),
         ]
     }
