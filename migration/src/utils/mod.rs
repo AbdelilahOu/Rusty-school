@@ -4,8 +4,8 @@ use fake::{
     faker::{
         address::en::{CityName, CountryCode, CountryName, StateAbbr, StateName, ZipCode},
         internet::en::FreeEmail,
-        lorem::en::Sentence,
-        name::en::{FirstName, LastName, Title},
+        lorem::en::{Sentence, Word},
+        name::en::{FirstName, LastName},
         phone_number::en::PhoneNumber,
     },
     Fake, Faker,
@@ -43,7 +43,7 @@ pub struct RandLevel {
 
 pub fn generate_random_level() -> RandLevel {
     return RandLevel {
-        level_name: Title().fake(),
+        level_name: Word().fake(),
         level_description: Sentence(Range { start: 5, end: 10 }).fake(),
     };
 }

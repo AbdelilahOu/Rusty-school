@@ -22,7 +22,9 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 
-    async fn down(&self, _: &SchemaManager) -> Result<(), DbErr> {
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let delete_query = Query::delete().from_table(Level::Table).to_owned();
+        manager.exec_stmt(delete_query).await?;
         Ok(())
     }
 }
