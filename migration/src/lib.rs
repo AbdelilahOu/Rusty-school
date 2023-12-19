@@ -41,6 +41,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20231216_182522_seed_teachers::Migration),
             Box::new(m20231216_183159_seed_pickups::Migration),
             Box::new(m20231217_065513_seed_details::Migration),
+            Box::new(m20231218_133921_seed_levels::Migration),
         ]
     }
 }
