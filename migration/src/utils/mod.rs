@@ -1,8 +1,11 @@
+use std::ops::Range;
+
 use fake::{
     faker::{
         address::en::{CityName, CountryCode, CountryName, StateAbbr, StateName, ZipCode},
         internet::en::FreeEmail,
-        name::en::{FirstName, LastName},
+        lorem::en::Sentence,
+        name::en::{FirstName, LastName, Title},
         phone_number::en::PhoneNumber,
     },
     Fake, Faker,
@@ -40,8 +43,8 @@ pub struct RandLevel {
 
 pub fn generate_random_level() -> RandLevel {
     return RandLevel {
-        level_name: Faker.fake(),
-        level_description: Faker.fake(),
+        level_name: Title().fake(),
+        level_description: Sentence(Range { start: 5, end: 10 }).fake(),
     };
 }
 
