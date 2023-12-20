@@ -28,7 +28,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Person::DetailsId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-details-person_id")
+                            .name("fk_details_person_id")
                             .from(Person::Table, Person::DetailsId)
                             .to(PersonDetails::Table, PersonDetails::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -44,7 +44,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Scan::PersonId).uuid().not_null())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-scan-person_id")
+                            .name("fk_scan_person_id")
                             .from_tbl(Scan::Table)
                             .from_col(Scan::PersonId)
                             .to_tbl(Person::Table)
@@ -61,7 +61,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Student::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-student-person_id")
+                            .name("fk_student_person_id")
                             .from_tbl(Student::Table)
                             .from_col(Student::PersonId)
                             .to_tbl(Person::Table)
@@ -78,7 +78,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Parent::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-parent-person_id")
+                            .name("fk_parent_person_id")
                             .from_tbl(Parent::Table)
                             .from_col(Parent::PersonId)
                             .to_tbl(Person::Table)
@@ -95,7 +95,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Teacher::PersonId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-teacher-person_id")
+                            .name("fk_teacher_person_id")
                             .from_tbl(Teacher::Table)
                             .from_col(Teacher::PersonId)
                             .to_tbl(Person::Table)
@@ -112,7 +112,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-scan-person_id")
+                    .name("fk_scan_person_id")
                     .table(Scan::Table)
                     .to_owned(),
             )
@@ -130,7 +130,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-student-person_id")
+                    .name("fk_student_person_id")
                     .table(Student::Table)
                     .to_owned(),
             )
@@ -148,7 +148,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-parent-person_id")
+                    .name("fk_parent_person_id")
                     .table(Parent::Table)
                     .to_owned(),
             )
@@ -166,7 +166,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-teacher-person_id")
+                    .name("fk_teacher_person_id")
                     .table(Teacher::Table)
                     .to_owned(),
             )
