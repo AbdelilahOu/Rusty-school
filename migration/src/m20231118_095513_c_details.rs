@@ -41,7 +41,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(State::CountyId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-states-country_id")
+                            .name("fk_states_country_id")
                             .from(State::Table, State::CountyId)
                             .to(Country::Table, Country::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -66,7 +66,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(City::StateId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-cities-state_id")
+                            .name("fk_cities_state_id")
                             .from(City::Table, City::StateId)
                             .to(State::Table, State::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -91,7 +91,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(District::CityId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-districts-city_id")
+                            .name("fk_districts_city_id")
                             .from(District::Table, District::CityId)
                             .to(City::Table, City::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -118,7 +118,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Street::DistrictId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-streets-district_id")
+                            .name("fk_streets_district_id")
                             .from(Street::Table, Street::DistrictId)
                             .to(District::Table, District::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -144,7 +144,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(PersonDetails::Country).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-contacts-country_id")
+                            .name("fk_contacts_country_id")
                             .from(PersonDetails::Table, PersonDetails::Country)
                             .to(Country::Table, Country::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -152,7 +152,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(PersonDetails::State).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-contacts-state_id")
+                            .name("fk_contacts_state_id")
                             .from(PersonDetails::Table, PersonDetails::State)
                             .to(State::Table, State::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -160,7 +160,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(PersonDetails::City).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-contacts-city_id")
+                            .name("fk_contacts_city_id")
                             .from(PersonDetails::Table, PersonDetails::City)
                             .to(City::Table, City::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -168,7 +168,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(PersonDetails::District).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-contacts-district_id")
+                            .name("fk_contacts_district_id")
                             .from(PersonDetails::Table, PersonDetails::District)
                             .to(District::Table, District::Id)
                             .on_delete(ForeignKeyAction::Cascade),
@@ -176,7 +176,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(PersonDetails::Street).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk-contacts-street_id")
+                            .name("fk_contacts_street_id")
                             .from(PersonDetails::Table, PersonDetails::Street)
                             .to(Street::Table, Street::Id)
                             .on_delete(ForeignKeyAction::Cascade),

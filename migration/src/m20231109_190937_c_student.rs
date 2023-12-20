@@ -37,7 +37,7 @@ impl MigrationTrait for Migration {
                 sea_query::Index::create()
                     .table(Student::Table)
                     .col(Student::FullName)
-                    .name("students_full_name_idx")
+                    .name("idx_students_full_name")
                     .to_owned(),
             )
             .await?;
