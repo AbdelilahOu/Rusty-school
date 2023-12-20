@@ -33,7 +33,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Student::LevelId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-student-level_id")
+                            .name("fk_student_level_id")
                             .from_tbl(Student::Table)
                             .from_col(Student::LevelId)
                             .to_tbl(Level::Table)
@@ -50,7 +50,7 @@ impl MigrationTrait for Migration {
                     .add_column(ColumnDef::new(Teacher::LevelId).uuid())
                     .add_foreign_key(
                         TableForeignKey::new()
-                            .name("fk-teacher-level_id")
+                            .name("fk_teacher_level_id")
                             .from_tbl(Teacher::Table)
                             .from_col(Teacher::LevelId)
                             .to_tbl(Level::Table)
@@ -85,7 +85,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-student-level_id")
+                    .name("fk_student_level_id")
                     .table(Student::Table)
                     .to_owned(),
             )
