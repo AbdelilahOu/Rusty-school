@@ -15,7 +15,8 @@ mod m20231216_182513_seed_parents;
 mod m20231216_182522_seed_teachers;
 mod m20231216_183159_seed_pickups;
 mod m20231217_065513_seed_details;
-mod m20231218_133921_seed_levels;
+mod m20231218_133921_seed_levels;mod m20231220_065116_seed_persons;
+
 
 //
 mod utils;
