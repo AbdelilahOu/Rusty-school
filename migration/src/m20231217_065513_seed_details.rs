@@ -16,7 +16,7 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
-        for _ in 0..5 {
+        for _ in 0..1 {
             let rand_country = generate_random_country();
             let (sql, values) = Query::insert()
                 .into_table(Country::Table)
@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
                 Statement::from_sql_and_values(sea_orm::DatabaseBackend::Postgres, sql, values);
             let row = db.query_one(statment).await?;
             let country_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
-            for _ in 0..6 {
+            for _ in 0..4 {
                 let rand_state = generate_random_state(country_id);
                 let (sql, values) = Query::insert()
                     .into_table(State::Table)
@@ -57,7 +57,7 @@ impl MigrationTrait for Migration {
                 let row = db.query_one(statment).await?;
                 let state_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
 
-                for _ in 0..5 {
+                for _ in 0..6 {
                     let rand_city = generate_random_city(state_id);
                     let (sql, values) = Query::insert()
                         .into_table(City::Table)
