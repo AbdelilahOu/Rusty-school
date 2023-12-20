@@ -32,6 +32,16 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        manager
+            .create_index(
+                sea_query::Index::create()
+                    .table(Parent::Table)
+                    .col(Parent::FullName)
+                    .name("parents_full_name_idx")
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
