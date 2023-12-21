@@ -220,7 +220,29 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 
-    async fn down(&self, _: &SchemaManager) -> Result<(), DbErr> {
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let update_student = Query::update()
+            .table(Student::Table)
+            .value(Student::PersonId, None::<Uuid>)
+            .to_owned();
+
+        let update_parent = Query::update()
+            .table(Parent::Table)
+            .value(Parent::PersonId, None::<Uuid>)
+            .to_owned();
+
+        let teacher_update = Query::update()
+            .table(Teacher::Table)
+            .value(Teacher::PersonId, None::<Uuid>)
+            .to_owned();
+
+        let delete_person = Query::delete().from_table(Person::Table).to_owned();
+
+        manager.exec_stmt(update_student).await?;
+        manager.exec_stmt(update_parent).await?;
+        manager.exec_stmt(teacher_update).await?;
+        manager.exec_stmt(delete_person).await?;
+
         Ok(())
     }
 }
