@@ -34,6 +34,60 @@ impl MigrationTrait for Migration {
             .to_owned()
             .build(PostgresQueryBuilder);
 
+        let (parent_sql, parent_values) = Query::select()
+            .from(Parent::Table)
+            .column((Alias::new("parents"), Parent::Id))
+            .left_join(
+                Person::Table,
+                Expr::col((Person::Table, Person::Id)).equals((Parent::Table, Parent::PersonId)),
+            )
+            .conditions(
+                true,
+                |x| {
+                    x.and_where(Expr::col((Parent::Table, Parent::PersonId)).is_null());
+                },
+                |_| {},
+            )
+            .limit(1)
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let (student_sql, student_values) = Query::select()
+            .from(Student::Table)
+            .column((Alias::new("students"), Student::Id))
+            .left_join(
+                Person::Table,
+                Expr::col((Person::Table, Person::Id)).equals((Student::Table, Student::PersonId)),
+            )
+            .conditions(
+                true,
+                |x| {
+                    x.and_where(Expr::col((Student::Table, Student::PersonId)).is_null());
+                },
+                |_| {},
+            )
+            .limit(1)
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let (teacher_sql, teacher_values) = Query::select()
+            .from(Teacher::Table)
+            .column((Alias::new("teachers"), Teacher::Id))
+            .left_join(
+                Person::Table,
+                Expr::col((Person::Table, Person::Id)).equals((Teacher::Table, Teacher::PersonId)),
+            )
+            .conditions(
+                true,
+                |x| {
+                    x.and_where(Expr::col((Teacher::Table, Teacher::PersonId)).is_null());
+                },
+                |_| {},
+            )
+            .limit(1)
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
         for _ in 0..200 {
             // SELECT DETAILS ID
             let statment = Statement::from_sql_and_values(
@@ -44,25 +98,6 @@ impl MigrationTrait for Migration {
             let details_row = db.query_one(statment).await?;
             let details_id = details_row.unwrap().try_get::<Uuid>("", "id").unwrap();
             // SELECT STUDENT ID
-            let (student_sql, student_values) = Query::select()
-                .from(Student::Table)
-                .column((Alias::new("students"), Student::Id))
-                .left_join(
-                    Person::Table,
-                    Expr::col((Person::Table, Person::Id))
-                        .equals((Student::Table, Student::PersonId)),
-                )
-                .conditions(
-                    true,
-                    |x| {
-                        x.and_where(Expr::col((Student::Table, Student::PersonId)).is_null());
-                    },
-                    |_| {},
-                )
-                .limit(1)
-                .to_owned()
-                .build(PostgresQueryBuilder);
-
             let statment = Statement::from_sql_and_values(
                 sea_orm::DatabaseBackend::Postgres,
                 student_sql.clone(),
@@ -106,25 +141,6 @@ impl MigrationTrait for Migration {
             let details_row = db.query_one(statment).await?;
             let details_id = details_row.unwrap().try_get::<Uuid>("", "id").unwrap();
             // SELECT pARENT ID
-            let (parent_sql, parent_values) = Query::select()
-                .from(Parent::Table)
-                .column((Alias::new("parents"), Parent::Id))
-                .left_join(
-                    Person::Table,
-                    Expr::col((Person::Table, Person::Id))
-                        .equals((Parent::Table, Parent::PersonId)),
-                )
-                .conditions(
-                    true,
-                    |x| {
-                        x.and_where(Expr::col((Parent::Table, Parent::PersonId)).is_null());
-                    },
-                    |_| {},
-                )
-                .limit(1)
-                .to_owned()
-                .build(PostgresQueryBuilder);
-
             let statment = Statement::from_sql_and_values(
                 sea_orm::DatabaseBackend::Postgres,
                 parent_sql.clone(),
@@ -168,25 +184,6 @@ impl MigrationTrait for Migration {
             let details_row = db.query_one(statment).await?;
             let details_id = details_row.unwrap().try_get::<Uuid>("", "id").unwrap();
             // SELECT TEACHER ID
-            let (teacher_sql, teacher_values) = Query::select()
-                .from(Teacher::Table)
-                .column((Alias::new("teachers"), Teacher::Id))
-                .left_join(
-                    Person::Table,
-                    Expr::col((Person::Table, Person::Id))
-                        .equals((Teacher::Table, Teacher::PersonId)),
-                )
-                .conditions(
-                    true,
-                    |x| {
-                        x.and_where(Expr::col((Teacher::Table, Teacher::PersonId)).is_null());
-                    },
-                    |_| {},
-                )
-                .limit(1)
-                .to_owned()
-                .build(PostgresQueryBuilder);
-
             let statment = Statement::from_sql_and_values(
                 sea_orm::DatabaseBackend::Postgres,
                 teacher_sql.clone(),
