@@ -2,7 +2,8 @@ use sea_orm::{prelude::Uuid, Statement};
 use sea_orm_migration::prelude::*;
 
 use crate::{
-    m20231109_190937_c_student::Student, m20231118_095513_c_details::PersonDetails,
+    m20231109_190937_c_student::Student, m20231113_170500_c_teacher::Teacher,
+    m20231116_165911_c_parents::Parent, m20231118_095513_c_details::PersonDetails,
     m20231118_162555_c_person::Person,
 };
 
@@ -93,6 +94,130 @@ impl MigrationTrait for Migration {
                 .to_owned();
 
             manager.exec_stmt(update_student).await?;
+        }
+
+        for _ in 0..100 {
+            // SELECT DETAILS ID
+            let statment = Statement::from_sql_and_values(
+                sea_orm::DatabaseBackend::Postgres,
+                details_sql.clone(),
+                details_values.clone(),
+            );
+            let details_row = db.query_one(statment).await?;
+            let details_id = details_row.unwrap().try_get::<Uuid>("", "id").unwrap();
+            // SELECT pARENT ID
+            let (parent_sql, parent_values) = Query::select()
+                .from(Parent::Table)
+                .column((Alias::new("parents"), Parent::Id))
+                .left_join(
+                    Person::Table,
+                    Expr::col((Person::Table, Person::Id))
+                        .equals((Parent::Table, Parent::PersonId)),
+                )
+                .conditions(
+                    true,
+                    |x| {
+                        x.and_where(Expr::col((Parent::Table, Parent::PersonId)).is_null());
+                    },
+                    |_| {},
+                )
+                .limit(1)
+                .to_owned()
+                .build(PostgresQueryBuilder);
+
+            let statment = Statement::from_sql_and_values(
+                sea_orm::DatabaseBackend::Postgres,
+                parent_sql.clone(),
+                parent_values.clone(),
+            );
+            let parent_row = db.query_one(statment).await?;
+            let parent_id = parent_row.unwrap().try_get::<Uuid>("", "id").unwrap();
+            //
+            let person_type = String::from("parent");
+            let (sql, values) = Query::insert()
+                .into_table(Person::Table)
+                .columns([Person::PersonType, Person::DetailsId])
+                .values_panic([person_type.clone().into(), details_id.clone().into()])
+                .returning(ReturningClause::Columns(vec![ColumnRef::Column(
+                    SeaRc::new(Person::Id),
+                )]))
+                .build(PostgresQueryBuilder);
+
+            let statment =
+                Statement::from_sql_and_values(sea_orm::DatabaseBackend::Postgres, sql, values);
+
+            let row = db.query_one(statment).await?;
+            let person_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
+
+            let update_parent = Query::update()
+                .table(Parent::Table)
+                .values([(Parent::PersonId, person_id.clone().into())])
+                .and_where(Expr::col((Parent::Table, Parent::Id)).eq(parent_id))
+                .to_owned();
+
+            manager.exec_stmt(update_parent).await?;
+        }
+
+        for _ in 0..50 {
+            // SELECT DETAILS ID
+            let statment = Statement::from_sql_and_values(
+                sea_orm::DatabaseBackend::Postgres,
+                details_sql.clone(),
+                details_values.clone(),
+            );
+            let details_row = db.query_one(statment).await?;
+            let details_id = details_row.unwrap().try_get::<Uuid>("", "id").unwrap();
+            // SELECT TEACHER ID
+            let (teacher_sql, teacher_values) = Query::select()
+                .from(Teacher::Table)
+                .column((Alias::new("teachers"), Teacher::Id))
+                .left_join(
+                    Person::Table,
+                    Expr::col((Person::Table, Person::Id))
+                        .equals((Teacher::Table, Teacher::PersonId)),
+                )
+                .conditions(
+                    true,
+                    |x| {
+                        x.and_where(Expr::col((Teacher::Table, Teacher::PersonId)).is_null());
+                    },
+                    |_| {},
+                )
+                .limit(1)
+                .to_owned()
+                .build(PostgresQueryBuilder);
+
+            let statment = Statement::from_sql_and_values(
+                sea_orm::DatabaseBackend::Postgres,
+                teacher_sql.clone(),
+                teacher_values.clone(),
+            );
+            let teacher_row = db.query_one(statment).await?;
+            let teacher_id = teacher_row.unwrap().try_get::<Uuid>("", "id").unwrap();
+            //
+            let person_type = String::from("teacher");
+            let (sql, values) = Query::insert()
+                .into_table(Person::Table)
+                .columns([Person::PersonType, Person::DetailsId])
+                .values_panic([person_type.clone().into(), details_id.clone().into()])
+                .returning(ReturningClause::Columns(vec![ColumnRef::Column(
+                    SeaRc::new(Person::Id),
+                )]))
+                .build(PostgresQueryBuilder);
+
+            let statment =
+                Statement::from_sql_and_values(sea_orm::DatabaseBackend::Postgres, sql, values);
+
+            let row = db.query_one(statment).await?;
+            let person_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
+
+            let update_teacher = Query::update()
+                .table(Teacher::Table)
+                .values([(Teacher::PersonId, person_id.clone().into())])
+                .and_where(Expr::col((Teacher::Table, Teacher::Id)).eq(teacher_id))
+                .to_owned();
+
+            manager.exec_stmt(update_teacher).await?;
         }
 
         Ok(())
