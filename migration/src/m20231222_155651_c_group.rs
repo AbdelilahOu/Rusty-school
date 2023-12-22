@@ -13,3 +13,10 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 }
+
+#[derive(DeriveIden)]
+enum Group {
+    #[sea_orm(iden = "groups")]
+    Table,
+    Id,
+}
