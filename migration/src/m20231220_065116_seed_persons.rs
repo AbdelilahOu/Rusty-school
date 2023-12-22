@@ -105,7 +105,7 @@ impl MigrationTrait for Migration {
             );
             let student_row = db.query_one(statment).await?;
             let student_id = student_row.unwrap().try_get::<Uuid>("", "id").unwrap();
-            //
+            // get person type
             let person_type = String::from("student");
             let (sql, values) = Query::insert()
                 .into_table(Person::Table)
