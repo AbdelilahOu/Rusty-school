@@ -1,5 +1,8 @@
 use sea_orm_migration::prelude::*;
 
+use super::m20231109_190937_c_student::Student;
+use super::m20231116_165911_c_parents::Parent;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -55,7 +58,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Pickup {
+pub enum Pickup {
     #[sea_orm(iden = "pickups")]
     Table,
     Id,
@@ -65,18 +68,4 @@ enum Pickup {
     ParentId,
     #[sea_orm(iden = "created_at")]
     CreatedAt,
-}
-
-#[derive(DeriveIden)]
-enum Student {
-    #[sea_orm(iden = "students")]
-    Table,
-    Id,
-}
-
-#[derive(DeriveIden)]
-enum Parent {
-    #[sea_orm(iden = "parents")]
-    Table,
-    Id,
 }
