@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::m20231211_172237_c_level::Level;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -53,11 +55,4 @@ enum Group {
     LevelId,
     #[sea_orm(iden = "group_description")]
     Description,
-}
-
-#[derive(DeriveIden)]
-enum Level {
-    #[sea_orm(iden = "levels")]
-    Table,
-    Id,
 }
