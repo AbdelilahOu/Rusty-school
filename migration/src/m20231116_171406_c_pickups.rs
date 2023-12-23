@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use super::m20231109_190937_c_student::Student;
+use super::m20231109_190937_c_students::Student;
 use super::m20231116_165911_c_parents::Parent;
 
 #[derive(DeriveMigrationName)]

@@ -1,6 +1,6 @@
 use sea_orm_migration::{prelude::*, sea_query::extension::postgres::PgExpr};
 
-use crate::m20231118_162555_c_person::Person;
+use crate::m20231118_162555_c_persons::Person;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

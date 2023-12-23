@@ -1,7 +1,7 @@
 use sea_orm_migration::prelude::*;
 
 use super::{
-    m20231109_190937_c_student::Student, m20231113_170500_c_teacher::Teacher,
+    m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher,
     m20231116_165911_c_parents::Parent, m20231116_214011_c_scans::Scan,
     m20231118_095513_c_details::PersonDetails,
 };

@@ -1,5 +1,5 @@
 use crate::{
-    m20231109_190937_c_student::Student, m20231116_165911_c_parents::Parent,
+    m20231109_190937_c_students::Student, m20231116_165911_c_parents::Parent,
     m20231116_171406_c_pickups::Pickup,
 };
 use sea_orm::{prelude::Uuid, Statement};

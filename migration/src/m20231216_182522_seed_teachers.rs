@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::{m20231113_170500_c_teacher::Teacher, utils::generate_random_teacher};
+use crate::{m20231113_170500_c_teachers::Teacher, utils::generate_random_teacher};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

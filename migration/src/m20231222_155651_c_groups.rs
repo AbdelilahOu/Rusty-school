@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::m20231211_172237_c_level::Level;
+use crate::m20231211_172237_c_levels::Level;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

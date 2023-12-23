@@ -2,9 +2,9 @@ use sea_orm::{prelude::Uuid, Statement};
 use sea_orm_migration::prelude::*;
 
 use crate::{
-    m20231109_190937_c_student::Student, m20231113_170500_c_teacher::Teacher,
+    m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher,
     m20231116_165911_c_parents::Parent, m20231118_095513_c_details::PersonDetails,
-    m20231118_162555_c_person::Person,
+    m20231118_162555_c_persons::Person,
 };
 
 #[derive(DeriveMigrationName)]
