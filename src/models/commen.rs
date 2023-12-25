@@ -55,7 +55,7 @@ pub struct ConfigObj {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub uuid: Uuid,
+    pub user_uuid: Uuid,
     pub exp: usize,
     pub sub: String,
 }
