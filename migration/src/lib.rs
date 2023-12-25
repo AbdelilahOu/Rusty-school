@@ -18,8 +18,8 @@ mod m20231217_065513_seed_details;
 mod m20231218_133921_seed_levels;
 mod m20231220_065116_seed_persons;
 mod m20231222_155651_c_groups;
-mod m20231223_093909_c_rooms;mod m20231223_094755_c_classes;
-
+mod m20231223_093909_c_rooms;
+mod m20231223_094755_c_classes;
 
 //
 mod utils;
@@ -47,6 +47,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20231217_065513_seed_details::Migration),
             Box::new(m20231218_133921_seed_levels::Migration),
             Box::new(m20231220_065116_seed_persons::Migration),
+            Box::new(m20231222_155651_c_groups::Migration),
+            Box::new(m20231223_093909_c_rooms::Migration),
+            Box::new(m20231223_094755_c_classes::Migration),
         ]
     }
 }

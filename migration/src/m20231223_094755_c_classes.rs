@@ -1,9 +1,8 @@
 use sea_orm_migration::prelude::*;
 
 use crate::{
-    m20231113_170500_c_teachers::Teacher, m20231211_172237_c_levels::Level,
-    m20231215_142739_c_subjects::Subject, m20231222_155651_c_groups::Group,
-    m20231223_093909_c_rooms::Room,
+    m20231113_170500_c_teachers::Teacher, m20231215_142739_c_subjects::Subject,
+    m20231222_155651_c_groups::Group, m20231223_093909_c_rooms::Room,
 };
 
 #[derive(DeriveMigrationName)]
@@ -48,14 +47,6 @@ impl MigrationTrait for Migration {
                             .to(Group::Table, Group::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(Class::LevelId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk_classes_level_id")
-                            .from(Class::Table, Class::LevelId)
-                            .to(Level::Table, Level::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
-                    )
                     .col(ColumnDef::new(Class::RoomId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -89,8 +80,6 @@ enum Class {
     TeacherId,
     #[sea_orm(iden = "group_id")]
     GroupId,
-    #[sea_orm(iden = "level_id")]
-    LevelId,
     #[sea_orm(iden = "room_id")]
     RoomId,
 }
