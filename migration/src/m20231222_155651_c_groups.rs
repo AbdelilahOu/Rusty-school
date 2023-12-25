@@ -45,7 +45,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Group {
+pub enum Group {
     #[sea_orm(iden = "groups")]
     Table,
     Id,

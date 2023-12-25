@@ -1,5 +1,11 @@
 use sea_orm_migration::prelude::*;
 
+use crate::{
+    m20231113_170500_c_teachers::Teacher, m20231211_172237_c_levels::Level,
+    m20231215_142739_c_subjects::Subject, m20231222_155651_c_groups::Group,
+    m20231223_093909_c_rooms::Room,
+};
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -18,11 +24,51 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Class::Title).string().not_null())
-                    .col(ColumnDef::new(Class::Text).string().not_null())
+                    .col(ColumnDef::new(Class::SubjectId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_classes_subject_id")
+                            .from(Class::Table, Class::SubjectId)
+                            .to(Subject::Table, Subject::Id)
+                            .on_delete(ForeignKeyAction::SetNull),
+                    )
+                    .col(ColumnDef::new(Class::TeacherId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_classes_teacher_id")
+                            .from(Class::Table, Class::TeacherId)
+                            .to(Teacher::Table, Teacher::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .col(ColumnDef::new(Class::GroupId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_classes_group_id")
+                            .from(Class::Table, Class::GroupId)
+                            .to(Group::Table, Group::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .col(ColumnDef::new(Class::LevelId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_classes_level_id")
+                            .from(Class::Table, Class::LevelId)
+                            .to(Level::Table, Level::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .col(ColumnDef::new(Class::RoomId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_classes_room_id")
+                            .from(Class::Table, Class::RoomId)
+                            .to(Room::Table, Room::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
                     .to_owned(),
             )
-            .await
+            .await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
@@ -34,8 +80,17 @@ impl MigrationTrait for Migration {
 
 #[derive(DeriveIden)]
 enum Class {
+    #[sea_orm(iden = "classes")]
     Table,
     Id,
-    Title,
-    Text,
+    #[sea_orm(iden = "subject_id")]
+    SubjectId,
+    #[sea_orm(iden = "teacher_id")]
+    TeacherId,
+    #[sea_orm(iden = "group_id")]
+    GroupId,
+    #[sea_orm(iden = "level_id")]
+    LevelId,
+    #[sea_orm(iden = "room_id")]
+    RoomId,
 }

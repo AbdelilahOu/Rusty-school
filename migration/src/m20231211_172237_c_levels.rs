@@ -67,7 +67,7 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk-teacher-level_id")
+                    .name("fk_teacher_level_id")
                     .table(Teacher::Table)
                     .to_owned(),
             )
