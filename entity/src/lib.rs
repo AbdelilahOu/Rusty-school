@@ -3,16 +3,20 @@
 pub mod prelude;
 
 pub mod cities;
+pub mod classes;
 pub mod countries;
 pub mod districts;
+pub mod groups;
 pub mod levels;
 pub mod parents;
 pub mod person_details;
 pub mod persons;
 pub mod pickups;
+pub mod rooms;
 pub mod scans;
 pub mod states;
 pub mod streets;
 pub mod students;
+pub mod subjects;
 pub mod teachers;
 pub mod users;

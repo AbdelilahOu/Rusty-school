@@ -9,7 +9,6 @@ pub struct Model {
     pub id: Uuid,
     pub state_name: String,
     pub state_initials: Option<String>,
-    pub state_code: Option<i32>,
     pub country_id: Option<Uuid>,
 }
 

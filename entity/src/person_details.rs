@@ -43,8 +43,6 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Districts,
-    #[sea_orm(has_many = "super::persons::Entity")]
-    Persons,
     #[sea_orm(
         belongs_to = "super::states::Entity",
         from = "Column::StateId",
@@ -78,12 +76,6 @@ impl Related<super::countries::Entity> for Entity {
 impl Related<super::districts::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Districts.def()
-    }
-}
-
-impl Related<super::persons::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Persons.def()
     }
 }
 
