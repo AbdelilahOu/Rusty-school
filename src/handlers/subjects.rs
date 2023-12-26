@@ -67,15 +67,15 @@ pub async fn delete_subject(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn get_subject(id: IdParam, state: State) -> HttpRes {
-    let selected_subject = ServiceQuery::get_subject(&state.db_conn, id.into_inner()).await;
+pub async fn get_level_subjects(id: IdParam, state: State) -> HttpRes {
+    let selected_subject = ServiceQuery::list_level_subjects(&state.db_conn, id.into_inner()).await;
 
     match selected_subject {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Subject selected successfully".to_string()),
+                message: Some("Subject selected by level id successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpRes::InternalServerError()

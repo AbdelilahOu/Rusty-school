@@ -114,3 +114,10 @@ pub struct CLevel {
     pub name: String,
     pub description: Option<String>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CSubject {
+    pub name: String,
+    pub description: Option<String>,
+    pub level_id: Option<Uuid>,
+}

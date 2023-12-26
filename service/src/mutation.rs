@@ -430,4 +430,45 @@ impl ServiceMutation {
             None => Ok(data),
         }
     }
+    //
+    pub async fn create_subject(db: &DbConn, data: CSubject) -> DyResult<Uuid> {
+        let subject_model = SubjectActiveModel {
+            subject_name: Set(data.name),
+            subject_description: Set(data.description),
+            level_id: Set(data.level_id),
+            ..Default::default()
+        };
+        let subject = Subject::insert(subject_model).exec(db).await?;
+        Ok(subject.last_insert_id)
+    }
+    pub async fn delete_subject(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let subject_model = Subject::find_by_id(id).one(db).await?;
+        match subject_model {
+            Some(subject_model) => {
+                let subject = subject_model.delete(db).await?;
+                Ok(subject.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    pub async fn update_subject(db: &DbConn, id: Uuid, data: CSubject) -> DyResult<CSubject> {
+        let subject_model = Subject::find_by_id(id).one(db).await?;
+        match subject_model {
+            Some(subject_model) => {
+                //
+                let mut subject_model: SubjectActiveModel = subject_model.into();
+                subject_model.subject_name = Set(data.name);
+                subject_model.subject_description = Set(data.description);
+                subject_model.level_id = Set(data.level_id);
+                //
+                let subject = subject_model.update(db).await?;
+                Ok(CSubject {
+                    name: subject.subject_name,
+                    description: subject.subject_description,
+                    level_id: subject.level_id,
+                })
+            }
+            None => Ok(data),
+        }
+    }
 }
