@@ -307,7 +307,6 @@ impl ServiceMutation {
         let state_model = StateActiveModel {
             state_name: Set(data.name),
             state_initials: Set(data.initials),
-            state_code: Set(data.code),
             country_id: Set(data.country_id),
             ..Default::default()
         };
@@ -332,14 +331,12 @@ impl ServiceMutation {
                 let mut state_model: StateActiveModel = state_model.into();
                 state_model.state_name = Set(data.name);
                 state_model.state_initials = Set(data.initials);
-                state_model.state_code = Set(data.code);
                 state_model.country_id = Set(data.country_id);
                 //
                 let state = state_model.update(db).await?;
                 Ok(CState {
                     name: state.state_name,
                     initials: state.state_initials,
-                    code: state.state_code,
                     country_id: state.country_id,
                 })
             }

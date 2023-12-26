@@ -74,7 +74,6 @@ pub struct CCountry {
 pub struct CState {
     pub name: String,
     pub initials: Option<String>,
-    pub code: Option<i32>,
     pub country_id: Option<Uuid>,
 }
 
@@ -93,7 +92,7 @@ pub struct CDistrict {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CStreet {
     pub name: String,
-    pub zip_code: Option<i32>,
+    pub zip_code: Option<String>,
     pub street_type: Option<String>,
     pub district_id: Option<Uuid>,
 }
