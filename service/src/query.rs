@@ -1,6 +1,6 @@
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::prelude::*;
+use ::entity::{prelude::*, subjects};
 use sea_orm::{prelude::Uuid, *};
 use serde_json::{json, Value as SerdValue};
 
@@ -166,7 +166,7 @@ impl ServiceQuery {
             // populate res
             let states_json = states
                         .into_iter()
-                        .map(|state| json!({ "id": state.id, "name": state.state_name, "initiales": state.state_initials, "code": state.state_code  }))
+                        .map(|state| json!({ "id": state.id, "name": state.state_name, "initiales": state.state_initials  }))
                         .collect::<Values>();
 
             let countries_json = json!({
@@ -213,7 +213,6 @@ impl ServiceQuery {
                 "id": state.id,
                 "name": state.state_name,
                 "initials": state.state_initials,
-                "code": state.state_code,
                 "cities": cities_json
             });
 
@@ -383,5 +382,15 @@ impl ServiceQuery {
             .await?;
 
         Ok(subjects)
+    }
+    //
+    pub async fn list_level_subjects(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
+        let level_subjects = Subject::find()
+            .filter(subjects::Column::LevelId.eq(level_id.clone()))
+            .into_json()
+            .all(db)
+            .await?;
+
+        Ok(level_subjects)
     }
 }
