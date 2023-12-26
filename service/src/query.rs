@@ -373,4 +373,15 @@ impl ServiceQuery {
 
         Ok(levels)
     }
+    //
+    pub async fn list_subjects(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let subjects = Subject::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+
+        Ok(subjects)
+    }
 }
