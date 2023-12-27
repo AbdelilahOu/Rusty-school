@@ -471,4 +471,45 @@ impl ServiceMutation {
             None => Ok(data),
         }
     }
+    //
+    pub async fn create_group(db: &DbConn, data: CGroup) -> DyResult<Uuid> {
+        let group_model = GroupActiveModel {
+            group_name: Set(data.name),
+            group_description: Set(data.description),
+            level_id: Set(data.level_id),
+            ..Default::default()
+        };
+        let group = Group::insert(group_model).exec(db).await?;
+        Ok(group.last_insert_id)
+    }
+    pub async fn delete_group(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let group_model = Group::find_by_id(id).one(db).await?;
+        match group_model {
+            Some(group_model) => {
+                let group = group_model.delete(db).await?;
+                Ok(group.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    pub async fn update_group(db: &DbConn, id: Uuid, data: CGroup) -> DyResult<CGroup> {
+        let group_model = Group::find_by_id(id).one(db).await?;
+        match group_model {
+            Some(group_model) => {
+                //
+                let mut group_model: GroupActiveModel = group_model.into();
+                group_model.group_name = Set(data.name);
+                group_model.group_description = Set(data.description);
+                group_model.level_id = Set(data.level_id);
+                //
+                let group = group_model.update(db).await?;
+                Ok(CGroup {
+                    name: group.group_name,
+                    description: group.group_description,
+                    level_id: group.level_id,
+                })
+            }
+            None => Ok(data),
+        }
+    }
 }

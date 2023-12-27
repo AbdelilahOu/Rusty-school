@@ -1,6 +1,6 @@
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::{prelude::*, subjects};
+use ::entity::{groups, prelude::*, subjects};
 use sea_orm::{prelude::Uuid, *};
 use serde_json::{json, Value as SerdValue};
 
@@ -392,5 +392,25 @@ impl ServiceQuery {
             .await?;
 
         Ok(level_subjects)
+    }
+    pub async fn list_groups(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let groups = Group::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+
+        Ok(groups)
+    }
+    //
+    pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
+        let level_groups = Group::find()
+            .filter(groups::Column::LevelId.eq(level_id.clone()))
+            .into_json()
+            .all(db)
+            .await?;
+
+        Ok(level_groups)
     }
 }

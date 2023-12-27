@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod details;
+pub mod groups;
 pub mod levels;
 pub mod parents;
 pub mod scans;
