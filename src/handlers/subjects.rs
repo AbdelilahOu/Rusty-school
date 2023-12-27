@@ -1,14 +1,14 @@
-use crate::{guards::auth::check_token, models::commen::*};
+use crate::models::commen::*;
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
-    HttpRequest as HttpReq, HttpResponse as HttpRes,
+    HttpResponse as HttpRes,
 };
 use service::*;
 //
 type StBody = ActJson<CSubject>;
 
-pub async fn create_subject(body: StBody, state: State, req: HttpReq) -> HttpRes {
+pub async fn create_subject(body: StBody, state: State) -> HttpRes {
     let res = ServiceMutation::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
