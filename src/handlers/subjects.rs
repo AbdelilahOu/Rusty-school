@@ -9,22 +9,6 @@ use service::*;
 type StBody = ActJson<CSubject>;
 
 pub async fn create_subject(body: StBody, state: State, req: HttpReq) -> HttpRes {
-    // get headers
-    let headers = req.headers();
-    // check token for auth
-    let authorized = check_token(headers, state.env.jwt_secret.clone());
-    // unauth
-    if authorized.is_none() {
-        return HttpRes::Unauthorized()
-            .status(StatusCode::UNAUTHORIZED)
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some("Unauthorized".to_string()),
-                message: None,
-                data: None,
-            });
-    }
-    println!("{:?}", authorized);
     let res = ServiceMutation::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
