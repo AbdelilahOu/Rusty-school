@@ -11,7 +11,7 @@ use service::*;
 type CtBody = ActJson<CDistrict>;
 
 pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
-    let res = ServiceMutation::create_district(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_district(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -33,7 +33,7 @@ pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_districts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let res = ServiceQuery::list_districts(
+    let res = QueriesService::list_districts(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -60,7 +60,7 @@ pub async fn list_districts(queries: TQueries, body: TFiltersBody, state: State)
 }
 
 pub async fn delete_district(id: IdParam, state: State) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_district(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_district(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -82,7 +82,7 @@ pub async fn delete_district(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn update_district(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
-        ServiceMutation::update_district(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_district(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())

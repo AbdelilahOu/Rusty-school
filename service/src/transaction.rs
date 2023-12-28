@@ -3,12 +3,12 @@ use crate::CUser;
 use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
 
-pub struct ServiceTransaction;
+pub struct TransactionsService;
 
 type TxnRes = Result<(), TransactionError<DbErr>>;
 type TxnResUuid = Result<Uuid, TransactionError<DbErr>>;
 
-impl ServiceTransaction {
+impl TransactionsService {
     pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {

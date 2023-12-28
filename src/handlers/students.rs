@@ -25,7 +25,7 @@ pub async fn create_student(body: StBody, state: State, req: HttpReq) -> HttpRes
             });
     }
     println!("{:?}", authorized);
-    let res = ServiceMutation::create_student(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
             .status(StatusCode::CREATED)
@@ -47,7 +47,7 @@ pub async fn create_student(body: StBody, state: State, req: HttpReq) -> HttpRes
 }
 
 pub async fn delete_student(id: IdParam, state: State) -> HttpRes {
-    let delete_res = ServiceMutation::delete_student(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpRes::Created()
@@ -68,7 +68,7 @@ pub async fn delete_student(id: IdParam, state: State) -> HttpRes {
 }
 
 pub async fn get_student(id: IdParam, state: State) -> HttpRes {
-    let selected_student = ServiceQuery::get_student(&state.db_conn, id.into_inner()).await;
+    let selected_student = QueriesService::get_student(&state.db_conn, id.into_inner()).await;
 
     match selected_student {
         Ok(i) => HttpRes::Created()
@@ -89,7 +89,7 @@ pub async fn get_student(id: IdParam, state: State) -> HttpRes {
 }
 
 pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
-    let students = ServiceQuery::list_students(
+    let students = QueriesService::list_students(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -118,7 +118,7 @@ pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) 
 
 pub async fn update_student(id: IdParam, body: StBody, state: State) -> HttpRes {
     let update_res =
-        ServiceMutation::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())

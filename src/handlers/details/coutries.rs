@@ -9,7 +9,7 @@ use service::*;
 type CtBody = ActJson<CCountry>;
 
 pub async fn create_country(body: CtBody, state: State) -> HttpResponse {
-    let res = ServiceMutation::create_country(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_country(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -31,7 +31,7 @@ pub async fn create_country(body: CtBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_countries(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let res = ServiceQuery::list_countries(
+    let res = QueriesService::list_countries(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -58,7 +58,7 @@ pub async fn list_countries(queries: TQueries, body: TFiltersBody, state: State)
 }
 
 pub async fn delete_country(id: IdParam, state: State) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_country(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_country(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -80,7 +80,7 @@ pub async fn delete_country(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn update_country(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
-        ServiceMutation::update_country(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_country(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())

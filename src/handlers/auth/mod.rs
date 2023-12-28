@@ -10,7 +10,7 @@ use actix_web::{
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
-use service::{CUser, ServiceTransaction};
+use service::{CUser, TransactionsService};
 
 pub async fn login(state: State) -> HttpResponse {
     let url =
@@ -29,7 +29,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
             let user = get_google_user(res.access_token, res.id_token).await;
             match user {
                 Ok(user) => {
-                    let user_res = ServiceTransaction::upsert_user(
+                    let user_res = TransactionsService::upsert_user(
                         &state.db_conn,
                         CUser {
                             first_name: user.name,

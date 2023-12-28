@@ -4,11 +4,11 @@ use sea_orm::{prelude::Uuid, *};
 
 use super::types::*;
 
-pub struct ServiceMutation;
+pub struct MutationsService;
 
 type DyResult<T> = Result<T, DbErr>;
 
-impl ServiceMutation {
+impl MutationsService {
     // students entity
     pub async fn create_student(db: &DbConn, data: CStudent) -> DyResult<Uuid> {
         let c_student = StudentActiveModel {

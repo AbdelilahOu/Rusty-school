@@ -7,9 +7,9 @@ use serde_json::{json, Value as SerdValue};
 type JsonV = SerdValue;
 type Values = Vec<JsonV>;
 
-pub struct ServiceQuery;
+pub struct QueriesService;
 
-impl ServiceQuery {
+impl QueriesService {
     // students entity
     pub async fn list_students(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let students = Student::find()

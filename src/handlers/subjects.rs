@@ -9,7 +9,7 @@ use service::*;
 type StBody = ActJson<CSubject>;
 
 pub async fn create_subject(body: StBody, state: State) -> HttpRes {
-    let res = ServiceMutation::create_subject(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
             .status(StatusCode::CREATED)
@@ -31,7 +31,7 @@ pub async fn create_subject(body: StBody, state: State) -> HttpRes {
 }
 
 pub async fn delete_subject(id: IdParam, state: State) -> HttpRes {
-    let delete_res = ServiceMutation::delete_subject(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_subject(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpRes::Created()
@@ -52,7 +52,8 @@ pub async fn delete_subject(id: IdParam, state: State) -> HttpRes {
 }
 
 pub async fn get_level_subjects(id: IdParam, state: State) -> HttpRes {
-    let selected_subject = ServiceQuery::list_level_subjects(&state.db_conn, id.into_inner()).await;
+    let selected_subject =
+        QueriesService::list_level_subjects(&state.db_conn, id.into_inner()).await;
 
     match selected_subject {
         Ok(i) => HttpRes::Created()
@@ -73,7 +74,7 @@ pub async fn get_level_subjects(id: IdParam, state: State) -> HttpRes {
 }
 
 pub async fn list_subjects(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
-    let subjects = ServiceQuery::list_subjects(
+    let subjects = QueriesService::list_subjects(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -102,7 +103,7 @@ pub async fn list_subjects(queries: TQueries, body: TFiltersBody, state: State) 
 
 pub async fn update_subject(id: IdParam, body: StBody, state: State) -> HttpRes {
     let update_res =
-        ServiceMutation::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())

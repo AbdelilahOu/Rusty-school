@@ -11,7 +11,7 @@ use service::*;
 type CtBody = ActJson<CStreet>;
 
 pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
-    let res = ServiceMutation::create_street(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_street(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -33,7 +33,7 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let res = ServiceQuery::list_streets(
+    let res = QueriesService::list_streets(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -60,7 +60,7 @@ pub async fn list_streets(queries: TQueries, body: TFiltersBody, state: State) -
 }
 
 pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_street(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_street(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -82,7 +82,7 @@ pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
 
 pub async fn update_street(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
-        ServiceMutation::update_street(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_street(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())

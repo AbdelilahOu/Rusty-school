@@ -10,7 +10,7 @@ use service::*;
 type StBody = ActJson<CParent>;
 
 pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
-    let res = ServiceMutation::create_parent(&state.db_conn, body.into_inner()).await;
+    let res = MutationsService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
@@ -32,7 +32,7 @@ pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
 }
 
 pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
-    let delete_res = ServiceMutation::delete_parent(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationsService::delete_parent(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpResponse::Created()
@@ -53,7 +53,7 @@ pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
 }
 
 pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
-    let selected_parent = ServiceQuery::get_parent(&state.db_conn, id.into_inner()).await;
+    let selected_parent = QueriesService::get_parent(&state.db_conn, id.into_inner()).await;
 
     match selected_parent {
         Ok(i) => HttpResponse::Created()
@@ -74,7 +74,7 @@ pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
 }
 
 pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let parents = ServiceQuery::list_parents(
+    let parents = QueriesService::list_parents(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -103,7 +103,7 @@ pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -
 
 pub async fn update_parent(id: IdParam, body: StBody, state: State) -> HttpResponse {
     let update_res =
-        ServiceMutation::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationsService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
