@@ -12,12 +12,11 @@ mod utils;
 
 use database::{establish_connection, run_migrations};
 use routes::{
-    auth::load_auth_routes, details::load_details_routes, levels::load_levels_routes,
-    parents::load_parents_routes, scans::load_scans_routes, students::load_students_routes,
+    auth::load_auth_routes, details::load_details_routes, groups::load_groups_routes,
+    levels::load_levels_routes, parents::load_parents_routes, rooms::load_rooms_routes,
+    scans::load_scans_routes, students::load_students_routes, subjects::load_subjects_routes,
     teachers::load_teachers_routes,
 };
-
-use crate::routes::{groups::load_groups_routes, subjects::load_subjects_routes};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -52,6 +51,7 @@ async fn main() -> std::io::Result<()> {
             .service(load_auth_routes())
             .service(load_subjects_routes())
             .service(load_groups_routes())
+            .service(load_rooms_routes())
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
     .bind(("127.0.0.1", 8080))?

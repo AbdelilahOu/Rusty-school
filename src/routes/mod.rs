@@ -3,6 +3,7 @@ pub mod details;
 pub mod groups;
 pub mod levels;
 pub mod parents;
+pub mod rooms;
 pub mod scans;
 pub mod students;
 pub mod subjects;
