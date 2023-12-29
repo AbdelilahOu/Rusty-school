@@ -403,7 +403,6 @@ impl QueriesService {
 
         Ok(groups)
     }
-    //
     pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
         let level_groups = Group::find()
             .filter(groups::Column::LevelId.eq(level_id.clone()))
@@ -412,5 +411,11 @@ impl QueriesService {
             .await?;
 
         Ok(level_groups)
+    }
+    //
+    pub async fn list_rooms(db: &DbConn) -> Result<Values, DbErr> {
+        let rooms = Room::find().into_json().all(db).await?;
+
+        Ok(rooms)
     }
 }

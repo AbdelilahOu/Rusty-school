@@ -512,4 +512,42 @@ impl MutationsService {
             None => Ok(data),
         }
     }
+    //
+    pub async fn create_room(db: &DbConn, data: CRoom) -> DyResult<Uuid> {
+        let room_model = RoomActiveModel {
+            room_name: Set(data.name),
+            room_description: Set(data.description),
+            ..Default::default()
+        };
+        let room = Room::insert(room_model).exec(db).await?;
+        Ok(room.last_insert_id)
+    }
+    pub async fn delete_room(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let room_model = Room::find_by_id(id).one(db).await?;
+        match room_model {
+            Some(room_model) => {
+                let room = room_model.delete(db).await?;
+                Ok(room.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    pub async fn update_room(db: &DbConn, id: Uuid, data: CRoom) -> DyResult<CRoom> {
+        let room_model = Room::find_by_id(id).one(db).await?;
+        match room_model {
+            Some(room_model) => {
+                //
+                let mut room_model: RoomActiveModel = room_model.into();
+                room_model.room_name = Set(data.name);
+                room_model.room_description = Set(data.description);
+                //
+                let room = room_model.update(db).await?;
+                Ok(CRoom {
+                    name: room.room_name,
+                    description: room.room_description,
+                })
+            }
+            None => Ok(data),
+        }
+    }
 }
