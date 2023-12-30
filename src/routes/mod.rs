@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod classes;
 pub mod details;
 pub mod groups;
 pub mod levels;
