@@ -133,3 +133,11 @@ pub struct CRoom {
     pub name: String,
     pub description: Option<String>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CClass {
+    pub subject_id: Option<Uuid>,
+    pub teacher_id: Option<Uuid>,
+    pub group_id: Option<Uuid>,
+    pub room_id: Option<Uuid>,
+}

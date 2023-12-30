@@ -550,4 +550,48 @@ impl MutationsService {
             None => Ok(data),
         }
     }
+    //
+    pub async fn create_class(db: &DbConn, data: CClass) -> DyResult<Uuid> {
+        let class_model = ClassActiveModel {
+            subject_id: Set(data.subject_id),
+            teacher_id: Set(data.teacher_id),
+            group_id: Set(data.group_id),
+            room_id: Set(data.room_id),
+            ..Default::default()
+        };
+        let class = Class::insert(class_model).exec(db).await?;
+        Ok(class.last_insert_id)
+    }
+    pub async fn delete_class(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let class_model = Class::find_by_id(id).one(db).await?;
+        match class_model {
+            Some(class_model) => {
+                let class = class_model.delete(db).await?;
+                Ok(class.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    pub async fn update_class(db: &DbConn, id: Uuid, data: CClass) -> DyResult<CClass> {
+        let class_model = Class::find_by_id(id).one(db).await?;
+        match class_model {
+            Some(class_model) => {
+                //
+                let mut class_model: ClassActiveModel = class_model.into();
+                class_model.subject_id = Set(data.subject_id);
+                class_model.teacher_id = Set(data.teacher_id);
+                class_model.group_id = Set(data.group_id);
+                class_model.room_id = Set(data.room_id);
+                //
+                let class = class_model.update(db).await?;
+                Ok(CClass {
+                    subject_id: class.subject_id,
+                    teacher_id: class.teacher_id,
+                    group_id: class.group_id,
+                    room_id: class.room_id,
+                })
+            }
+            None => Ok(data),
+        }
+    }
 }
