@@ -318,6 +318,21 @@ impl QueriesService {
             .all(db)
             .await?;
 
+        // SELECT
+        // s.*,
+        // p.person_type,
+        // CASE
+        //     WHEN p.person_type = 'student' THEN (SELECT full_name FROM students where students.person_id = p.id)
+        //     WHEN p.person_type = 'parent' THEN (SELECT full_name FROM parents where parents.person_id = p.id)
+        //     ELSE (SELECT full_name FROM teachers where teachers.person_id = p.id)
+        // END,
+        // CASE
+        //     WHEN p.person_type = 'student' THEN (SELECT id FROM students where students.person_id = p.id)
+        //     WHEN p.person_type = 'parent' THEN (SELECT id FROM parents where parents.person_id = p.id)
+        //     ELSE (SELECT id FROM teachers where teachers.person_id = p.id)
+        // END as _id
+        // FROM scans as s JOIN persons as p ON s.person_id = p.id;
+
         let mut result = Vec::<SerdValue>::new();
         for scan in scans {
             let person = scan.find_related(Persons).one(db).await?;
