@@ -312,69 +312,46 @@ impl QueriesService {
     }
     //
     pub async fn list_scans_related(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let scans = Scans::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .all(db)
-            .await?;
+        let offset = (qf.queries.page - 1) * qf.queries.limit;
+        let limit = qf.queries.limit;
+        println!("offset: {} limit: {}", offset, limit);
+        let result: Vec<SelectScans> = SelectScans::find_by_statement(
+            Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            r#"
+                    SELECT
+                        s.*,
+                        p.person_type,
+                    CASE
+                        WHEN p.person_type = 'student' THEN (SELECT full_name FROM students where students.person_id = p.id)
+                        WHEN p.person_type = 'parent' THEN (SELECT full_name FROM parents where parents.person_id = p.id)
+                        ELSE (SELECT full_name FROM teachers where teachers.person_id = p.id)
+                    END,
+                    CASE
+                        WHEN p.person_type = 'student' THEN (SELECT id FROM students where students.person_id = p.id)
+                        WHEN p.person_type = 'parent' THEN (SELECT id FROM parents where parents.person_id = p.id)
+                        ELSE (SELECT id FROM teachers where teachers.person_id = p.id)
+                    END as _id
+                    FROM scans as s JOIN persons as p ON s.person_id = p.id LIMIT $1 OFFSET $2
+                "#, 
+            [offset.into(),limit.into()]),
+        )
+        .all(db)
+        .await?;
 
-        // SELECT
-        // s.*,
-        // p.person_type,
-        // CASE
-        //     WHEN p.person_type = 'student' THEN (SELECT full_name FROM students where students.person_id = p.id)
-        //     WHEN p.person_type = 'parent' THEN (SELECT full_name FROM parents where parents.person_id = p.id)
-        //     ELSE (SELECT full_name FROM teachers where teachers.person_id = p.id)
-        // END,
-        // CASE
-        //     WHEN p.person_type = 'student' THEN (SELECT id FROM students where students.person_id = p.id)
-        //     WHEN p.person_type = 'parent' THEN (SELECT id FROM parents where parents.person_id = p.id)
-        //     ELSE (SELECT id FROM teachers where teachers.person_id = p.id)
-        // END as _id
-        // FROM scans as s JOIN persons as p ON s.person_id = p.id;
-
-        let mut result = Vec::<SerdValue>::new();
-        for scan in scans {
-            let person = scan.find_related(Persons).one(db).await?;
-            let related = match person.clone().unwrap().person_type.as_str() {
-                "student" => {
-                    let student = person
-                        .unwrap()
-                        .find_related(Student)
-                        .into_json()
-                        .one(db)
-                        .await?;
-                    student
-                }
-                "parent" => {
-                    let parent = person
-                        .unwrap()
-                        .find_related(Parent)
-                        .into_json()
-                        .one(db)
-                        .await?;
-                    parent
-                }
-                "teacher" => {
-                    let teacher = person
-                        .unwrap()
-                        .find_related(Teacher)
-                        .into_json()
-                        .one(db)
-                        .await?;
-                    teacher
-                }
-                _ => None,
-            };
-
-            result.push(json!({
-                "id": scan.id,
-                "date": scan.scan_date,
-                "person_id":scan.person_id,
-                "person": related
-            }));
-        }
-        Ok(result)
+        Ok(result
+            .into_iter()
+            .map(|s| {
+                json!({
+                    "id": s.id,
+                    "person_id": s.person_id,
+                    "scan_date": s.scan_date,
+                    "person_type": s.person_type,
+                    "full_name": s.full_name,
+                    "_id":s._id
+                })
+            })
+            .collect::<Values>())
     }
     //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {

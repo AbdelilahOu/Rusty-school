@@ -1,4 +1,4 @@
-use sea_orm::prelude::Uuid;
+use sea_orm::{prelude::Uuid, FromQueryResult};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -140,4 +140,14 @@ pub struct CClass {
     pub teacher_id: Option<Uuid>,
     pub group_id: Option<Uuid>,
     pub room_id: Option<Uuid>,
+}
+
+#[derive(Deserialize, Serialize, Debug, PartialEq, FromQueryResult)]
+pub struct SelectScans {
+    pub id: Uuid,
+    pub scan_date: Option<chrono::NaiveDateTime>,
+    pub person_id: Uuid,
+    pub person_type: String,
+    pub full_name: String,
+    pub _id: Uuid,
 }
