@@ -314,7 +314,7 @@ impl QueriesService {
     pub async fn list_scans_related(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let offset = (qf.queries.page - 1) * qf.queries.limit;
         let limit = qf.queries.limit;
-        println!("offset: {} limit: {}", offset, limit);
+        //
         let result: Vec<SelectScans> = SelectScans::find_by_statement(
             Statement::from_sql_and_values(
             DbBackend::Postgres,
@@ -334,11 +334,11 @@ impl QueriesService {
                     END as _id
                     FROM scans as s JOIN persons as p ON s.person_id = p.id LIMIT $1 OFFSET $2
                 "#, 
-            [offset.into(),limit.into()]),
+            [limit.into(),offset.into()]),
         )
         .all(db)
         .await?;
-
+        //
         Ok(result
             .into_iter()
             .map(|s| {
