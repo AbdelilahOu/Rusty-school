@@ -3,10 +3,7 @@ use super::utils::filters::*;
 use ::entity::{groups, parents, persons, prelude::*, scans, students, subjects, teachers};
 use sea_orm::{
     prelude::Uuid,
-    sea_query::{
-        extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
-        SubQueryStatement,
-    },
+    sea_query::{Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement},
     *,
 };
 use serde_json::{json, Value as SerdValue};
@@ -437,6 +434,7 @@ impl QueriesService {
             )
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
+            // .conditions(b, if_true, if_false)
             .to_owned()
             .build(PostgresQueryBuilder);
 
