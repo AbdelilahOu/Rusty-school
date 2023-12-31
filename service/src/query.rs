@@ -372,8 +372,7 @@ impl QueriesService {
                                 .to_owned(),
                         )),
                     ),
-                )
-                .finally("no full name"),
+                ),
                 Alias::new("full_name"),
             )
             .expr_as(
