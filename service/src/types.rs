@@ -149,5 +149,5 @@ pub struct SelectScans {
     pub person_id: Uuid,
     pub person_type: String,
     pub full_name: String,
-    pub _id: Uuid,
+    pub _id: Option<Uuid>,
 }

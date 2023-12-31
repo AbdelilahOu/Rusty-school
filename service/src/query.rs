@@ -1,7 +1,14 @@
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::{groups, prelude::*, subjects};
-use sea_orm::{prelude::Uuid, *};
+use ::entity::{groups, parents, persons, prelude::*, scans, students, subjects, teachers};
+use sea_orm::{
+    prelude::Uuid,
+    sea_query::{
+        extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
+        SubQueryStatement,
+    },
+    *,
+};
 use serde_json::{json, Value as SerdValue};
 
 type JsonV = SerdValue;
@@ -312,33 +319,137 @@ impl QueriesService {
     }
     //
     pub async fn list_scans_related(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let offset = (qf.queries.page - 1) * qf.queries.limit;
-        let limit = qf.queries.limit;
-        //
-        let result: Vec<SelectScans> = SelectScans::find_by_statement(
-            Statement::from_sql_and_values(
+        let (sql, values) = Query::select()
+            .from(Scans)
+            .exprs([
+                Expr::col((Scans, scans::Column::Id)).to_owned(),
+                Expr::col((Scans, scans::Column::PersonId)).to_owned(),
+                Expr::col((Scans, scans::Column::ScanDate)).to_owned(),
+                Expr::col((Persons, persons::Column::PersonType)).to_owned(),
+            ])
+            .expr_as(
+                Expr::case(
+                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Student)
+                                .column(students::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Student, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Parent)
+                                .column(parents::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Parent, parents::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Teacher)
+                                .column(teachers::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Teacher, teachers::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .finally("no full name"),
+                Alias::new("full_name"),
+            )
+            .expr_as(
+                Expr::case(
+                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Student)
+                                .column(students::Column::Id)
+                                .cond_where(
+                                    Expr::col((Student, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Parent)
+                                .column(parents::Column::Id)
+                                .cond_where(
+                                    Expr::col((Parent, parents::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Teacher)
+                                .column(teachers::Column::Id)
+                                .cond_where(
+                                    Expr::col((Teacher, teachers::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                ),
+                Alias::new("_id"),
+            )
+            .join(
+                JoinType::Join,
+                Persons,
+                Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
+            )
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(
             DbBackend::Postgres,
-            r#"
-                    SELECT
-                        s.*,
-                        p.person_type,
-                    CASE
-                        WHEN p.person_type = 'student' THEN (SELECT full_name FROM students where students.person_id = p.id)
-                        WHEN p.person_type = 'parent' THEN (SELECT full_name FROM parents where parents.person_id = p.id)
-                        ELSE (SELECT full_name FROM teachers where teachers.person_id = p.id)
-                    END,
-                    CASE
-                        WHEN p.person_type = 'student' THEN (SELECT id FROM students where students.person_id = p.id)
-                        WHEN p.person_type = 'parent' THEN (SELECT id FROM parents where parents.person_id = p.id)
-                        ELSE (SELECT id FROM teachers where teachers.person_id = p.id)
-                    END as _id
-                    FROM scans as s JOIN persons as p ON s.person_id = p.id LIMIT $1 OFFSET $2
-                "#, 
-            [limit.into(),offset.into()]),
-        )
+            sql,
+            values,
+        ))
         .all(db)
         .await?;
+
         //
+        // Ok(result)
         Ok(result
             .into_iter()
             .map(|s| {
@@ -417,3 +528,30 @@ impl QueriesService {
         Ok(classes)
     }
 }
+
+// raw sql for : list_scans_related
+
+//
+// let result: Vec<SelectScans> = SelectScans::find_by_statement(
+//     Statement::from_sql_and_values(
+//     DbBackend::Postgres,
+//     r#"
+//             SELECT
+//                 s.*,
+//                 p.person_type,
+//             CASE
+//                 WHEN p.person_type = 'student' THEN (SELECT full_name FROM students where students.person_id = p.id)
+//                 WHEN p.person_type = 'parent' THEN (SELECT full_name FROM parents where parents.person_id = p.id)
+//                 ELSE (SELECT full_name FROM teachers where teachers.person_id = p.id)
+//             END,
+//             CASE
+//                 WHEN p.person_type = 'student' THEN (SELECT id FROM students where students.person_id = p.id)
+//                 WHEN p.person_type = 'parent' THEN (SELECT id FROM parents where parents.person_id = p.id)
+//                 ELSE (SELECT id FROM teachers where teachers.person_id = p.id)
+//             END as _id
+//             FROM scans as s JOIN persons as p ON s.person_id = p.id LIMIT $1 OFFSET $2
+//         "#,
+//     [limit.into(),offset.into()]),
+// )
+// .all(db)
+// .await?;
