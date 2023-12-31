@@ -442,24 +442,11 @@ impl QueriesService {
             sql,
             values,
         ))
+        .into_json()
         .all(db)
         .await?;
 
-        //
-        // Ok(result)
-        Ok(result
-            .into_iter()
-            .map(|s| {
-                json!({
-                    "id": s.id,
-                    "person_id": s.person_id,
-                    "scan_date": s.scan_date,
-                    "person_type": s.person_type,
-                    "full_name": s.full_name,
-                    "_id":s._id
-                })
-            })
-            .collect::<Values>())
+        Ok(result)
     }
     //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
