@@ -19,7 +19,8 @@ mod m20231229_182513_seed_parents;
 mod m20231229_182522_seed_teachers;
 mod m20231229_183159_seed_pickups;
 mod m20231229_195116_seed_persons;
-mod m20231229_195513_seed_details;
+mod m20231229_195513_seed_details;mod m20240101_135233_seed_scans;
+
 //
 mod utils;
 
