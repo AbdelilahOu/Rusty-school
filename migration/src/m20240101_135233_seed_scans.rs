@@ -10,7 +10,7 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
-        for _ in 0..1000 {
+        for _ in 0..2000 {
             db.execute(Statement::from_string(
                 DbBackend::Postgres,
                 r#"
