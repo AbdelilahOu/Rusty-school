@@ -1,4 +1,7 @@
+use sea_orm::{DbBackend, Statement};
 use sea_orm_migration::prelude::*;
+
+use crate::m20231116_214011_c_scans::Scan;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -6,42 +9,39 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        // Replace the sample below with your own migration scripts
-        todo!();
-
-        manager
-            .create_table(
-                Table::create()
-                    .table(Post::Table)
-                    .if_not_exists()
-                    .col(
-                        ColumnDef::new(Post::Id)
-                            .integer()
-                            .not_null()
-                            .auto_increment()
-                            .primary_key(),
+        let db = manager.get_connection();
+        for _ in 0..1000 {
+            db.execute(Statement::from_string(
+                DbBackend::Postgres,
+                r#"
+                INSERT INTO
+                    scans (person_id)
+                VALUES
+                (
+                    (
+                        SELECT
+                            p.id
+                        FROM
+                            persons as p
+                            LEFT JOIN students as s ON s.person_id = p.id
+                            LEFT JOIN parents as pa ON pa.person_id = p.id
+                            left JOIN teachers as t ON t.person_id = p.id
+                        ORDER BY
+                            random()
+                        LIMIT
+                            1
                     )
-                    .col(ColumnDef::new(Post::Title).string().not_null())
-                    .col(ColumnDef::new(Post::Text).string().not_null())
-                    .to_owned(),
-            )
-            .await
+                );"#,
+            ))
+            .await?;
+        }
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        // Replace the sample below with your own migration scripts
-        todo!();
-
-        manager
-            .drop_table(Table::drop().table(Post::Table).to_owned())
-            .await
+        let delete_query = Query::delete().from_table(Scan::Table).to_owned();
+        manager.exec_stmt(delete_query).await?;
+        Ok(())
     }
-}
-
-#[derive(DeriveIden)]
-enum Post {
-    Table,
-    Id,
-    Title,
-    Text,
 }
