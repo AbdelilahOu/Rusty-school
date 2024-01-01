@@ -1,9 +1,14 @@
+use std::collections::HashMap;
+
 use super::types::*;
 use super::utils::filters::*;
 use ::entity::{groups, parents, persons, prelude::*, scans, students, subjects, teachers};
 use sea_orm::{
     prelude::Uuid,
-    sea_query::{Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement},
+    sea_query::{
+        extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
+        SubQueryStatement,
+    },
     *,
 };
 use serde_json::{json, Value as SerdValue};
@@ -169,9 +174,15 @@ impl QueriesService {
         for (country, states) in countries {
             // populate res
             let states_json = states
-                        .into_iter()
-                        .map(|state| json!({ "id": state.id, "name": state.state_name, "initiales": state.state_initials  }))
-                        .collect::<Values>();
+                .into_iter()
+                .map(|state| {
+                    json!({
+                        "id": state.id,
+                        "name": state.state_name,
+                        "initiales": state.state_initials
+                    })
+                })
+                .collect::<Values>();
 
             let countries_json = json!({
                 "id": country.id,
@@ -251,7 +262,12 @@ impl QueriesService {
             // populate res
             let districts_json = districts
                 .into_iter()
-                .map(|district| json!({ "id": district.id, "name": district.district_name  }))
+                .map(|district| {
+                    json!({
+                        "id": district.id,
+                        "name": district.district_name
+                    })
+                })
                 .collect::<Values>();
 
             let cities_json = json!({
@@ -289,9 +305,16 @@ impl QueriesService {
         for (district, streets) in districts {
             // populate res
             let streets_json = streets
-                        .into_iter()
-                        .map(|street| json!({ "id": street.id, "name": street.street_name, "type":street.street_type, "code":street.zip_code  }))
-                        .collect::<Values>();
+                .into_iter()
+                .map(|street| {
+                    json!({
+                        "id": street.id,
+                        "name": street.street_name,
+                        "type":street.street_type,
+                        "code":street.zip_code
+                    })
+                })
+                .collect::<Values>();
 
             let districts_json = json!({
                 "id": district.id,
@@ -316,6 +339,12 @@ impl QueriesService {
     }
     //
     pub async fn list_scans_related(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let mut filters = HashMap::<String, Filters>::new();
+        qf.filters.into_iter().for_each(|f| {
+            filters.insert(f.feild.clone(), f);
+        });
+        //
+        println!("{:?}", filters);
         let (sql, values) = Query::select()
             .from(Scans)
             .exprs([
@@ -433,7 +462,66 @@ impl QueriesService {
             )
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            // .conditions(b, if_true, if_false)
+            .conditions(
+                filters.get("full_name").is_some(),
+                |x| {
+                    x.and_where(
+                        Expr::case(
+                            Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Student)
+                                        .column(students::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Student, students::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                        )
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Parent)
+                                        .column(parents::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Parent, parents::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                        )
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Teacher)
+                                        .column(teachers::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Teacher, teachers::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                        )
+                        .into(),
+                    );
+                },
+                |_| {},
+            )
             .to_owned()
             .build(PostgresQueryBuilder);
 

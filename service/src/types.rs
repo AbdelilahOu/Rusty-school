@@ -7,7 +7,7 @@ pub struct ListQuery {
     pub limit: u64,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Filters {
     pub feild: String,
     pub operation: String,
