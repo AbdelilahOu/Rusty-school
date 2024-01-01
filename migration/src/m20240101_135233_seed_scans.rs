@@ -25,13 +25,13 @@ impl MigrationTrait for Migration {
                             persons as p
                             LEFT JOIN students as s ON s.person_id = p.id
                             LEFT JOIN parents as pa ON pa.person_id = p.id
-                            left JOIN teachers as t ON t.person_id = p.id
+                            LEFT JOIN teachers as t ON t.person_id = p.id
                         ORDER BY
                             random()
                         LIMIT
                             1
                     ),
-                    NOW() + (random() * (NOW()+'90 days' - NOW())) + '30 days'
+                    NOW() - (random() * (NOW()+'90 days' - NOW())) + '30 days'
                 );"#,
             ))
             .await?;
