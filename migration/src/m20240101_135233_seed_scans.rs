@@ -10,12 +10,12 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
-        for _ in 0..2000 {
+        for _ in 0..4000 {
             db.execute(Statement::from_string(
                 DbBackend::Postgres,
                 r#"
                 INSERT INTO
-                    scans (person_id)
+                    scans (person_id, scan_date)
                 VALUES
                 (
                     (
@@ -30,7 +30,8 @@ impl MigrationTrait for Migration {
                             random()
                         LIMIT
                             1
-                    )
+                    ),
+                    NOW() + (random() * (NOW()+'90 days' - NOW())) + '30 days'
                 );"#,
             ))
             .await?;
