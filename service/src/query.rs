@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use super::types::*;
 use super::utils::filters::*;
 use ::entity::{groups, parents, persons, prelude::*, scans, students, subjects, teachers};
+use chrono::{NaiveDateTime, ParseError};
 use sea_orm::{
     prelude::Uuid,
     sea_query::{
@@ -534,10 +535,28 @@ impl QueriesService {
             .conditions(
                 filters.get("scan_time_end").is_some(),
                 |x| {
-                    x.and_where(
-                        Expr::col((Scans, scans::Column::ScanDate))
-                            .lte(filters.get("scan_time_end").unwrap().value.clone()),
-                    );
+                    // get avlue
+                    let end_time_feild_value = filters.get("scan_time_end").unwrap().value.as_str();
+                    // init last parsed value
+                    let end_time: Result<NaiveDateTime, ParseError>;
+                    // check
+                    if end_time_feild_value.contains("T") {
+                        end_time = NaiveDateTime::parse_from_str(
+                            filters.get("scan_time_end").unwrap().value.clone().as_str(),
+                            "%Y-%m-%dT%H:%M:%S%.f",
+                        );
+                    } else {
+                        end_time = NaiveDateTime::parse_from_str(
+                            filters.get("scan_time_end").unwrap().value.clone().as_str(),
+                            "%Y-%m-%d %H:%M:%S%.f",
+                        );
+                    }
+                    // parse success
+                    if let Ok(end_time) = end_time {
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
+                    } else {
+                        println!("error parsing date : {:?}", end_time.err());
+                    }
                 },
                 |_| {},
             )
