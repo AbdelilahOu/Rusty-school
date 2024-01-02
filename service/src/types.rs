@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use sea_orm::{prelude::Uuid, FromQueryResult};
 use serde::{Deserialize, Serialize};
 
@@ -145,7 +146,7 @@ pub struct CClass {
 #[derive(Deserialize, Serialize, Debug, PartialEq, FromQueryResult)]
 pub struct SelectScans {
     pub id: Uuid,
-    pub scan_date: Option<chrono::NaiveDateTime>,
+    pub scan_date: Option<NaiveDateTime>,
     pub person_id: Uuid,
     pub person_type: String,
     pub full_name: String,
