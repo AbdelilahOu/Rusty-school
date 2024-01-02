@@ -460,8 +460,6 @@ impl QueriesService {
                 Persons,
                 Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
             )
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
             .conditions(
                 filters.get("full_name").is_some(),
                 |x| {
@@ -522,6 +520,9 @@ impl QueriesService {
                 },
                 |_| {},
             )
+            // TIME BASED FILTER
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
             .to_owned()
             .build(PostgresQueryBuilder);
 
