@@ -521,6 +521,26 @@ impl QueriesService {
                 |_| {},
             )
             // TIME BASED FILTER
+            .conditions(
+                filters.get("scan_time_start").is_some(),
+                |x| {
+                    x.and_where(
+                        Expr::col((Scans, scans::Column::ScanDate))
+                            .gte(filters.get("scan_time_start").unwrap().value.clone()),
+                    );
+                },
+                |_| {},
+            )
+            .conditions(
+                filters.get("scan_time_end").is_some(),
+                |x| {
+                    x.and_where(
+                        Expr::col((Scans, scans::Column::ScanDate))
+                            .lte(filters.get("scan_time_end").unwrap().value.clone()),
+                    );
+                },
+                |_| {},
+            )
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .to_owned()
