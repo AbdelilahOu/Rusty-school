@@ -354,6 +354,7 @@ impl QueriesService {
                 Expr::col((Scans, scans::Column::ScanDate)).to_owned(),
                 Expr::col((Persons, persons::Column::PersonType)).to_owned(),
             ])
+            // GET full_name
             .expr_as(
                 Expr::case(
                     Expr::col(persons::Column::PersonType).eq("student".to_owned()),
@@ -405,6 +406,7 @@ impl QueriesService {
                 ),
                 Alias::new("full_name"),
             )
+            // GET _id
             .expr_as(
                 Expr::case(
                     Expr::col(persons::Column::PersonType).eq("student".to_owned()),
@@ -456,11 +458,13 @@ impl QueriesService {
                 ),
                 Alias::new("_id"),
             )
+            //
             .join(
                 JoinType::Join,
                 Persons,
                 Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
             )
+            // FULL_NAME filter
             .conditions(
                 filters.get("full_name").is_some(),
                 |x| {
@@ -521,7 +525,7 @@ impl QueriesService {
                 },
                 |_| {},
             )
-            // TIME BASED FILTER
+            // START scan_date
             .conditions(
                 filters.get("scan_time_start").is_some(),
                 |x| {
@@ -545,6 +549,7 @@ impl QueriesService {
                 },
                 |_| {},
             )
+            // END scan_date
             .conditions(
                 filters.get("scan_time_end").is_some(),
                 |x| {
@@ -568,6 +573,7 @@ impl QueriesService {
                 },
                 |_| {},
             )
+            //
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .to_owned()
