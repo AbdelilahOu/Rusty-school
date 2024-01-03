@@ -525,10 +525,23 @@ impl QueriesService {
             .conditions(
                 filters.get("scan_time_start").is_some(),
                 |x| {
-                    x.and_where(
-                        Expr::col((Scans, scans::Column::ScanDate))
-                            .gte(filters.get("scan_time_start").unwrap().value.clone()),
+                    // get avlue
+                    let end_time_feild_value = filters.get("scan_time_end").unwrap().value.as_str();
+                    // check
+                    let end_time = NaiveDateTime::parse_from_str(
+                        end_time_feild_value,
+                        if end_time_feild_value.contains("T") {
+                            "%Y-%m-%dT%H:%M:%S%.f"
+                        } else {
+                            "%Y-%m-%d %H:%M:%S%.f"
+                        },
                     );
+                    // parse success
+                    if let Ok(end_time) = end_time {
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
+                    } else {
+                        println!("error parsing date : {:?}", end_time.err());
+                    }
                 },
                 |_| {},
             )
