@@ -530,21 +530,23 @@ impl QueriesService {
                 filters.get("scan_time_start").is_some(),
                 |x| {
                     // get avlue
-                    let end_time_feild_value = filters.get("scan_time_end").unwrap().value.as_str();
+                    let start_time_feild_value =
+                        filters.get("scan_time_start").unwrap().value.as_str();
                     // check
-                    let end_time = NaiveDateTime::parse_from_str(
-                        end_time_feild_value,
-                        if end_time_feild_value.contains("T") {
+                    let start_time = NaiveDateTime::parse_from_str(
+                        start_time_feild_value,
+                        if start_time_feild_value.contains("T") {
                             "%Y-%m-%dT%H:%M:%S%.f"
                         } else {
                             "%Y-%m-%d %H:%M:%S%.f"
                         },
                     );
                     // parse success
-                    if let Ok(end_time) = end_time {
-                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
+                    if let Ok(start_time) = start_time {
+                        println!("start time : {:?}", start_time);
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
                     } else {
-                        println!("error parsing date : {:?}", end_time.err());
+                        println!("error parsing date : {:?}", start_time.err());
                     }
                 },
                 |_| {},
@@ -566,6 +568,7 @@ impl QueriesService {
                     );
                     // parse success
                     if let Ok(end_time) = end_time {
+                        println!("end time : {:?}", end_time);
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
                     } else {
                         println!("error parsing date : {:?}", end_time.err());
