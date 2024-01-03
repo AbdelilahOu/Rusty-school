@@ -14,7 +14,7 @@ impl MutationsService {
         let c_student = StudentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
-            level_id: Set(data.level_id),
+            group_id: Set(data.group_id),
             ..Default::default()
         };
         let student = Student::insert(c_student).exec(db).await?;
@@ -38,14 +38,14 @@ impl MutationsService {
                 // set new feild
                 student_model.first_name = Set(data.first_name);
                 student_model.last_name = Set(data.last_name);
-                student_model.level_id = Set(data.level_id);
+                student_model.group_id = Set(data.group_id);
                 student_model.id = Set(id);
                 //
                 let student = student_model.update(db).await?;
                 Ok(CStudent {
                     first_name: student.first_name,
                     last_name: student.last_name,
-                    level_id: student.level_id,
+                    group_id: student.group_id,
                 })
             }
             None => Ok(data),

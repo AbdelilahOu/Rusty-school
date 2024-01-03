@@ -36,7 +36,7 @@ impl TransactionsService {
                 let _student = StudentActiveModel {
                     first_name: Set(data.student.first_name),
                     last_name: Set(data.student.last_name),
-                    level_id: Set(data.student.level_id),
+                    group_id: Set(data.student.group_id),
                     person_id: Set(Some(person.id.unwrap())),
                     ..Default::default()
                 }
