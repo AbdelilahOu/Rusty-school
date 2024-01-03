@@ -65,6 +65,6 @@ pub enum Student {
     FullName,
     #[sea_orm(iden = "person_id")]
     PersonId,
-    #[sea_orm(iden = "level_id")]
-    LevelId,
+    #[sea_orm(iden = "group_id")]
+    GroupId,
 }

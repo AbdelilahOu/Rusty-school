@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::{m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher};
+use crate::m20231113_170500_c_teachers::Teacher;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -22,23 +22,6 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Level::Name).string().not_null())
                     .col(ColumnDef::new(Level::Description).string())
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .alter_table(
-                sea_query::Table::alter()
-                    .table(Student::Table)
-                    .add_column(ColumnDef::new(Student::LevelId).uuid())
-                    .add_foreign_key(
-                        TableForeignKey::new()
-                            .name("fk_student_level_id")
-                            .from_tbl(Student::Table)
-                            .from_col(Student::LevelId)
-                            .to_tbl(Level::Table)
-                            .to_col(Level::Id),
-                    )
                     .to_owned(),
             )
             .await?;
@@ -78,24 +61,6 @@ impl MigrationTrait for Migration {
                 sea_query::Table::alter()
                     .table(Teacher::Table)
                     .drop_column(Teacher::LevelId)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_foreign_key(
-                sea_query::ForeignKey::drop()
-                    .name("fk_student_level_id")
-                    .table(Student::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .alter_table(
-                sea_query::Table::alter()
-                    .table(Student::Table)
-                    .drop_column(Student::LevelId)
                     .to_owned(),
             )
             .await?;

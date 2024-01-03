@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::m20231211_172237_c_levels::Level;
+use crate::{m20231109_190937_c_students::Student, m20231211_172237_c_levels::Level};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -33,10 +33,46 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Student::Table)
+                    .add_column(ColumnDef::new(Student::GroupId).uuid())
+                    .add_foreign_key(
+                        TableForeignKey::new()
+                            .name("fk_student_group_id")
+                            .from_tbl(Student::Table)
+                            .from_col(Student::GroupId)
+                            .to_tbl(Group::Table)
+                            .to_col(Group::Id),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_student_group_id")
+                    .table(Student::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Student::Table)
+                    .drop_column(Student::GroupId)
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .drop_table(Table::drop().table(Group::Table).to_owned())
             .await?;
