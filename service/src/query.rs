@@ -345,7 +345,6 @@ impl QueriesService {
             filters.insert(f.feild.clone(), f);
         });
         //
-        println!("{:?}", filters);
         let (sql, values) = Query::select()
             .from(Scans)
             .exprs([
@@ -543,7 +542,6 @@ impl QueriesService {
                     );
                     // parse success
                     if let Ok(start_time) = start_time {
-                        println!("start time : {:?}", start_time);
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
                     } else {
                         println!("error parsing date : {:?}", start_time.err());
@@ -568,7 +566,6 @@ impl QueriesService {
                     );
                     // parse success
                     if let Ok(end_time) = end_time {
-                        println!("end time : {:?}", end_time);
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
                     } else {
                         println!("error parsing date : {:?}", end_time.err());
