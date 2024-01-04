@@ -21,7 +21,8 @@ mod m20231229_183159_seed_pickups;
 mod m20231229_195116_seed_persons;
 mod m20231229_195513_seed_details;
 mod m20240101_135233_seed_scans;
-mod m20240104_081431_seed_subjects;
+mod m20240104_081431_seed_subjects;mod m20240104_083346_seed_groups;
+
 
 //
 mod utils;
