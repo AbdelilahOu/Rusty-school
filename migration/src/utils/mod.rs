@@ -49,6 +49,18 @@ pub fn generate_random_level() -> RandLevel {
     };
 }
 
+pub struct RandGroup {
+    pub group_name: String,
+    pub group_description: String,
+}
+
+pub fn generate_random_group() -> RandGroup {
+    return RandGroup {
+        group_name: Word().fake(),
+        group_description: Sentence(Range { start: 5, end: 10 }).fake(),
+    };
+}
+
 pub struct RandSubject {
     pub subject_name: String,
     pub subject_description: String,
