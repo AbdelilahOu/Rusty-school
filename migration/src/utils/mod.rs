@@ -3,6 +3,7 @@ use std::ops::Range;
 use fake::{
     faker::{
         address::en::{CityName, CountryCode, CountryName, StateAbbr, StateName, ZipCode},
+        company::en::Industry,
         internet::en::FreeEmail,
         lorem::en::{Sentence, Word},
         name::en::{FirstName, LastName},
@@ -45,6 +46,18 @@ pub fn generate_random_level() -> RandLevel {
     return RandLevel {
         level_name: Word().fake(),
         level_description: Sentence(Range { start: 5, end: 10 }).fake(),
+    };
+}
+
+pub struct RandSubject {
+    pub subject_name: String,
+    pub subject_description: String,
+}
+
+pub fn generate_random_subject() -> RandSubject {
+    return RandSubject {
+        subject_name: Industry().fake(),
+        subject_description: Sentence(Range { start: 5, end: 10 }).fake(),
     };
 }
 
