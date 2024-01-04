@@ -15,8 +15,8 @@ impl MigrationTrait for Migration {
                 DbBackend::Postgres,
                 r#"
                 UPDATE
-                    students 
-                SET 
+                    students
+                SET
                     group_id = (
                         SELECT
                             id
@@ -37,7 +37,8 @@ impl MigrationTrait for Migration {
                             group_id IS NULL
                         ORDER BY
                             random()
-                        LIMIT 1
+                        LIMIT
+                            1
                     )
                 "#,
             ))
