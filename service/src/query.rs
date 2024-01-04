@@ -467,6 +467,7 @@ impl QueriesService {
             .conditions(
                 filters.get("full_name").is_some(),
                 |x| {
+                    let full_name = filters.get("full_name").unwrap().value.as_str();
                     x.and_where(
                         Expr::case(
                             Expr::col(persons::Column::PersonType).eq("student".to_owned()),
@@ -483,7 +484,7 @@ impl QueriesService {
                                         .to_owned(),
                                 )),
                             )
-                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                            .ilike(format!("%{}%", full_name)),
                         )
                         .case(
                             Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
@@ -500,7 +501,7 @@ impl QueriesService {
                                         .to_owned(),
                                 )),
                             )
-                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                            .ilike(format!("%{}%", full_name)),
                         )
                         .case(
                             Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
@@ -517,7 +518,7 @@ impl QueriesService {
                                         .to_owned(),
                                 )),
                             )
-                            .ilike(format!("%{}%", &filters.get("full_name").unwrap().value)),
+                            .ilike(format!("%{}%", full_name)),
                         )
                         .into(),
                     );
@@ -573,7 +574,9 @@ impl QueriesService {
                 },
                 |_| {},
             )
-            //
+            // FILTER BY STUDENT ID
+            // FILTER BY PARENT ID
+            // FILTER BY TEACHER ID
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .to_owned()
