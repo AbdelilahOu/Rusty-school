@@ -13,7 +13,6 @@ pub fn load_details_routes() -> Scope {
         .route("/", web::post().to(details::create_details))
         .route("/{id}", web::get().to(details::get_details))
         .route("/{id}", web::put().to(details::update_details))
-        .route("/filters", web::post().to(details::list_details))
         .route("/{id}", web::delete().to(details::delete_details))
         .service(load_countries_routes())
         .service(load_districts_routes())

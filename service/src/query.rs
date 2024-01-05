@@ -12,7 +12,7 @@ use sea_orm::{
     },
     *,
 };
-use serde_json::{json, Value as SerdValue};
+use serde_json::Value as SerdValue;
 
 type JsonV = SerdValue;
 type Values = Vec<JsonV>;
@@ -77,75 +77,6 @@ impl QueriesService {
         Ok(details)
     }
     //
-    pub async fn list_details(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let details = PersonDetails::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(details)
-    }
-    //
-    pub async fn list_details_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let details = PersonDetails::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .all(db)
-            .await?;
-
-        let mut result = Vec::<SerdValue>::new();
-        for details in details {
-            let country = details
-                .find_related(Country)
-                .into_json()
-                .all(db)
-                .await
-                .unwrap_or(Vec::new());
-
-            let state = details
-                .find_related(State)
-                .into_json()
-                .all(db)
-                .await
-                .unwrap_or(Vec::new());
-
-            let city = details
-                .find_related(City)
-                .into_json()
-                .all(db)
-                .await
-                .unwrap_or(Vec::new());
-
-            let ditsrict = details
-                .find_related(District)
-                .into_json()
-                .all(db)
-                .await
-                .unwrap_or(Vec::new());
-
-            let street = details
-                .find_related(Street)
-                .into_json()
-                .all(db)
-                .await
-                .unwrap_or(Vec::new());
-
-            result.push(json!({
-                "id": details.id,
-                "phone": details.phone_number,
-                "email": details.email,
-                "country": country,
-                "state": state,
-                "city": city,
-                "district": ditsrict,
-                "street": street,
-            }));
-        }
-        Ok(result)
-    }
-    //
     pub async fn get_country(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
         let country = Country::find_by_id(id).into_json().one(db).await?;
         Ok(country)
@@ -162,40 +93,6 @@ impl QueriesService {
         Ok(countries)
     }
     //
-    pub async fn list_countries_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let countries = Country::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .find_with_related(State)
-            .all(db)
-            .await?;
-
-        let mut result = Vec::<SerdValue>::new();
-        // map through countries
-        for (country, states) in countries {
-            // populate res
-            let states_json = states
-                .into_iter()
-                .map(|state| {
-                    json!({
-                        "id": state.id,
-                        "name": state.state_name,
-                        "initiales": state.state_initials
-                    })
-                })
-                .collect::<Values>();
-
-            let countries_json = json!({
-                "id": country.id,
-                "name": country.country_name,
-                "states": states_json
-            });
-
-            result.push(countries_json);
-        }
-        Ok(result)
-    }
-    //
     pub async fn list_states(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let states = State::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -205,36 +102,6 @@ impl QueriesService {
             .await?;
 
         Ok(states)
-    }
-    //
-    pub async fn list_states_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let states = State::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .find_with_related(City)
-            .all(db)
-            .await?;
-
-        // init result
-        let mut result = Vec::<SerdValue>::new();
-        // map through states
-        for (state, cities) in states {
-            // populate res
-            let cities_json = cities
-                .into_iter()
-                .map(|city| json!({ "id": city.id, "name": city.city_name }))
-                .collect::<Values>();
-
-            let state_json = json!({
-                "id": state.id,
-                "name": state.state_name,
-                "initials": state.state_initials,
-                "cities": cities_json
-            });
-
-            result.push(state_json);
-        }
-        Ok(result)
     }
     //
     pub async fn list_cities(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
@@ -248,40 +115,6 @@ impl QueriesService {
         Ok(cities)
     }
     //
-    pub async fn list_cities_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let cities = City::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .find_with_related(District)
-            .all(db)
-            .await?;
-
-        // init result
-        let mut result = Vec::<SerdValue>::new();
-        // map through cities
-        for (city, districts) in cities {
-            // populate res
-            let districts_json = districts
-                .into_iter()
-                .map(|district| {
-                    json!({
-                        "id": district.id,
-                        "name": district.district_name
-                    })
-                })
-                .collect::<Values>();
-
-            let cities_json = json!({
-                "id": city.id,
-                "name": city.city_name,
-                "districts": districts_json
-            });
-
-            result.push(cities_json);
-        }
-        Ok(result)
-    }
-    //
     pub async fn list_districts(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let districts = District::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -291,41 +124,6 @@ impl QueriesService {
             .await?;
 
         Ok(districts)
-    }
-    //
-    pub async fn list_districts_ex(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let districts = District::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .find_with_related(Street)
-            .all(db)
-            .await?;
-
-        let mut result = Vec::<SerdValue>::new();
-        // map through districts
-        for (district, streets) in districts {
-            // populate res
-            let streets_json = streets
-                .into_iter()
-                .map(|street| {
-                    json!({
-                        "id": street.id,
-                        "name": street.street_name,
-                        "type":street.street_type,
-                        "code":street.zip_code
-                    })
-                })
-                .collect::<Values>();
-
-            let districts_json = json!({
-                "id": district.id,
-                "name": district.district_name,
-                "districts": streets_json
-            });
-
-            result.push(districts_json);
-        }
-        Ok(result)
     }
     //
     pub async fn list_streets(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {

@@ -42,33 +42,6 @@ pub async fn create_details(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_details(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let res = QueriesService::list_details(
-        &state.db_conn,
-        QueriesFilters {
-            queries: queries.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-    match res {
-        Ok(i) => HttpResponse::Ok()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Detailss fetched successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn delete_details(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_details(&state.db_conn, id.into_inner()).await;
 
