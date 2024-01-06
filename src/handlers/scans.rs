@@ -31,7 +31,7 @@ pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let scans = QueriesService::list_scans_related(
+    let scans = QueriesService::list_scans(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),

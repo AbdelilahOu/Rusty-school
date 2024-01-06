@@ -137,7 +137,7 @@ impl QueriesService {
         Ok(streets)
     }
     //
-    pub async fn list_scans_related(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+    pub async fn list_scans(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let mut filters = HashMap::<String, Filters>::new();
         qf.filters.into_iter().for_each(|f| {
             filters.insert(f.feild.clone(), f);
