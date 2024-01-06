@@ -77,11 +77,6 @@ impl QueriesService {
         Ok(details)
     }
     //
-    pub async fn get_country(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let country = Country::find_by_id(id).into_json().one(db).await?;
-        Ok(country)
-    }
-    //
     pub async fn list_countries(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let countries = Country::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
