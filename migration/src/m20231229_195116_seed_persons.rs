@@ -13,6 +13,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        //
         let db = manager.get_connection();
         //
         let (details_sql, details_values) = Query::select()
