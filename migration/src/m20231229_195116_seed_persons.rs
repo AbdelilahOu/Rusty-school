@@ -50,7 +50,7 @@ impl MigrationTrait for Migration {
                 SET
                     person_id = $1
                 WHERE
-                    id IN (
+                    id = (
                         SELECT
                             s.id
                         FROM
