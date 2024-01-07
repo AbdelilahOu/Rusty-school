@@ -32,7 +32,7 @@ impl MigrationTrait for Migration {
                             1
                     ),
                     NOW() - (random() * (NOW() - NOW()+'90days')) + '30 days'
-                );"#,
+                )"#,
             ))
             .await?;
         }
