@@ -394,6 +394,10 @@ impl QueriesService {
         Ok(result)
     }
     //
+    pub async fn list_attendances(db: &DbConn, qf: QueriesFilters) -> Result<(), DbErr> {
+        Ok(())
+    }
+    //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let levels = Level::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)

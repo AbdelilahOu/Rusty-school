@@ -1,3 +1,4 @@
+pub mod attendance;
 pub mod auth;
 pub mod classes;
 pub mod details;
