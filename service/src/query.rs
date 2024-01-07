@@ -394,7 +394,7 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_attendances(db: &DbConn, qf: QueriesFilters) -> Result<(), DbErr> {
+    pub async fn list_attendance(db: &DbConn, qf: QueriesFilters) -> Result<(), DbErr> {
         Ok(())
     }
     //
