@@ -409,43 +409,17 @@ impl QueriesService {
             ])
             // GET full_name
             .expr_as(
-                SimpleExpr::SubQuery(
-                    None,
-                    Box::new(SubQueryStatement::SelectStatement(
-                        Query::select()
-                            .from(Student)
-                            .column(students::Column::FullName)
-                            .cond_where(
-                                Expr::col((Student, students::Column::PersonId))
-                                    .equals((Scans, scans::Column::PersonId)),
-                            )
-                            .to_owned(),
-                    )),
-                ),
+                Expr::col(students::Column::FullName),
                 Alias::new("full_name"),
             )
             // GET _id
-            .expr_as(
-                SimpleExpr::SubQuery(
-                    None,
-                    Box::new(SubQueryStatement::SelectStatement(
-                        Query::select()
-                            .from(Student)
-                            .column(students::Column::Id)
-                            .cond_where(
-                                Expr::col((Student, students::Column::PersonId))
-                                    .equals((Scans, scans::Column::PersonId)),
-                            )
-                            .to_owned(),
-                    )),
-                ),
-                Alias::new("_id"),
-            )
+            .expr_as(Expr::col(students::Column::Id), Alias::new("_id"))
             //
             .join(
                 JoinType::Join,
-                Persons,
-                Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
+                Student,
+                Expr::col((Student, students::Column::PersonId))
+                    .equals((Scans, scans::Column::PersonId)),
             )
             // FULL_NAME filter
             .conditions(
@@ -453,20 +427,7 @@ impl QueriesService {
                 |x| {
                     let full_name = filters.get("full_name").unwrap().value.as_str();
                     x.and_where(
-                        SimpleExpr::SubQuery(
-                            None,
-                            Box::new(SubQueryStatement::SelectStatement(
-                                Query::select()
-                                    .from(Student)
-                                    .column(students::Column::FullName)
-                                    .cond_where(
-                                        Expr::col((Student, students::Column::PersonId))
-                                            .equals((Scans, scans::Column::PersonId)),
-                                    )
-                                    .to_owned(),
-                            )),
-                        )
-                        .ilike(format!("%{}%", full_name)),
+                        Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)),
                     );
                 },
                 |_| {},
