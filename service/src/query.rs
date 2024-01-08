@@ -141,10 +141,10 @@ impl QueriesService {
         let (sql, values) = Query::select()
             .from(Scans)
             .exprs([
-                Expr::col((Scans, scans::Column::Id)).to_owned(),
-                Expr::col((Scans, scans::Column::PersonId)).to_owned(),
-                Expr::col((Scans, scans::Column::ScanDate)).to_owned(),
-                Expr::col((Persons, persons::Column::PersonType)).to_owned(),
+                Expr::col((Scans, scans::Column::Id)),
+                Expr::col((Scans, scans::Column::PersonId)),
+                Expr::col((Scans, scans::Column::ScanDate)),
+                Expr::col((Persons, persons::Column::PersonType)),
             ])
             // GET full_name
             .expr_as(
@@ -394,8 +394,201 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_attendance(db: &DbConn, qf: QueriesFilters) -> Result<(), DbErr> {
-        Ok(())
+    pub async fn list_attendance(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let mut filters = HashMap::<String, Filters>::new();
+        qf.filters.into_iter().for_each(|f| {
+            filters.insert(f.feild.clone(), f);
+        });
+        //
+        let (sql, values) = Query::select()
+            .from(Scans)
+            .exprs([
+                Expr::col((Scans, scans::Column::Id)),
+                Expr::col((Scans, scans::Column::PersonId)),
+                Expr::col((Scans, scans::Column::ScanDate)),
+            ])
+            // GET full_name
+            .expr_as(
+                Expr::case(
+                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Student)
+                                .column(students::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Student, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                ),
+                Alias::new("full_name"),
+            )
+            // GET _id
+            .expr_as(
+                Expr::case(
+                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Student)
+                                .column(students::Column::Id)
+                                .cond_where(
+                                    Expr::col((Student, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                ),
+                Alias::new("_id"),
+            )
+            //
+            .join(
+                JoinType::Join,
+                Persons,
+                Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
+            )
+            // FULL_NAME filter
+            .conditions(
+                filters.get("full_name").is_some(),
+                |x| {
+                    let full_name = filters.get("full_name").unwrap().value.as_str();
+                    x.and_where(
+                        Expr::case(
+                            Expr::col(persons::Column::PersonType).eq("student".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Student)
+                                        .column(students::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Student, students::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", full_name)),
+                        )
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Parent)
+                                        .column(parents::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Parent, parents::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", full_name)),
+                        )
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Teacher)
+                                        .column(teachers::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Teacher, teachers::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
+                            )
+                            .ilike(format!("%{}%", full_name)),
+                        )
+                        .into(),
+                    );
+                },
+                |_| {},
+            )
+            // START scan_date
+            .conditions(
+                filters.get("scan_time_start").is_some(),
+                |x| {
+                    // get avlue
+                    let start_time_feild_value =
+                        filters.get("scan_time_start").unwrap().value.as_str();
+                    // check
+                    let start_time = NaiveDateTime::parse_from_str(
+                        start_time_feild_value,
+                        if start_time_feild_value.contains("T") {
+                            "%Y-%m-%dT%H:%M:%S%.f"
+                        } else {
+                            "%Y-%m-%d %H:%M:%S%.f"
+                        },
+                    );
+                    // parse success
+                    if let Ok(start_time) = start_time {
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
+                    } else {
+                        println!("error parsing date : {:?}", start_time.err());
+                    }
+                },
+                |_| {},
+            )
+            // END scan_date
+            .conditions(
+                filters.get("scan_time_end").is_some(),
+                |x| {
+                    // get avlue
+                    let end_time_feild_value = filters.get("scan_time_end").unwrap().value.as_str();
+                    // check
+                    let end_time = NaiveDateTime::parse_from_str(
+                        end_time_feild_value,
+                        if end_time_feild_value.contains("T") {
+                            "%Y-%m-%dT%H:%M:%S%.f"
+                        } else {
+                            "%Y-%m-%d %H:%M:%S%.f"
+                        },
+                    );
+                    // parse success
+                    if let Ok(end_time) = end_time {
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
+                    } else {
+                        println!("error parsing date : {:?}", end_time.err());
+                    }
+                },
+                |_| {},
+            )
+            // FILTER BY PERSON_TYPE
+            .conditions(
+                filters.get("person_type").is_some(),
+                |x| {
+                    let person_type = filters.get("person_type").unwrap().value.as_str();
+                    x.and_where(Expr::col(persons::Column::PersonType).eq(person_type));
+                },
+                |_| {},
+            )
+            //
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .into_json()
+        .all(db)
+        .await?;
+
+        Ok(result)
     }
     //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
