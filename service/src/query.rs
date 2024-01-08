@@ -407,6 +407,7 @@ impl QueriesService {
                 Expr::col((Scans, scans::Column::PersonId)),
                 Expr::col((Scans, scans::Column::ScanDate)),
                 Expr::col((Student, students::Column::FullName)),
+                Expr::col((Group, groups::Column::GroupName)),
             ])
             // GET _id
             .expr_as(
@@ -419,6 +420,12 @@ impl QueriesService {
                 Student,
                 Expr::col((Student, students::Column::PersonId))
                     .equals((Scans, scans::Column::PersonId)),
+            )
+            //
+            .join(
+                JoinType::Join,
+                Group,
+                Expr::col((Group, groups::Column::Id)).equals((Student, students::Column::GroupId)),
             )
             // FULL_NAME filter
             .conditions(
@@ -481,8 +488,18 @@ impl QueriesService {
                 |_| {},
             )
             //
+            .conditions(
+                filters.get("group_id").is_some(),
+                |x| {
+                    let group_id = filters.get("group_id").unwrap().value.as_str();
+                    x.and_where(Expr::col((Student, students::Column::GroupId)).eq(group_id));
+                },
+                |_| {},
+            )
+            //
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
+            .order_by(scans::Column::ScanDate, Order::Desc)
             .to_owned()
             .build(PostgresQueryBuilder);
 
