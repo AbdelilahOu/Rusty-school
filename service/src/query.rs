@@ -520,15 +520,6 @@ impl QueriesService {
                 },
                 |_| {},
             )
-            // FILTER BY PERSON_TYPE
-            .conditions(
-                filters.get("person_type").is_some(),
-                |x| {
-                    let person_type = filters.get("person_type").unwrap().value.as_str();
-                    x.and_where(Expr::col(persons::Column::PersonType).eq(person_type));
-                },
-                |_| {},
-            )
             //
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
