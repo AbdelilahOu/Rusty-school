@@ -13,7 +13,7 @@ pub async fn list_attendance(queries: TQueries, body: TFiltersBody, state: State
     .await;
 
     match attendances {
-        Ok(i) => HttpRes::Created()
+        Ok(i) => HttpRes::Ok()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
