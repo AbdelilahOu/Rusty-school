@@ -406,14 +406,13 @@ impl QueriesService {
                 Expr::col((Scans, scans::Column::Id)),
                 Expr::col((Scans, scans::Column::PersonId)),
                 Expr::col((Scans, scans::Column::ScanDate)),
+                Expr::col((Student, students::Column::FullName)),
             ])
-            // GET full_name
-            .expr_as(
-                Expr::col(students::Column::FullName),
-                Alias::new("full_name"),
-            )
             // GET _id
-            .expr_as(Expr::col(students::Column::Id), Alias::new("_id"))
+            .expr_as(
+                Expr::col((Student, students::Column::Id)),
+                Alias::new("_id"),
+            )
             //
             .join(
                 JoinType::Join,
