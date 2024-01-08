@@ -409,41 +409,35 @@ impl QueriesService {
             ])
             // GET full_name
             .expr_as(
-                Expr::case(
-                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Student)
-                                .column(students::Column::FullName)
-                                .cond_where(
-                                    Expr::col((Student, students::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
-                                .to_owned(),
-                        )),
-                    ),
+                SimpleExpr::SubQuery(
+                    None,
+                    Box::new(SubQueryStatement::SelectStatement(
+                        Query::select()
+                            .from(Student)
+                            .column(students::Column::FullName)
+                            .cond_where(
+                                Expr::col((Student, students::Column::PersonId))
+                                    .equals((Scans, scans::Column::PersonId)),
+                            )
+                            .to_owned(),
+                    )),
                 ),
                 Alias::new("full_name"),
             )
             // GET _id
             .expr_as(
-                Expr::case(
-                    Expr::col(persons::Column::PersonType).eq("student".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Student)
-                                .column(students::Column::Id)
-                                .cond_where(
-                                    Expr::col((Student, students::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
-                                .to_owned(),
-                        )),
-                    ),
+                SimpleExpr::SubQuery(
+                    None,
+                    Box::new(SubQueryStatement::SelectStatement(
+                        Query::select()
+                            .from(Student)
+                            .column(students::Column::Id)
+                            .cond_where(
+                                Expr::col((Student, students::Column::PersonId))
+                                    .equals((Scans, scans::Column::PersonId)),
+                            )
+                            .to_owned(),
+                    )),
                 ),
                 Alias::new("_id"),
             )
@@ -459,58 +453,20 @@ impl QueriesService {
                 |x| {
                     let full_name = filters.get("full_name").unwrap().value.as_str();
                     x.and_where(
-                        Expr::case(
-                            Expr::col(persons::Column::PersonType).eq("student".to_owned()),
-                            SimpleExpr::SubQuery(
-                                None,
-                                Box::new(SubQueryStatement::SelectStatement(
-                                    Query::select()
-                                        .from(Student)
-                                        .column(students::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Student, students::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
-                                        .to_owned(),
-                                )),
-                            )
-                            .ilike(format!("%{}%", full_name)),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Student)
+                                    .column(students::Column::FullName)
+                                    .cond_where(
+                                        Expr::col((Student, students::Column::PersonId))
+                                            .equals((Scans, scans::Column::PersonId)),
+                                    )
+                                    .to_owned(),
+                            )),
                         )
-                        .case(
-                            Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                            SimpleExpr::SubQuery(
-                                None,
-                                Box::new(SubQueryStatement::SelectStatement(
-                                    Query::select()
-                                        .from(Parent)
-                                        .column(parents::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Parent, parents::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
-                                        .to_owned(),
-                                )),
-                            )
-                            .ilike(format!("%{}%", full_name)),
-                        )
-                        .case(
-                            Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                            SimpleExpr::SubQuery(
-                                None,
-                                Box::new(SubQueryStatement::SelectStatement(
-                                    Query::select()
-                                        .from(Teacher)
-                                        .column(teachers::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Teacher, teachers::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
-                                        .to_owned(),
-                                )),
-                            )
-                            .ilike(format!("%{}%", full_name)),
-                        )
-                        .into(),
+                        .ilike(format!("%{}%", full_name)),
                     );
                 },
                 |_| {},
