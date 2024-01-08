@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::{groups, parents, persons, prelude::*, scans, students, subjects, teachers};
+use ::entity::{groups, levels, parents, persons, prelude::*, scans, students, subjects, teachers};
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -408,6 +408,7 @@ impl QueriesService {
                 Expr::col((Scans, scans::Column::ScanDate)),
                 Expr::col((Student, students::Column::FullName)),
                 Expr::col((Group, groups::Column::GroupName)),
+                Expr::col((Level, levels::Column::LevelName)),
             ])
             // GET _id
             .expr_as(
@@ -426,6 +427,12 @@ impl QueriesService {
                 JoinType::Join,
                 Group,
                 Expr::col((Group, groups::Column::Id)).equals((Student, students::Column::GroupId)),
+            )
+            //
+            .join(
+                JoinType::Join,
+                Level,
+                Expr::col((Level, levels::Column::Id)).equals((Group, groups::Column::LevelId)),
             )
             // FULL_NAME filter
             .conditions(
@@ -487,12 +494,16 @@ impl QueriesService {
                 },
                 |_| {},
             )
-            //
+            // GROUP_ID
             .conditions(
                 filters.get("group_id").is_some(),
                 |x| {
-                    let group_id = filters.get("group_id").unwrap().value.as_str();
-                    x.and_where(Expr::col((Student, students::Column::GroupId)).eq(group_id));
+                    let group_id = Uuid::parse_str(filters.get("group_id").unwrap().value.as_str());
+                    if let Ok(id) = group_id {
+                        x.and_where(Expr::col((Student, students::Column::GroupId)).eq(id));
+                    } else {
+                        println!("error parsing group_id : {:?}", group_id.err());
+                    }
                 },
                 |_| {},
             )
