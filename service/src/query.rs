@@ -379,6 +379,7 @@ impl QueriesService {
             //
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
+            .order_by(scans::Column::ScanDate, Order::Desc)
             .to_owned()
             .build(PostgresQueryBuilder);
 
