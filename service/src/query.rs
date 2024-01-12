@@ -582,13 +582,11 @@ impl QueriesService {
     //
     pub async fn list_rooms(db: &DbConn) -> Result<Values, DbErr> {
         let rooms = Room::find().into_json().all(db).await?;
-
         Ok(rooms)
     }
     //
     pub async fn list_classes(db: &DbConn) -> Result<Values, DbErr> {
         let classes = Class::find().into_json().all(db).await?;
-
         Ok(classes)
     }
 }
