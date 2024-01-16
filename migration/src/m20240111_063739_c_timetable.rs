@@ -17,14 +17,6 @@ impl MigrationTrait for Migration {
                         .default(Expr::cust("gen_random_uuid()"))
                         .primary_key(),
                 )
-                .col(ColumnDef::new(TimeTable::ClassId).uuid())
-                .foreign_key(
-                    ForeignKey::create()
-                        .name("fk_time_table_class_id")
-                        .from(TimeTable::Table, TimeTable::ClassId)
-                        .to(Class::Table, Class::Id)
-                        .on_delete(ForeignKeyAction::SetNull),
-                )
                 .col(ColumnDef::new(TimeTable::DayOfWeek).time())
                 .col(ColumnDef::new(TimeTable::StartTime).time())
                 .col(ColumnDef::new(TimeTable::EndTime).text()),
@@ -48,6 +40,4 @@ enum TimeTable {
     StartTime,
     #[sea_orm(iden = "end_time")]
     EndTime,
-    #[sea_orm(iden = "class_id")]
-    ClassId,
 }
