@@ -25,7 +25,9 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        Ok(())
+        manager
+            .drop_table(Table::drop().table(TimeTable::Table).to_owned())
+            .await
     }
 }
 
