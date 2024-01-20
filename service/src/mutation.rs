@@ -594,4 +594,8 @@ impl MutationsService {
             None => Ok(data),
         }
     }
+    //
+    pub async fn create_time_table(db: &DbConn, data: CTimeTable) -> DyResult<Uuid> {
+        todo!()
+    }
 }

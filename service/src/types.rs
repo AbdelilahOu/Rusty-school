@@ -143,6 +143,9 @@ pub struct CClass {
     pub room_id: Option<Uuid>,
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CTimeTable {}
+
 #[derive(Deserialize, Serialize, Debug, PartialEq, FromQueryResult)]
 pub struct SelectScans {
     pub id: Uuid,

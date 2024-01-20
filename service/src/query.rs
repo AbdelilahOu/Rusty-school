@@ -589,6 +589,10 @@ impl QueriesService {
         let classes = Class::find().into_json().all(db).await?;
         Ok(classes)
     }
+    //
+    pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
+        todo!();
+    }
 }
 
 // raw sql for : list_scans_related

@@ -6,7 +6,7 @@ use actix_web::{
 };
 use service::*;
 
-type ScBody = ActJson<CScan>;
+type ScBody = ActJson<CTimeTable>;
 
 pub async fn create_time_table(body: ScBody, state: State) -> HttpResponse {
     let res = MutationsService::create_time_table(&state.db_conn, body.into_inner()).await;
@@ -31,14 +31,7 @@ pub async fn create_time_table(body: ScBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_time_table(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let scans = QueriesService::list_time_table(
-        &state.db_conn,
-        QueriesFilters {
-            queries: queries.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
+    let scans = QueriesService::list_time_table(&state.db_conn).await;
 
     match scans {
         Ok(i) => HttpResponse::Ok()
