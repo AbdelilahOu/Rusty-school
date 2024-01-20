@@ -36,10 +36,61 @@ enum TimeTable {
     #[sea_orm(iden = "time_table")]
     Table,
     Id,
+    #[sea_orm(iden = "type")]
+    Type,
+}
+
+#[derive(DeriveIden)]
+enum Activity {
+    #[sea_orm(iden = "activities")]
+    Table,
+    Id,
+    #[sea_orm(iden = "description")]
+    Description,
+    #[sea_orm(iden = "activity_type")]
+    ActivityType,
+    #[sea_orm(iden = "start_time")]
+    StartTime,
+    #[sea_orm(iden = "end_time")]
+    EndTime,
+    #[sea_orm(iden = "location")]
+    Location,
+    #[sea_orm(iden = "time_table_id")]
+    TimeTableId,
+}
+
+#[derive(DeriveIden)]
+enum Course {
+    #[sea_orm(iden = "courses")]
+    Table,
+    Id,
     #[sea_orm(iden = "day_of_week")]
     DayOfWeek,
     #[sea_orm(iden = "start_time")]
     StartTime,
     #[sea_orm(iden = "end_time")]
     EndTime,
+    #[sea_orm(iden = "class_id")]
+    ClassId,
+    #[sea_orm(iden = "time_table_id")]
+    TimeTableId,
+}
+
+#[derive(DeriveIden)]
+enum Event {
+    #[sea_orm(iden = "events")]
+    Table,
+    Id,
+    #[sea_orm(iden = "title")]
+    Title,
+    #[sea_orm(iden = "description")]
+    Description,
+    #[sea_orm(iden = "start_time")]
+    StartTime,
+    #[sea_orm(iden = "end_time")]
+    EndTime,
+    #[sea_orm(iden = "class_id")]
+    ClassId,
+    #[sea_orm(iden = "time_table_id")]
+    TimeTableId,
 }
