@@ -6,33 +6,52 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager.create_table(
-            Table::create()
-                .table(TimeTable::Table)
-                .if_not_exists()
-                .col(
-                    ColumnDef::new(TimeTable::Id)
-                        .uuid()
-                        .not_null()
-                        .default(Expr::cust("gen_random_uuid()"))
-                        .primary_key(),
-                )
-                .col(ColumnDef::new(TimeTable::Type).text()),
-        );
+        manager
+            .create_table(
+                Table::create()
+                    .table(TimeTable::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(TimeTable::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(TimeTable::Type).text())
+                    .to_owned(),
+            )
+            .await?;
 
-        manager.create_table(
-            Table::create()
-                .table(Activity::Table)
-                .if_not_exists()
-                .col(
-                    ColumnDef::new(Activity::Id)
-                        .uuid()
-                        .not_null()
-                        .default(Expr::cust("gen_random_uuid()"))
-                        .primary_key(),
-                )
-                .col(ColumnDef::new(Activity::Type).text()),
-        );
+        manager
+            .create_table(
+                Table::create()
+                    .table(Activity::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Activity::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Activity::Title).text())
+                    .col(ColumnDef::new(Activity::Description).text())
+                    .col(ColumnDef::new(Activity::ActivityType).text())
+                    .col(ColumnDef::new(Activity::StartTime).date_time())
+                    .col(ColumnDef::new(Activity::EndTime).date_time())
+                    .col(ColumnDef::new(Activity::Location).text())
+                    .col(ColumnDef::new(Activity::TimeTableId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_activities_time_table_id")
+                            .from(Activity::Table, Activity::TimeTableId)
+                            .to(TimeTable::Table, TimeTable::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .to_owned(),
+            )
+            .await?;
 
         Ok(())
     }
