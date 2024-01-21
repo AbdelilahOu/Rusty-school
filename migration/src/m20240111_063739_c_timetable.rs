@@ -17,10 +17,23 @@ impl MigrationTrait for Migration {
                         .default(Expr::cust("gen_random_uuid()"))
                         .primary_key(),
                 )
-                .col(ColumnDef::new(TimeTable::DayOfWeek).time())
-                .col(ColumnDef::new(TimeTable::StartTime).time())
-                .col(ColumnDef::new(TimeTable::EndTime).text()),
+                .col(ColumnDef::new(TimeTable::Type).text()),
         );
+
+        manager.create_table(
+            Table::create()
+                .table(Activity::Table)
+                .if_not_exists()
+                .col(
+                    ColumnDef::new(Activity::Id)
+                        .uuid()
+                        .not_null()
+                        .default(Expr::cust("gen_random_uuid()"))
+                        .primary_key(),
+                )
+                .col(ColumnDef::new(Activity::Type).text()),
+        );
+
         Ok(())
     }
 
@@ -45,6 +58,8 @@ enum Activity {
     #[sea_orm(iden = "activities")]
     Table,
     Id,
+    #[sea_orm(iden = "title")]
+    Title,
     #[sea_orm(iden = "description")]
     Description,
     #[sea_orm(iden = "activity_type")]
@@ -87,10 +102,8 @@ enum Event {
     Description,
     #[sea_orm(iden = "start_time")]
     StartTime,
-    #[sea_orm(iden = "end_time")]
-    EndTime,
-    #[sea_orm(iden = "class_id")]
-    ClassId,
+    #[sea_orm(iden = "duration")]
+    Duration,
     #[sea_orm(iden = "time_table_id")]
     TimeTableId,
 }
