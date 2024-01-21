@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::m20231223_094755_c_classes::Class;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -46,6 +48,41 @@ impl MigrationTrait for Migration {
                         ForeignKey::create()
                             .name("fk_activities_time_table_id")
                             .from(Activity::Table, Activity::TimeTableId)
+                            .to(TimeTable::Table, TimeTable::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(Course::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Course::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Course::DayOfWeek).text())
+                    .col(ColumnDef::new(Course::StartTime).date_time())
+                    .col(ColumnDef::new(Course::EndTime).date_time())
+                    .col(ColumnDef::new(Course::ClassId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_courses_class_id")
+                            .from(Course::Table, Course::ClassId)
+                            .to(Class::Table, Class::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .col(ColumnDef::new(Course::TimeTableId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_courses_time_table_id")
+                            .from(Course::Table, Course::TimeTableId)
                             .to(TimeTable::Table, TimeTable::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
