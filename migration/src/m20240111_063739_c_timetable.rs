@@ -19,6 +19,15 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
+            .create_type(
+                Type::create()
+                    .as_enum(TimeTableItemType::Table)
+                    .values(TimeTableItemType::iter().skip(1))
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .create_table(
                 Table::create()
                     .table(TimeTable::Table)
@@ -30,7 +39,12 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(TimeTable::Type).text())
+                    .col(
+                        ColumnDef::new(TimeTable::Type).enumeration(
+                            TimeTableItemType::Table,
+                            TimeTableItemType::iter().skip(1),
+                        ),
+                    )
                     .col(
                         ColumnDef::new(TimeTable::DayOfWeek)
                             .enumeration(DayOfWeek::Table, DayOfWeek::iter().skip(1)),
@@ -153,6 +167,14 @@ enum DayOfWeek {
     Friday,
     Saturday,
     Sunday,
+}
+
+#[derive(Iden, EnumIter)]
+enum TimeTableItemType {
+    Table,
+    Activity,
+    Course,
+    Event,
 }
 
 #[derive(DeriveIden)]
