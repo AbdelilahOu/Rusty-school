@@ -21,6 +21,13 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(TimeTable::Type).text())
+                    .col(ColumnDef::new(TimeTable::DayOfWeek).integer())
+                    .col(ColumnDef::new(TimeTable::StartTime).date_time())
+                    .col(ColumnDef::new(TimeTable::EndTime).date_time())
+                    .col(
+                        ColumnDef::new(TimeTable::Duration).float(), // .default(Expr::expr(Expr::col(TimeTable::EndTime))),
+                    )
+                    .col(ColumnDef::new(TimeTable::Location).text())
                     .to_owned(),
             )
             .await?;
@@ -40,9 +47,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Activity::Title).text())
                     .col(ColumnDef::new(Activity::Description).text())
                     .col(ColumnDef::new(Activity::ActivityType).text())
-                    .col(ColumnDef::new(Activity::StartTime).date_time())
-                    .col(ColumnDef::new(Activity::EndTime).date_time())
-                    .col(ColumnDef::new(Activity::Location).text())
                     .col(ColumnDef::new(Activity::TimeTableId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -67,9 +71,6 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Course::DayOfWeek).text())
-                    .col(ColumnDef::new(Course::StartTime).date_time())
-                    .col(ColumnDef::new(Course::EndTime).date_time())
                     .col(ColumnDef::new(Course::ClassId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -83,6 +84,32 @@ impl MigrationTrait for Migration {
                         ForeignKey::create()
                             .name("fk_courses_time_table_id")
                             .from(Course::Table, Course::TimeTableId)
+                            .to(TimeTable::Table, TimeTable::Id)
+                            .on_delete(ForeignKeyAction::Cascade),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(Event::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(Event::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Event::Title).text())
+                    .col(ColumnDef::new(Event::Description).text())
+                    .col(ColumnDef::new(Event::TimeTableId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_events_time_table_id")
+                            .from(Event::Table, Event::TimeTableId)
                             .to(TimeTable::Table, TimeTable::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
@@ -107,6 +134,16 @@ enum TimeTable {
     Id,
     #[sea_orm(iden = "type")]
     Type,
+    #[sea_orm(iden = "day_of_week")]
+    DayOfWeek,
+    #[sea_orm(iden = "start_time")]
+    StartTime,
+    #[sea_orm(iden = "end_time")]
+    EndTime,
+    #[sea_orm(iden = "duration")]
+    Duration,
+    #[sea_orm(iden = "location")]
+    Location,
 }
 
 #[derive(DeriveIden)]
@@ -114,18 +151,12 @@ enum Activity {
     #[sea_orm(iden = "activities")]
     Table,
     Id,
-    #[sea_orm(iden = "title")]
+    #[sea_orm(iden = "activity_title")]
     Title,
-    #[sea_orm(iden = "description")]
+    #[sea_orm(iden = "activity_description")]
     Description,
     #[sea_orm(iden = "activity_type")]
     ActivityType,
-    #[sea_orm(iden = "start_time")]
-    StartTime,
-    #[sea_orm(iden = "end_time")]
-    EndTime,
-    #[sea_orm(iden = "location")]
-    Location,
     #[sea_orm(iden = "time_table_id")]
     TimeTableId,
 }
@@ -135,12 +166,6 @@ enum Course {
     #[sea_orm(iden = "courses")]
     Table,
     Id,
-    #[sea_orm(iden = "day_of_week")]
-    DayOfWeek,
-    #[sea_orm(iden = "start_time")]
-    StartTime,
-    #[sea_orm(iden = "end_time")]
-    EndTime,
     #[sea_orm(iden = "class_id")]
     ClassId,
     #[sea_orm(iden = "time_table_id")]
@@ -152,14 +177,10 @@ enum Event {
     #[sea_orm(iden = "events")]
     Table,
     Id,
-    #[sea_orm(iden = "title")]
+    #[sea_orm(iden = "event_title")]
     Title,
-    #[sea_orm(iden = "description")]
+    #[sea_orm(iden = "event_description")]
     Description,
-    #[sea_orm(iden = "start_time")]
-    StartTime,
-    #[sea_orm(iden = "duration")]
-    Duration,
     #[sea_orm(iden = "time_table_id")]
     TimeTableId,
 }
