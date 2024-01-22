@@ -12,8 +12,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(DayOfWeek::Table)
-                    .values(DayOfWeek::iter().skip(1))
+                    .as_enum(DayOfWeekEnum::Table)
+                    .values(DayOfWeekEnum::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -47,7 +47,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(TimeTable::DayOfWeek)
-                            .enumeration(DayOfWeek::Table, DayOfWeek::iter().skip(1)),
+                            .enumeration(DayOfWeekEnum::Table, DayOfWeekEnum::iter().skip(1)),
                     )
                     .col(ColumnDef::new(TimeTable::StartTime).date_time())
                     .col(ColumnDef::new(TimeTable::EndTime).date_time())
@@ -158,7 +158,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(Iden, EnumIter)]
-enum DayOfWeek {
+enum DayOfWeekEnum {
     Table,
     Monday,
     Tuesday,
