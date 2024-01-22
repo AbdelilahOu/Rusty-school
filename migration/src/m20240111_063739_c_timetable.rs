@@ -1,3 +1,4 @@
+use sea_orm::{EnumIter, Iterable};
 use sea_orm_migration::prelude::*;
 
 use crate::m20231223_094755_c_classes::Class;
@@ -21,7 +22,10 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(TimeTable::Type).text())
-                    .col(ColumnDef::new(TimeTable::DayOfWeek).integer())
+                    .col(
+                        ColumnDef::new(TimeTable::DayOfWeek)
+                            .enumeration(DayOfWeek::Table, DayOfWeek::iter().skip(1)),
+                    )
                     .col(ColumnDef::new(TimeTable::StartTime).date_time())
                     .col(ColumnDef::new(TimeTable::EndTime).date_time())
                     .col(
@@ -129,6 +133,18 @@ impl MigrationTrait for Migration {
             .drop_table(Table::drop().table(TimeTable::Table).to_owned())
             .await
     }
+}
+
+#[derive(Iden, EnumIter)]
+enum DayOfWeek {
+    Table,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday,
 }
 
 #[derive(DeriveIden)]
