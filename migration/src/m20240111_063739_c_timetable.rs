@@ -25,7 +25,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(TimeTable::StartTime).date_time())
                     .col(ColumnDef::new(TimeTable::EndTime).date_time())
                     .col(
-                        ColumnDef::new(TimeTable::Duration).float(), // .default(Expr::expr(Expr::col(TimeTable::EndTime))),
+                        ColumnDef::new(TimeTable::Duration)
+                            .float()
+                            .default(Expr::cust(
+                                "EXTRACT(EPOCH from (end_time::TIMESTAMP - start_time::TIMESTAMP))",
+                            )),
                     )
                     .col(ColumnDef::new(TimeTable::Location).text())
                     .to_owned(),
