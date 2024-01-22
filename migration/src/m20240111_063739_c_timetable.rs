@@ -1,4 +1,4 @@
-use sea_orm::{EnumIter, Iterable};
+use sea_orm::{sea_query::extension::postgres::Type, EnumIter, Iterable};
 use sea_orm_migration::prelude::*;
 
 use crate::m20231223_094755_c_classes::Class;
@@ -9,6 +9,15 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .create_type(
+                Type::create()
+                    .as_enum(DayOfWeek::Table)
+                    .values(DayOfWeek::iter().skip(1))
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .create_table(
                 Table::create()
@@ -28,13 +37,12 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(TimeTable::StartTime).date_time())
                     .col(ColumnDef::new(TimeTable::EndTime).date_time())
-                    .col(
-                        ColumnDef::new(TimeTable::Duration)
-                            .float()
-                            .default(Expr::cust(
-                                "EXTRACT(EPOCH from (end_time::TIMESTAMP - start_time::TIMESTAMP))",
-                            )),
-                    )
+                    .col(ColumnDef::new(TimeTable::Duration).float().generated(
+                        Expr::cust(
+                            "EXTRACT(EPOCH from (end_time::TIMESTAMP - start_time::TIMESTAMP))",
+                        ),
+                        true,
+                    ))
                     .col(ColumnDef::new(TimeTable::Location).text())
                     .to_owned(),
             )

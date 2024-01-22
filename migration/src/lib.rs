@@ -23,8 +23,8 @@ mod m20231229_195116_seed_persons;
 mod m20240101_135233_seed_scans;
 mod m20240104_081431_seed_subjects;
 mod m20240104_083346_seed_groups;
-mod m20240104_102705_seed_student_group;mod m20240111_063739_c_timetable;
-
+mod m20240104_102705_seed_student_group;
+mod m20240111_063739_c_timetable;
 
 //
 mod utils;
@@ -59,6 +59,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240104_081431_seed_subjects::Migration),
             Box::new(m20240104_083346_seed_groups::Migration),
             Box::new(m20240104_102705_seed_student_group::Migration),
+            Box::new(m20240111_063739_c_timetable::Migration),
         ]
     }
 }
