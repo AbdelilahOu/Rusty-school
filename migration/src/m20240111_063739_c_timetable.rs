@@ -28,7 +28,7 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
-        
+
         // create timetable table
         manager
             .create_table(
@@ -65,7 +65,6 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        
         // create activities table
         manager
             .create_table(
@@ -158,6 +157,63 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_events_time_table_id")
+                    .table(Event::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(Event::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_lectures_time_table_id")
+                    .table(Lecture::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(Lecture::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_activities_time_table_id")
+                    .table(Activity::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(Activity::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(DayOfWeekEnum::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(TimeTableItemType::Table)
+                    .to_owned(),
+            )
+            .await?;
+
         manager
             .drop_table(Table::drop().table(TimeTable::Table).to_owned())
             .await
