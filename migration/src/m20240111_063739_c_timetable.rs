@@ -52,14 +52,10 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(TimeTable::DayOfWeek)
                             .enumeration(DayOfWeekEnum::Table, DayOfWeekEnum::iter().skip(1)),
                     )
-                    .col(ColumnDef::new(TimeTable::StartTime).date_time())
-                    .col(ColumnDef::new(TimeTable::EndTime).date_time())
-                    .col(ColumnDef::new(TimeTable::Duration).float().generated(
-                        Expr::cust(
-                            "EXTRACT(EPOCH from (end_time::TIMESTAMP - start_time::TIMESTAMP))",
-                        ),
-                        true,
-                    ))
+                    .col(ColumnDef::new(TimeTable::FullDate).date())
+                    .col(ColumnDef::new(TimeTable::StartTime).time())
+                    .col(ColumnDef::new(TimeTable::EndTime).time())
+                    .col(ColumnDef::new(TimeTable::Duration).float())
                     .col(ColumnDef::new(TimeTable::Location).text())
                     .to_owned(),
             )
@@ -197,6 +193,10 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
+            .drop_table(Table::drop().table(TimeTable::Table).to_owned())
+            .await?;
+
+        manager
             .drop_type(
                 Type::drop()
                     .if_exists()
@@ -214,9 +214,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_table(Table::drop().table(TimeTable::Table).to_owned())
-            .await
+        Ok(())
     }
 }
 
@@ -249,6 +247,8 @@ enum TimeTable {
     Type,
     #[sea_orm(iden = "day_of_week")]
     DayOfWeek,
+    #[sea_orm(iden = "full_date")]
+    FullDate,
     #[sea_orm(iden = "start_time")]
     StartTime,
     #[sea_orm(iden = "end_time")]
