@@ -9,6 +9,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        // create week days enum
         manager
             .create_type(
                 Type::create()
@@ -18,6 +19,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        // create timetable item type enum
         manager
             .create_type(
                 Type::create()
@@ -26,7 +28,8 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
-
+        
+        // create timetable table
         manager
             .create_table(
                 Table::create()
@@ -62,6 +65,8 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        
+        // create activities table
         manager
             .create_table(
                 Table::create()
@@ -89,31 +94,32 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        // create lectures table
         manager
             .create_table(
                 Table::create()
-                    .table(Course::Table)
+                    .table(Lecture::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Course::Id)
+                        ColumnDef::new(Lecture::Id)
                             .uuid()
                             .not_null()
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Course::ClassId).uuid())
+                    .col(ColumnDef::new(Lecture::ClassId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk_courses_class_id")
-                            .from(Course::Table, Course::ClassId)
+                            .name("fk_lectures_class_id")
+                            .from(Lecture::Table, Lecture::ClassId)
                             .to(Class::Table, Class::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(Course::TimeTableId).uuid())
+                    .col(ColumnDef::new(Lecture::TimeTableId).uuid())
                     .foreign_key(
                         ForeignKey::create()
-                            .name("fk_courses_time_table_id")
-                            .from(Course::Table, Course::TimeTableId)
+                            .name("fk_lectures_time_table_id")
+                            .from(Lecture::Table, Lecture::TimeTableId)
                             .to(TimeTable::Table, TimeTable::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
@@ -121,6 +127,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        // create events table
         manager
             .create_table(
                 Table::create()
@@ -173,7 +180,7 @@ enum DayOfWeekEnum {
 enum TimeTableItemType {
     Table,
     Activity,
-    Course,
+    Lecture,
     Event,
 }
 
@@ -212,8 +219,8 @@ enum Activity {
 }
 
 #[derive(DeriveIden)]
-enum Course {
-    #[sea_orm(iden = "courses")]
+enum Lecture {
+    #[sea_orm(iden = "lectures")]
     Table,
     Id,
     #[sea_orm(iden = "class_id")]
