@@ -43,10 +43,12 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(
-                        ColumnDef::new(TimeTable::Type).enumeration(
-                            TimeTableItemType::Table,
-                            TimeTableItemType::iter().skip(1),
-                        ),
+                        ColumnDef::new(TimeTable::Type)
+                            .enumeration(
+                                TimeTableItemType::Table,
+                                TimeTableItemType::iter().skip(1),
+                            )
+                            .not_null(),
                     )
                     .col(
                         ColumnDef::new(TimeTable::DayOfWeek)
