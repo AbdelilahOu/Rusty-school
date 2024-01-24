@@ -25,6 +25,7 @@ mod m20240104_081431_seed_subjects;
 mod m20240104_083346_seed_groups;
 mod m20240104_102705_seed_student_group;
 mod m20240111_063739_c_timetable;mod m20240124_092854_seed_classes;
+mod m20240124_092916_seed_time_table;
 
 
 //
