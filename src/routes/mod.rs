@@ -10,3 +10,4 @@ pub mod scans;
 pub mod students;
 pub mod subjects;
 pub mod teachers;
+pub mod timetable;

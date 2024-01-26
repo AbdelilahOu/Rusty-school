@@ -8,7 +8,7 @@ use service::*;
 
 type ScBody = ActJson<CTimeTable>;
 
-pub async fn create_time_table(body: ScBody, state: State) -> HttpResponse {
+pub async fn create_timetable(body: ScBody, state: State) -> HttpResponse {
     let res = MutationsService::create_time_table(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created()
@@ -30,7 +30,7 @@ pub async fn create_time_table(body: ScBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_time_table(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_timetable(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let scans = QueriesService::list_time_table(&state.db_conn).await;
 
     match scans {
