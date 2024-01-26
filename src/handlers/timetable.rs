@@ -30,7 +30,7 @@ pub async fn create_timetable(body: ScBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_timetable(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list_timetable(state: State) -> HttpResponse {
     let scans = QueriesService::list_time_table(&state.db_conn).await;
 
     match scans {
