@@ -50,3 +50,13 @@ pub async fn list_timetable(state: State) -> HttpResponse {
             }),
     }
 }
+
+pub async fn delete_timetable_item(_state: State) -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type(ContentType::json())
+        .json(ResponseData::<Option<String>> {
+            error: None,
+            message: Some("TimeTable item deleted successfully".to_string()),
+            data: None,
+        })
+}
