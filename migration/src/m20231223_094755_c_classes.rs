@@ -55,6 +55,7 @@ impl MigrationTrait for Migration {
                             .to(Room::Table, Room::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
+                    .col(ColumnDef::new(Class::MdIdx).string().extra("GENERATED ALWAYS AS (MD5(CAST(subject_id AS VARCHAR) || '-' || CAST(teacher_id AS VARCHAR) || '-' || CAST(group_id AS VARCHAR) || '-' || CAST(room_id AS VARCHAR))) STORED"))
                     .to_owned(),
             )
             .await?;
@@ -82,4 +83,6 @@ pub enum Class {
     GroupId,
     #[sea_orm(iden = "room_id")]
     RoomId,
+    #[sea_orm(iden = "md_idx")]
+    MdIdx,
 }

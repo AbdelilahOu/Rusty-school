@@ -49,6 +49,18 @@ pub fn generate_random_level() -> RandLevel {
     };
 }
 
+pub struct RandRoom {
+    pub room_name: String,
+    pub room_description: String,
+}
+
+pub fn generate_random_room() -> RandRoom {
+    return RandRoom {
+        room_name: format!("{}-{}", Faker.fake::<u8>(), Industry().fake::<String>()),
+        room_description: Sentence(Range { start: 10, end: 15 }).fake(),
+    };
+}
+
 pub struct RandGroup {
     pub group_name: String,
     pub group_description: String,
