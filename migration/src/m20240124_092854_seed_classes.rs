@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
                                         SELECT id FROM teachers WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
                                     ),(
                                         SELECT id FROM groups WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                    ), (
+                                    ),(
                                         SELECT id FROM rooms ORDER BY RANDOM() LIMIT 
                                     )
                                 );
