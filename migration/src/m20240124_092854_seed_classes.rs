@@ -14,30 +14,30 @@ impl MigrationTrait for Migration {
                 DbBackend::Postgres,
                     r#"
                         DO $$ 
-                        DECLARE level_id_v UUID;
-                        BEGIN
-                        -- Select a random level_id from the levels table: 
-                        SELECT id FROM levels ORDER BY random() LIMIT 1 INTO level_id_v;
+                            DECLARE level_id_v UUID;
+                            BEGIN
+                            -- Select a random level_id from the levels table: 
+                            SELECT id FROM levels ORDER BY random() LIMIT 1 INTO level_id_v;
 
-                        -- Use RAISE NOTICE to print the value of level_id_v for verification:
-                        RAISE NOTICE 'Selected level_id: %',level_id_v;
+                            -- Use RAISE NOTICE to print the value of level_id_v for verification:
+                            RAISE NOTICE 'Selected level_id: %',level_id_v;
 
-                        -- Seed the classes table
-                        INSERT INTO
-                            classes (subject_id, teacher_id, group_id, room_id)
-                        VALUES
-                            (
+                            -- Seed the classes table
+                            INSERT INTO
+                                classes (subject_id, teacher_id, group_id, room_id)
+                            VALUES
                                 (
-                                    SELECT id FROM subjects WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                ),(
-                                    SELECT id FROM teachers WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                ),(
-                                    SELECT id FROM groups WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                ), (
-                                    SELECT id FROM rooms LIMIT 1
-                                )
-                            );
-                        END;
+                                    (
+                                        SELECT id FROM subjects WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
+                                    ),(
+                                        SELECT id FROM teachers WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
+                                    ),(
+                                        SELECT id FROM groups WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
+                                    ), (
+                                        SELECT id FROM rooms LIMIT 1
+                                    )
+                                );
+                            END;
                         $$;
                     "#,
                 )
