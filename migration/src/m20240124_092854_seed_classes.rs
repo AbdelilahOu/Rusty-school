@@ -1,6 +1,8 @@
 use sea_orm::{DbBackend, Statement};
 use sea_orm_migration::prelude::*;
 
+use crate::m20231223_094755_c_classes::Class;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -46,8 +48,9 @@ impl MigrationTrait for Migration {
         Ok(())
     }
 
-    async fn down(&self, _: &SchemaManager) -> Result<(), DbErr> {
-        // Replace the sample below with your own migration scripts
-        todo!();
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let delete_query = Query::delete().from_table(Class::Table).to_owned();
+        manager.exec_stmt(delete_query).await?;
+        Ok(())
     }
 }
