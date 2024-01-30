@@ -10,14 +10,17 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let db = manager.get_connection();
-        for _ in 0..40 {
-            db.execute(
-                Statement::from_string(
-                DbBackend::Postgres,
-                    r#"
-                        DO $$ 
-                            DECLARE level_id_v UUID;
-                            BEGIN
+        db.execute(
+            Statement::from_string(
+            DbBackend::Postgres,
+                r#"
+                    DO $$ 
+                        -- Declare some variables
+                        DECLARE level_id_v UUID;
+                        DECLARE counter INTEGER = 0;
+                        -- Logic block
+                        BEGIN
+                            WHILE counter <= 50 LOOP
                                 -- Select a random level_id from the levels table: 
                                 SELECT id FROM levels ORDER BY random() LIMIT 1 INTO level_id_v;
 
@@ -33,15 +36,19 @@ impl MigrationTrait for Migration {
                                         ),(
                                             SELECT id FROM groups WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
                                         ),(
-                                            SELECT id FROM rooms ORDER BY RANDOM() LIMIT 
+                                            SELECT id FROM rooms ORDER BY RANDOM() LIMIT 1
                                         )
                                     );
-                            END;
-                        $$;
-                    "#,
-                )
-            ).await?;
-        }
+
+                                -- Loop stuff
+                                counter := counter + 1;
+                                EXIT WHEN counter > 50;
+                            END LOOP;
+                        END;
+                    $$;
+                "#,
+            )
+        ).await?;
         Ok(())
     }
 
