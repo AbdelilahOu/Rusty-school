@@ -60,6 +60,17 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        manager
+            .create_index(
+                sea_query::Index::create()
+                    .table(Class::Table)
+                    .unique()
+                    .name("idx_class_md_idx")
+                    .col(Class::MdIdx)
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
