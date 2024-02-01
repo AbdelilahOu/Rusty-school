@@ -2,11 +2,14 @@
 
 pub mod prelude;
 
+pub mod activities;
 pub mod cities;
 pub mod classes;
 pub mod countries;
 pub mod districts;
+pub mod events;
 pub mod groups;
+pub mod lectures;
 pub mod levels;
 pub mod parents;
 pub mod person_details;
@@ -14,9 +17,11 @@ pub mod persons;
 pub mod pickups;
 pub mod rooms;
 pub mod scans;
+pub mod sea_orm_active_enums;
 pub mod states;
 pub mod streets;
 pub mod students;
 pub mod subjects;
 pub mod teachers;
+pub mod time_table;
 pub mod users;

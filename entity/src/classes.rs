@@ -11,6 +11,7 @@ pub struct Model {
     pub teacher_id: Option<Uuid>,
     pub group_id: Option<Uuid>,
     pub room_id: Option<Uuid>,
+    pub md_idx: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -23,6 +24,8 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Groups,
+    #[sea_orm(has_many = "super::lectures::Entity")]
+    Lectures,
     #[sea_orm(
         belongs_to = "super::rooms::Entity",
         from = "Column::RoomId",
@@ -52,6 +55,12 @@ pub enum Relation {
 impl Related<super::groups::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Groups.def()
+    }
+}
+
+impl Related<super::lectures::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Lectures.def()
     }
 }
 
