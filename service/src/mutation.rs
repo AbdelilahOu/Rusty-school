@@ -595,7 +595,7 @@ impl MutationsService {
         }
     }
     //
-    pub async fn create_time_table(db: &DbConn, data: CTimeTable) -> DyResult<Uuid> {
+    pub async fn create_time_table(_db: &DbConn, _data: CTimeTable) -> DyResult<Uuid> {
         todo!()
     }
 }

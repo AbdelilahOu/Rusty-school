@@ -590,7 +590,7 @@ impl QueriesService {
         Ok(classes)
     }
     //
-    pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
+    pub async fn list_time_table(_db: &DbConn) -> Result<Values, DbErr> {
         todo!();
     }
 }
