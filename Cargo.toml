@@ -3,6 +3,7 @@ name = "school-management-api"
 version = "0.1.0"
 edition = "2021"
 
+
 [workspace]
 members = [".", "migration", "entity", "service"]
 
@@ -10,7 +11,6 @@ members = [".", "migration", "entity", "service"]
 chrono = { version = "0.4.31", features = ["serde"] }
 serde = { version = "1.0.192", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
-openssl = { version = "0.10.59", features = ["vendored"] }
 serde_json = "1.0"
 sea-orm = { version = "0.12.4", features = [
     "debug-print",
@@ -41,7 +41,6 @@ chrono = { version = "0.4.31", features = ["serde"] }
 uuid = { version = "1.5.0", features = ["v4"] }
 dotenv = "0.15.0"
 url = "2.5.0"
-openssl = { version = "0.10.59", features = ["vendored"] }
 jsonwebtoken = "9"
 serde_json = "1.0"
 env_logger = "0.10.1"
