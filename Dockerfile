@@ -8,7 +8,8 @@ WORKDIR /app
 COPY . .
 # 
 RUN apt update
-RUN apt install pkg-config -y
+RUN apt upgrade -y
+RUN apt install pkg-config libssl-dev -y
 RUN cargo build --workspace --locked --release
 RUN cp ./target/release/$APP_NAME /bin/server
 # 

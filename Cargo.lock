@@ -2525,6 +2525,7 @@ dependencies = [
  "env_logger",
  "jsonwebtoken",
  "migration",
+ "openssl-sys",
  "reqwest",
  "sea-orm",
  "serde",

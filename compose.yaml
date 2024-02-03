@@ -12,6 +12,14 @@ services:
     build:
       context: .
       target: final
+    enviroment:
+      - DATABASE_URL=postgresql://root:mysecretpassword@localhost:5432/school?sslmode=disable
+      - OAUTH_CLIENT_ID=688282033704-2leacl36je751emdajmd7n2c8u3gnqrs.apps.googleusercontent.com
+      - OAUTH_SECRET=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
+      - REDIRECT_URL=http://127.0.0.1:8080/auth/sessions/google
+      - RANDOM_KEY=be11e551-6c13-419a-a1f2-cb8f6cf476d4"
+      - JWT_MAX_AGE=48
+      - RUST_LOG='simple-auth-server=debug,actix_web=info,actix_server=info'
     ports:
       - 8080:8080
 
