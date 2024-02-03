@@ -7,7 +7,9 @@ WORKDIR /app
 # 
 COPY . .
 # 
-RUN cargo build --locked --release
+RUN apt update
+RUN apt install pkg-config -y
+RUN cargo build --workspace --locked --release
 RUN cp ./target/release/$APP_NAME /bin/server
 # 
 FROM debian:bullseye-slim AS final
