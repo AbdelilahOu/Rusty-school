@@ -7,6 +7,7 @@
 **/.DS_Store
 **/.classpath
 **/.dockerignore
+**/.env
 **/.git
 **/.gitignore
 **/.project
