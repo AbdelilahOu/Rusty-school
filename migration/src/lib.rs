@@ -29,6 +29,7 @@ mod m20240104_102705_seed_student_group;
 mod m20240111_063739_c_timetable;
 mod m20240124_092854_seed_classes;
 mod m20240124_092916_seed_time_table;
+mod m20240203_093410_create_teacher_subjects;
 
 //
 mod utils;
