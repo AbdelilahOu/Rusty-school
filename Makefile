@@ -2,32 +2,29 @@ dev:
 	cargo run
 	
 containerup:
-	docker run --name school-manager-api -e POSTGRES_USER=root -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15
+	docker run --name school-manager-db -e POSTGRES_USER=root -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15
 
 containerdown:
-	docker stop school-manager-api
-	docker rm --force school-manager-api
+	docker stop school-manager-db
+	docker rm --force school-manager-db
 
 createdb: 
-	docker exec -it school-manager-api createdb --username=root --owner=root school
+	docker exec -it school-manager-db createdb --username=root --owner=root school
 
 dropdb:
-	docker exec -it school-manager-api dropdb school
+	docker exec -it school-manager-db dropdb school
 
-mup:
+migrationsup:
 	sea-orm-cli migrate up
 
-mdownlatest:
+migrationslatest:
 	sea-orm-cli migrate down
 
-mdownall: 
+migrationsdown: 
 	sea-orm-cli migrate reset
 
-mdownfresh:
+migrationsfresh:
 	sea-orm-cli migrate fresh
-
-mdownrefresh:
-	sea-orm-cli migrate refresh
 
 entity:
 	sea-orm-cli generate entity -o entity/src --lib
