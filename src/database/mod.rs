@@ -12,7 +12,7 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
     options
         .max_connections(3)
         .min_connections(1)
-        .connect_timeout(Duration::from_secs(5));
+        .connect_timeout(Duration::from_secs(10));
     // get db connection
     let db_res = Database::connect(options).await;
     // check for errors
