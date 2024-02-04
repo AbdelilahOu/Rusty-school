@@ -1,7 +1,4 @@
 
-networks:
-  school-backend:
-
 services:
   server:
     env_file:
@@ -14,3 +11,9 @@ services:
       - school-backend
     ports:
       - 8080:8080
+
+
+
+networks:
+  school-backend:
+    driver: bridge
