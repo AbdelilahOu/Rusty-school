@@ -1,3 +1,7 @@
+
+networks:
+  school-backend:
+
 services:
   server:
     env_file:
@@ -5,5 +9,8 @@ services:
     build:
       context: .
       target: final
+    image: school-server:latest
+    networks:
+      - school-backend
     ports:
       - 8080:8080

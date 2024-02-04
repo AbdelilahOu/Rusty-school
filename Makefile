@@ -2,7 +2,7 @@ dev:
 	cargo run
 	
 containerup:
-	docker run --name school-manager-db -e POSTGRES_USER=root -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15
+	docker run --name school-manager-db --network school-backend -e POSTGRES_USER=root -e POSTGRES_PASSWORD=mysecretpassword -p 4321:5432 -d postgres:15
 
 containerdown:
 	docker stop school-manager-db

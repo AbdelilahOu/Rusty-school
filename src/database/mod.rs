@@ -21,7 +21,10 @@ pub async fn establish_connection() -> Result<DbConn, DbErr> {
             println!("Database connection established.");
             Ok(db_conn)
         }
-        Err(db_err) => Err(db_err),
+        Err(db_err) => {
+            println!("Database connection error: {:?}", db_err);
+            Err(db_err)
+        }
     }
 }
 
