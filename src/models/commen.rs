@@ -51,6 +51,7 @@ pub struct ConfigObj {
     pub redirect_uri: String,
     pub jwt_secret: String,
     pub jwt_max_age: i64,
+    pub db_url: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

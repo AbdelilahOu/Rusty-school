@@ -1,12 +1,8 @@
 use ::migration::{Migrator, MigratorTrait};
-use dotenv;
 use sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
 use std::time::Duration;
 
-pub async fn establish_connection() -> Result<DbConn, DbErr> {
-    dotenv::dotenv().ok();
-    // get database url from env
-    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
+pub async fn establish_connection(db_url: String) -> Result<DbConn, DbErr> {
     // init connection options
     let mut options = ConnectOptions::new(db_url);
     options

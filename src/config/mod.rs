@@ -4,6 +4,7 @@ pub fn load_config() -> ConfigObj {
     // load vars
     dotenv::from_filename("app.env").ok();
     //
+    let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
     let client_id = std::env::var("OAUTH_CLIENT_ID").expect("OAUTH_CLIENT_ID must be set");
     let client_secret = std::env::var("OAUTH_SECRET").expect("OAUTH_SECRET must be set");
     let redirect_uri = std::env::var("REDIRECT_URL").expect("REDIRECT_URL must be set");
@@ -19,5 +20,6 @@ pub fn load_config() -> ConfigObj {
         redirect_uri,
         jwt_secret,
         jwt_max_age,
+        db_url,
     };
 }

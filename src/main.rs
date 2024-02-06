@@ -27,9 +27,11 @@ pub struct AppState {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let conn = establish_connection().await.unwrap();
     // load config
     let loaded_config = config::load_config();
+    let conn = establish_connection(loaded_config.db_url.clone())
+        .await
+        .unwrap();
     // run migrations
     let _ = run_migrations(&conn).await.unwrap();
     //
