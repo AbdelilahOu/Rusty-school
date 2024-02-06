@@ -2,7 +2,7 @@ use crate::models::commen::ConfigObj;
 
 pub fn load_config() -> ConfigObj {
     // load vars
-    dotenv::dotenv().ok();
+    dotenv::from_filename("app.env").ok();
     //
     let client_id = std::env::var("OAUTH_CLIENT_ID").expect("OAUTH_CLIENT_ID must be set");
     let client_secret = std::env::var("OAUTH_SECRET").expect("OAUTH_SECRET must be set");
