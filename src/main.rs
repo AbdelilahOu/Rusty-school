@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
     //
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // start server
-    println!("Server started on http://127.0.0.1:8080");
+    println!("Server started on http://0.0.0.0:8080");
     let _ = HttpServer::new(move || {
         App::new()
             .wrap(Logger::new("> %r status: [%s] took: %T s"))
