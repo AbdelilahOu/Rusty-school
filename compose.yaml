@@ -22,6 +22,15 @@ services:
     build:
       context: .
       network: host
+    # NEEDED ENV VARS
+    # environment:
+    #   - DATABASE_URL=""
+    #   - OAUTH_CLIENT_ID=""
+    #   - OAUTH_SECRET=""
+    #   - REDIRECT_URL=""
+    #   - RANDOM_KEY=""
+    #   - JWT_MAX_AGE=48
+    #   - RUST_LOG='simple-auth-server=debug,actix_web=info,actix_server=info'
     networks:
       - school-backend-prod
     ports:
