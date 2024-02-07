@@ -2,7 +2,7 @@ use crate::models::commen::ConfigObj;
 
 pub fn load_config() -> ConfigObj {
     // load vars
-    dotenv::from_filename("app.env").ok();
+    dotenv::from_filename("dev.env").ok();
     //
     let db_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
     let client_id = std::env::var("OAUTH_CLIENT_ID").expect("OAUTH_CLIENT_ID must be set");

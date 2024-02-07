@@ -1,18 +1,18 @@
 
 services:
-  # db:
-  #   container_name: school-db
-  #   image: postgres:15
-  #   networks:
-  #     - school-backend
-  #   environment:
-  #     - POSTGRES_DB=school
-  #     - POSTGRES_USER=root
-  #     - POSTGRES_PASSWORD=mysecretpassword
-  #   ports:
-  #     - 4321:5432
-  #   volumes:
-  #       - school_db_data:/var/lib/postgresql/data
+  db:
+    container_name: school-db-prod
+    image: postgres:15
+    networks:
+      - school-backend-prod
+    environment:
+      - POSTGRES_DB=school
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - 4321:5432
+    volumes:
+        - school_db_data:/var/lib/postgresql/data
 
   server:
     container_name: school-api
@@ -23,16 +23,16 @@ services:
       context: .
       network: host
     networks:
-      - school-backend
+      - school-backend-prod
     ports:
       - 8080:8080
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
 
 
 networks:
-  school-backend:
+  school-backend-prod:
     driver: bridge
 
-# volumes:
-#   school_db_data: {}
+volumes:
+  school_db_data: {}
