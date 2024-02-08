@@ -17,6 +17,7 @@ impl MigrationTrait for Migration {
                     DO $$ 
                         -- Declare some variables
                         DECLARE level_id_v UUID;
+                        DECLARE subject_id_v UUID;
                         DECLARE counter INTEGER = 0;
                         -- Logic block
                         BEGIN
