@@ -28,6 +28,7 @@ mod m20240104_084241_seed_rooms;
 mod m20240104_092146_seed_teacher_level_id;
 mod m20240104_102705_seed_student_group;
 mod m20240111_063739_c_timetable;
+mod m20240111_064739_seed_teacher_subjects;
 mod m20240124_092854_seed_classes;
 mod m20240124_092916_seed_time_table;
 
@@ -68,6 +69,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240104_092146_seed_teacher_level_id::Migration),
             Box::new(m20240104_102705_seed_student_group::Migration),
             Box::new(m20240111_063739_c_timetable::Migration),
+            Box::new(m20240111_064739_seed_teacher_subjects::Migration),
             Box::new(m20240124_092854_seed_classes::Migration),
         ]
     }
