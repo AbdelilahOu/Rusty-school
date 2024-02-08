@@ -11,16 +11,16 @@ dropdb:
 	docker exec -it school-db dropdb school
 
 migrationsup:
-	sea-orm-cli migrate up
+	sea-orm-cli migrate up -u postgres://root:mysecretpassword@localhost:4321/school
 
 migrationslatest:
-	sea-orm-cli migrate down
+	sea-orm-cli migrate down -u postgres://root:mysecretpassword@localhost:4321/school
 
 migrationsdown: 
-	sea-orm-cli migrate reset
+	sea-orm-cli migrate reset -u postgres://root:mysecretpassword@localhost:4321/school
 
 migrationsfresh:
-	sea-orm-cli migrate fresh
+	sea-orm-cli migrate fresh -u postgres://root:mysecretpassword@localhost:4321/school
 
 entity:
 	sea-orm-cli generate entity -o entity/src --lib
