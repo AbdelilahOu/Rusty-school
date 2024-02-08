@@ -13,7 +13,7 @@ mod m20231215_142739_c_subjects;
 mod m20231222_155651_c_groups;
 mod m20231223_093909_c_rooms;
 mod m20231223_094755_c_classes;
-mod m20231223_124755_create_teacher_subjects;
+mod m20231223_124755_c_teacher_subjects;
 mod m20231229_133921_seed_levels;
 mod m20231229_182506_seed_students;
 mod m20231229_182513_seed_parents;
@@ -54,7 +54,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20231222_155651_c_groups::Migration),
             Box::new(m20231223_093909_c_rooms::Migration),
             Box::new(m20231223_094755_c_classes::Migration),
-            Box::new(m20231223_124755_create_teacher_subjects::Migration),
+            Box::new(m20231223_124755_c_teacher_subjects::Migration),
             Box::new(m20231229_133921_seed_levels::Migration),
             Box::new(m20231229_182506_seed_students::Migration),
             Box::new(m20231229_182513_seed_parents::Migration),
@@ -70,7 +70,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20240104_102705_seed_student_group::Migration),
             Box::new(m20240111_063739_c_timetable::Migration),
             Box::new(m20240111_064739_seed_teacher_subjects::Migration),
-            Box::new(m20240124_092854_seed_classes::Migration),
+            // Box::new(m20240124_092854_seed_classes::Migration),
         ]
     }
 }
