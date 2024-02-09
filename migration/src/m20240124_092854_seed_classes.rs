@@ -17,6 +17,7 @@ impl MigrationTrait for Migration {
                     DO $$ 
                         -- Declare some variables
                         DECLARE level_id_v UUID;
+                        DECLARE teacher_id_v UUID;
                         DECLARE subject_id_v UUID;
                         DECLARE counter INTEGER = 0;
                         -- Logic block
@@ -25,16 +26,20 @@ impl MigrationTrait for Migration {
                                 -- Select a random level_id from the levels table: 
                                 SELECT id FROM levels ORDER BY random() LIMIT 1 INTO level_id_v;
 
+                                -- Select a random teacher_id from the teachers table:
+                                SELECT id FROM teachers WHERE level_id = level_id_v ORDER BY random() LIMIT 1 INTO teacher_id_v;
+
+                                -- Select a random subject_id from the teacher_subjects table:
+                                SELECT subject_id FROM teacher_subjects WHERE teacher_id = teacher_id_v ORDER BY random() LIMIT 1 INTO subject_id_v;
+
                                 -- Seed the classes table
                                 INSERT INTO
                                     classes (subject_id, teacher_id, group_id, room_id)
                                 VALUES
                                     (
+                                        subject_id_v,
+                                        teacher_id_v,
                                         (
-                                            SELECT id FROM subjects WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                        ),(
-                                            SELECT id FROM teachers WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
-                                        ),(
                                             SELECT id FROM groups WHERE level_id = level_id_v ORDER BY RANDOM() LIMIT 1
                                         ),(
                                             SELECT id FROM rooms ORDER BY RANDOM() LIMIT 1
