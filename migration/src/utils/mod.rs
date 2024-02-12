@@ -176,3 +176,17 @@ pub fn generate_random_details() -> RandDetails {
         email: format!("{}{}", rand_number, email),
     };
 }
+
+pub struct RandActivity {
+    pub title: String,
+    pub description: String,
+    pub activity_type: String,
+}
+
+pub fn generate_random_activity() -> RandActivity {
+    return RandActivity {
+        title: Word().fake(),
+        description: Sentence(Range { start: 5, end: 10 }).fake(),
+        activity_type: Word().fake(),
+    };
+}
