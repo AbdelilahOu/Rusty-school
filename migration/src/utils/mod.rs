@@ -190,3 +190,15 @@ pub fn generate_random_activity() -> RandActivity {
         activity_type: Word().fake(),
     };
 }
+
+pub struct RandEvent {
+    pub title: String,
+    pub description: String,
+}
+
+pub fn generate_random_event() -> RandEvent {
+    return RandEvent {
+        title: Word().fake(),
+        description: Sentence(Range { start: 5, end: 10 }).fake(),
+    };
+}
