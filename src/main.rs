@@ -1,6 +1,6 @@
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use models::commen::ConfigObj;
-use sea_orm::DatabaseConnection;
+use service::sea_orm::DatabaseConnection;
 
 mod config;
 mod database;
@@ -29,6 +29,8 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     // load config
     let loaded_config = config::load_config();
+    println!("host: {}", loaded_config.db_url.clone());
+
     let conn = establish_connection(loaded_config.db_url.clone())
         .await
         .unwrap();

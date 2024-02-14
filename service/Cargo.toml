@@ -12,6 +12,7 @@ entity = { path = "../entity" }
 serde = { version = "1.0.192", features = ["derive"] }
 serde_json = "1.0"
 chrono = { version = "0.4.31", features = ["serde"] }
+uuid = { version = "1.5.0", features = ["v4"] }
 
 
 [dependencies.sea-orm]

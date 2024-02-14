@@ -8,40 +8,19 @@ edition = "2021"
 members = [".", "migration", "entity", "service"]
 
 [workspace.dependencies]
-chrono = { version = "0.4.31", features = ["serde"] }
-serde = { version = "1.0.192", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
-serde_json = "1.0"
-sea-orm = { version = "0.12.4", features = [
-    "debug-print",
-    "sqlx-postgres",
-    "runtime-tokio-rustls",
-    "macros",
-    "with-uuid",
-] }
 
 
 [dependencies]
 service = { path = "./service" }
 entity = { path = "./entity" }
 migration = { path = "./migration" }
-sea-orm = { version = "0.12.4", features = [
-    "debug-print",
-    "sqlx-postgres",
-    "runtime-tokio-rustls",
-    "macros",
-    "with-uuid",
-] }
-sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls"] }
+
 actix-web = "4"
 tokio = { version = "1.0", features = ["full"] }
 reqwest = { version = "0.11", features = ["json"] }
 serde = { version = "1.0.192", features = ["derive"] }
-chrono = { version = "0.4.31", features = ["serde"] }
-uuid = { version = "1.5.0", features = ["v4"] }
 dotenv = "0.15.0"
 url = "2.5.0"
 jsonwebtoken = "9"
-serde_json = "1.0"
 env_logger = "0.10.1"
-# openssl-sys = "0.9.99"

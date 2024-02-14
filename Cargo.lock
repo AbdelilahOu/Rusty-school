@@ -2519,21 +2519,16 @@ name = "school-management-api"
 version = "0.1.0"
 dependencies = [
  "actix-web",
- "chrono",
  "dotenv",
  "entity",
  "env_logger",
  "jsonwebtoken",
  "migration",
  "reqwest",
- "sea-orm",
  "serde",
- "serde_json",
  "service",
- "sqlx",
  "tokio",
  "url",
- "uuid",
 ]
 
 [[package]]
@@ -2799,6 +2794,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "uuid",
 ]
 
 [[package]]

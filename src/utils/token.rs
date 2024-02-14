@@ -1,13 +1,13 @@
 use super::auth::Res;
 use crate::models::commen::Claims;
-use chrono::Utc;
 use jsonwebtoken::{encode, EncodingKey, Header};
-use uuid::Uuid;
+use service::chrono::{Duration, Utc};
+use service::uuid::Uuid;
 
 pub fn generate_tokens(user_uuid: Uuid, secret: String, age: i64) -> String {
     // time
     let current_time = Utc::now();
-    let expiration_time = current_time + chrono::Duration::hours(age);
+    let expiration_time = current_time + Duration::hours(age);
     //
     let header = Header::default();
     let token = encode(

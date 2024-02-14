@@ -1,7 +1,7 @@
 use actix_web::web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery};
-use serde::{Deserialize, Serialize};
+use service::serde::{Deserialize, Serialize};
+use service::uuid::Uuid;
 use service::{Filters, ListQuery};
-use uuid::Uuid;
 
 use crate::AppState;
 
