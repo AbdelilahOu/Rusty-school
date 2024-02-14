@@ -296,7 +296,7 @@ pub enum Lecture {
 }
 
 #[derive(DeriveIden)]
-enum Event {
+pub enum Event {
     #[sea_orm(iden = "events")]
     Table,
     Id,
