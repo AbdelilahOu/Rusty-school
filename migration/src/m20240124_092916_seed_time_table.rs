@@ -21,12 +21,12 @@ impl MigrationTrait for Migration {
                     DECLARE timetable_id_v UUID;
                     DECLARE random_start_time_v TIME;
                     DECLARE random_end_time_v TIME;
-                    DECLARE counter INTEGER = 50;
+                    DECLARE counter INTEGER = 300;
                     -- Logic block
                     BEGIN
                         WHILE counter > 0 LOOP
                             -- generate random time 
-                            SELECT '08:00:00'::time + ((random() * 9)::INTEGER * INTERVAL '1 hour') INTO random_start_time_v;
+                            SELECT '08:00:00'::time + ((random() * 9)::INTEGER * INTERVAL '1 hour') + (((random() * 1)::INTEGER + 1) * INTERVAL '30 minute') INTO random_start_time_v;
                             SELECT random_start_time_v + (((random() * 1)::INTEGER + 1) * INTERVAL '30 minute') INTO random_end_time_v;
                             -- create a timetable
                             INSERT INTO 
