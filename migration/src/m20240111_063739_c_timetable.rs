@@ -222,13 +222,21 @@ impl MigrationTrait for Migration {
 
 #[derive(Iden, EnumIter)]
 enum DayOfWeekEnum {
+    #[iden = "day_of_week_enum"]
     Table,
+    #[iden = "1"]
     Monday,
+    #[iden = "2"]
     Tuesday,
+    #[iden = "3"]
     Wednesday,
+    #[iden = "4"]
     Thursday,
+    #[iden = "5"]
     Friday,
+    #[iden = "6"]
     Saturday,
+    #[iden = "7"]
     Sunday,
 }
 
@@ -241,7 +249,7 @@ enum TimeTableItemType {
 }
 
 #[derive(DeriveIden)]
-enum TimeTable {
+pub enum TimeTable {
     #[sea_orm(iden = "time_table")]
     Table,
     Id,
@@ -277,7 +285,7 @@ enum Activity {
 }
 
 #[derive(DeriveIden)]
-enum Lecture {
+pub enum Lecture {
     #[sea_orm(iden = "lectures")]
     Table,
     Id,
