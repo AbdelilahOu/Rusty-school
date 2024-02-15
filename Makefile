@@ -23,7 +23,7 @@ migrationsfresh:
 	sea-orm-cli migrate fresh -u postgres://root:mysecretpassword@localhost:4321/school
 
 entity:
-	sea-orm-cli generate entity -o entity/src --lib
+	sea-orm-cli generate entity -o entity/src --lib -u postgres://root:mysecretpassword@localhost:4321/school
 
 server:
 	cargo run

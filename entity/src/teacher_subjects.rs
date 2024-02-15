@@ -3,37 +3,17 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
-#[sea_orm(table_name = "classes")]
+#[sea_orm(table_name = "teacher_subjects")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub subject_id: Option<Uuid>,
     pub teacher_id: Option<Uuid>,
-    pub group_id: Option<Uuid>,
-    pub room_id: Option<Uuid>,
     pub md_idx: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::groups::Entity",
-        from = "Column::GroupId",
-        to = "super::groups::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Groups,
-    #[sea_orm(has_many = "super::lectures::Entity")]
-    Lectures,
-    #[sea_orm(
-        belongs_to = "super::rooms::Entity",
-        from = "Column::RoomId",
-        to = "super::rooms::Column::Id",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Rooms,
     #[sea_orm(
         belongs_to = "super::subjects::Entity",
         from = "Column::SubjectId",
@@ -50,24 +30,6 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Teachers,
-}
-
-impl Related<super::groups::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Groups.def()
-    }
-}
-
-impl Related<super::lectures::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Lectures.def()
-    }
-}
-
-impl Related<super::rooms::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Rooms.def()
-    }
 }
 
 impl Related<super::subjects::Entity> for Entity {
