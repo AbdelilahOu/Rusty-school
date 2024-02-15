@@ -29,8 +29,7 @@ pub struct AppState {
 async fn main() -> std::io::Result<()> {
     // load config
     let loaded_config = config::load_config();
-    println!("host: {}", loaded_config.db_url.clone());
-
+    //
     let conn = establish_connection(loaded_config.db_url.clone())
         .await
         .unwrap();
