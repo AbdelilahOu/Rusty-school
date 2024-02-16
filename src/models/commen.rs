@@ -65,4 +65,5 @@ pub type TFiltersBody = ActJson<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;
 pub type IdParam = ActPath<Uuid>;
+pub type Params<T> = ActPath<T>;
 pub type AuthQuery = ActQuery<AuthQueryParams>;

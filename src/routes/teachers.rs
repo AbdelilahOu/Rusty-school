@@ -8,4 +8,9 @@ pub fn load_teachers_routes() -> Scope {
         .route("/{id}", web::put().to(teachers::update_teacher))
         .route("/filters", web::post().to(teachers::list_teachers))
         .route("/{id}", web::delete().to(teachers::delete_teacher))
+        .route(
+            "/{id}/subjects/{sub_id}",
+            web::post().to(teachers::add_subject),
+        )
+        .route("/subjects/{id}", web::delete().to(teachers::delete_subject))
 }

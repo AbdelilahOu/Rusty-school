@@ -17,6 +17,9 @@ pub use super::states::{ActiveModel as StateActiveModel, Entity as State};
 pub use super::streets::{ActiveModel as StreetActiveModel, Entity as Street};
 pub use super::students::{ActiveModel as StudentActiveModel, Entity as Student};
 pub use super::subjects::{ActiveModel as SubjectActiveModel, Entity as Subject};
+pub use super::teacher_subjects::{
+    ActiveModel as TeacherSubjectActiveModel, Entity as TeacherSubject,
+};
 pub use super::teachers::{ActiveModel as TeacherActiveModel, Entity as Teacher};
 pub use super::time_table::{ActiveModel as TimeTableActiveModel, Entity as TimeTable};
 pub use super::users::{self, ActiveModel as UserActiveModel, Entity as User};

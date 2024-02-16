@@ -598,4 +598,27 @@ impl MutationsService {
     pub async fn create_time_table(_db: &DbConn, _data: CTimeTable) -> DyResult<Uuid> {
         todo!()
     }
+    //
+    pub async fn create_teacher_subject(db: &DbConn, data: (Uuid, Uuid)) -> DyResult<Uuid> {
+        let teacher_subject_model = TeacherSubjectActiveModel {
+            teacher_id: Set(Some(data.0)),
+            subject_id: Set(Some(data.1)),
+            ..Default::default()
+        };
+        let teacher_subject = TeacherSubject::insert(teacher_subject_model)
+            .exec(db)
+            .await?;
+        Ok(teacher_subject.last_insert_id)
+    }
+
+    pub async fn delete_teacher_subject(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let teacher_subject_model = TeacherSubject::find_by_id(id).one(db).await?;
+        match teacher_subject_model {
+            Some(teacher_subject_model) => {
+                let teacher_subject = teacher_subject_model.delete(db).await?;
+                Ok(teacher_subject.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
 }
