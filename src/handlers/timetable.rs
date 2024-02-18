@@ -31,9 +31,9 @@ pub async fn create_timetable(body: ScBody, state: State) -> HttpResponse {
 }
 
 pub async fn list_timetable(state: State) -> HttpResponse {
-    let scans = QueriesService::list_time_table(&state.db_conn).await;
+    let timetable = QueriesService::list_time_table(&state.db_conn).await;
 
-    match scans {
+    match timetable {
         Ok(i) => HttpResponse::Ok()
             .content_type(ContentType::json())
             .json(ResponseData {
@@ -51,12 +51,23 @@ pub async fn list_timetable(state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_timetable_item(_state: State) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type(ContentType::json())
-        .json(ResponseData::<Option<String>> {
-            error: None,
-            message: Some("TimeTable item deleted successfully".to_string()),
-            data: None,
-        })
+pub async fn delete_timetable_item(id: IdParam, state: State) -> HttpResponse {
+    let res = MutationsService::delete_time_table(&state.db_conn, id.into_inner()).await;
+
+    match res {
+        Ok(i) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .json(ResponseData {
+                error: None,
+                message: Some("TimeTable item deleted successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResponseData::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
+    }
 }
