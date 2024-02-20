@@ -11,3 +11,17 @@ pub mod students;
 pub mod subjects;
 pub mod teachers;
 pub mod timetable;
+
+pub use attendance::load_attendance_routes;
+pub use auth::load_auth_routes;
+pub use classes::load_classes_routes;
+pub use details::load_details_routes;
+pub use groups::load_groups_routes;
+pub use levels::load_levels_routes;
+pub use parents::load_parents_routes;
+pub use rooms::load_rooms_routes;
+pub use scans::load_scans_routes;
+pub use students::load_students_routes;
+pub use subjects::load_subjects_routes;
+pub use teachers::load_teachers_routes;
+pub use timetable::load_timetable_routes;

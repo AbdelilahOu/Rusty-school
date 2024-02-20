@@ -10,13 +10,7 @@ mod models;
 mod routes;
 mod utils;
 
-use crate::routes::{
-    attendance::load_attendance_routes, auth::load_auth_routes, classes::load_classes_routes,
-    details::load_details_routes, groups::load_groups_routes, levels::load_levels_routes,
-    parents::load_parents_routes, rooms::load_rooms_routes, scans::load_scans_routes,
-    students::load_students_routes, subjects::load_subjects_routes, teachers::load_teachers_routes,
-    timetable::load_timetable_routes,
-};
+use crate::routes::*;
 
 use database::{establish_connection, run_migrations};
 
