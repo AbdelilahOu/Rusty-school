@@ -9,10 +9,12 @@ COPY . .
 # 
 RUN cargo build --workspace --locked --release
 RUN cp ./target/release/$APP_NAME /bin/server
+RUN cp ./target/release/migration /bin/migration
 # 
 FROM debian:buster-slim AS final
 # Copy the executable from the "build" stage.
 COPY --from=build /bin/server /bin/
+COPY --from=build /bin/migration /bin/
 # RUN apt update
 # RUN apt install pkg-config libssl-dev -y
 RUN apt update
