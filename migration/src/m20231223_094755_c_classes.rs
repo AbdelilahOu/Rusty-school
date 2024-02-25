@@ -96,4 +96,6 @@ pub enum Class {
     RoomId,
     #[sea_orm(iden = "md_idx")]
     MdIdx,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }

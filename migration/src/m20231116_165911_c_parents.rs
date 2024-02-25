@@ -65,4 +65,6 @@ pub enum Parent {
     FullName,
     #[sea_orm(iden = "person_id")]
     PersonId,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }

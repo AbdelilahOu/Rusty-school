@@ -67,4 +67,6 @@ pub enum Student {
     PersonId,
     #[sea_orm(iden = "group_id")]
     GroupId,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }

@@ -82,4 +82,6 @@ pub enum Level {
     Name,
     #[sea_orm(iden = "level_description")]
     Description,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }

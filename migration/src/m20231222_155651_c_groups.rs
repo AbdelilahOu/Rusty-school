@@ -91,4 +91,6 @@ pub enum Group {
     LevelId,
     #[sea_orm(iden = "group_description")]
     Description,
+    #[sea_orm(iden = "created_at")]
+    CreatedAt,
 }
