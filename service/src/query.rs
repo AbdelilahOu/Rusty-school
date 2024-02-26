@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use super::types::*;
 use super::utils::filters::*;
-use ::entity::{groups, levels, parents, persons, prelude::*, scans, students, subjects, teachers};
+use ::entity::{
+    groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects, teachers,
+};
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -23,9 +25,19 @@ impl QueriesService {
     // students entity
     pub async fn list_students(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let students = Student::find()
+            .select_only()
+            .columns([
+                students::Column::Id,
+                students::Column::PersonId,
+                students::Column::GroupId,
+                students::Column::FullName,
+            ])
+            .expr(Expr::col(groups::Column::GroupName))
+            .join(JoinType::LeftJoin, students::Relation::Groups.def())
+            .filter(generate_student_filters(qf.filters))
+            .order_by_desc(students::Column::CreatedAt)
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            .filter(generate_student_filters(qf.filters))
             .into_json()
             .all(db)
             .await?;
@@ -40,9 +52,18 @@ impl QueriesService {
     //
     pub async fn list_teachers(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let teachers = Teacher::find()
+            .select_only()
+            .columns([
+                students::Column::Id,
+                students::Column::FullName,
+                students::Column::GroupId,
+            ])
+            .expr(Expr::col(levels::Column::LevelName))
+            .join(JoinType::LeftJoin, teachers::Relation::Levels.def())
+            .filter(generate_teacher_filters(qf.filters))
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            .filter(generate_teacher_filters(qf.filters))
+            .order_by_desc(teachers::Column::CreatedAt)
             .into_json()
             .all(db)
             .await?;
@@ -56,10 +77,17 @@ impl QueriesService {
     }
     //
     pub async fn list_parents(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let pickup_alias = "pickups_count";
         let parents = Parent::find()
+            .select_only()
+            .columns([parents::Column::Id, parents::Column::FullName])
+            .column_as(pickups::Column::Id.count(), pickup_alias)
+            .join(JoinType::LeftJoin, parents::Relation::Pickups.def())
+            .filter(generate_parent_filters(qf.filters))
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
-            .filter(generate_parent_filters(qf.filters))
+            .group_by(parents::Column::Id)
+            .order_by_desc(parents::Column::CreatedAt)
             .into_json()
             .all(db)
             .await?;
@@ -529,6 +557,13 @@ impl QueriesService {
     //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let levels = Level::find()
+            .select_only()
+            .columns([
+                levels::Column::Id,
+                levels::Column::LevelName,
+                levels::Column::LevelDescription,
+            ])
+            .order_by_desc(levels::Column::CreatedAt)
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
@@ -539,7 +574,18 @@ impl QueriesService {
     }
     //
     pub async fn list_subjects(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let level_alias = "level_name";
         let subjects = Subject::find()
+            .select_only()
+            .columns([
+                subjects::Column::Id,
+                subjects::Column::SubjectName,
+                subjects::Column::SubjectDescription,
+                subjects::Column::LevelId,
+            ])
+            .column_as(levels::Column::LevelName, level_alias)
+            .join(JoinType::LeftJoin, subjects::Relation::Levels.def())
+            .order_by_desc(subjects::Column::CreatedAt)
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
@@ -561,6 +607,14 @@ impl QueriesService {
     //
     pub async fn list_groups(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let groups = Group::find()
+            .select_only()
+            .columns([
+                groups::Column::Id,
+                groups::Column::GroupName,
+                groups::Column::GroupDescription,
+                groups::Column::LevelId,
+            ])
+            .order_by_desc(groups::Column::CreatedAt)
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
