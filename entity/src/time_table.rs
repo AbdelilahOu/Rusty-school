@@ -2,7 +2,7 @@
 
 use super::sea_orm_active_enums::DayOfWeekEnum;
 use super::sea_orm_active_enums::TimeTableItemType;
-use sea_orm::entity::prelude::*;
+use sea_orm::{entity::prelude::*, Set};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "time_table")]
@@ -48,4 +48,11 @@ impl Related<super::lectures::Entity> for Entity {
     }
 }
 
-impl ActiveModelBehavior for ActiveModel {}
+impl ActiveModelBehavior for ActiveModel {
+    fn new() -> Self {
+        Self {
+            id: Set(Uuid::new_v4()),
+            ..ActiveModelTrait::default()
+        }
+    }
+}
