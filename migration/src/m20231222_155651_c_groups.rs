@@ -22,6 +22,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Group::Name).string().not_null())
                     .col(ColumnDef::new(Group::Description).string())
+                    .col(
+                        ColumnDef::new(Group::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
                     .col(ColumnDef::new(Group::LevelId).uuid())
                     .foreign_key(
                         ForeignKey::create()

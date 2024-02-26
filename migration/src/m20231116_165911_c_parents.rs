@@ -21,6 +21,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Parent::FirstName).string().not_null())
                     .col(ColumnDef::new(Parent::LastName).string().not_null())
                     .col(
+                        ColumnDef::new(Parent::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
+                    .col(
                         ColumnDef::new(Parent::FullName).string().generated(
                             Expr::col(Parent::FirstName)
                                 .concat(" ")

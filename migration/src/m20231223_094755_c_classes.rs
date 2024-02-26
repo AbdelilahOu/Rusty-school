@@ -23,6 +23,11 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
+                    .col(
+                        ColumnDef::new(Class::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
                     .col(ColumnDef::new(Class::SubjectId).uuid())
                     .foreign_key(
                         ForeignKey::create()

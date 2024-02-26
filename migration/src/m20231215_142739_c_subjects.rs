@@ -22,6 +22,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Subject::Name).string().not_null())
                     .col(ColumnDef::new(Subject::Description).string())
+                    .col(
+                        ColumnDef::new(Subject::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
                     .col(ColumnDef::new(Subject::LevelId).uuid())
                     .foreign_key(
                         ForeignKey::create()

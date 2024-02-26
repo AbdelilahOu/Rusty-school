@@ -22,6 +22,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Level::Name).string().not_null())
                     .col(ColumnDef::new(Level::Description).string())
+                    .col(
+                        ColumnDef::new(Level::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
                     .to_owned(),
             )
             .await?;
