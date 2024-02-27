@@ -11,8 +11,7 @@ mod routes;
 mod utils;
 
 use crate::routes::*;
-
-use database::{establish_connection, run_migrations};
+use database::establish_connection;
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -28,7 +27,7 @@ async fn main() -> std::io::Result<()> {
         .await
         .unwrap();
     // run migrations
-    let _ = run_migrations(&conn).await.unwrap();
+    // let _ = run_migrations(&conn).await.unwrap();
     //
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // start server
