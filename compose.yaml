@@ -23,7 +23,7 @@ services:
       network: host
     # NEEDED ENV VARS
     environment:
-      - DATABASE_URL="postgres://root:mysecretpassword@school-db-prod/school"
+    #   - DATABASE_URL="postgres://root:mysecretpassword@school-db-prod/school"
     #   - OAUTH_CLIENT_ID=""
     #   - OAUTH_SECRET=""
     #   - REDIRECT_URL=""
