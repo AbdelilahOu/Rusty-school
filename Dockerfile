@@ -3,7 +3,7 @@ ARG RUST_VERSION=1.76.0
 ARG APP_NAME=school-management-api
 FROM rust:${RUST_VERSION}-buster AS build
 ARG APP_NAME
-WORKDIR /app
+WORKDIR /bin
 # 
 COPY . .
 # 
