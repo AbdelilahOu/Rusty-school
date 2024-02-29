@@ -36,10 +36,11 @@ services:
       - 8080:8080
     depends_on:
       - db
-    entrypoint: [
-        # "/school-api/wait-for.sh",
-        # "school-db-prod:4321",
-        # "--",
+    entrypoint:
+      [
+        "/school-api/wait-for.sh",
+        "school-db-prod:5432",
+        "--",
         "/school-api/start.sh",
       ]
     command: ["/school-api/server"]

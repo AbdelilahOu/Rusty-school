@@ -36,7 +36,7 @@ FROM debian:buster-slim AS final
 WORKDIR /school-api
 # 
 RUN apt update
-RUN apt install pkg-config openssl -y
+RUN apt install pkg-config openssl netcat -y
 # Copy the executable from the "build" stage.
 COPY --from=build /app/server . 
 COPY --from=build /app/migration .
