@@ -11,18 +11,18 @@ services:
     ports:
       - 4321:5432
     volumes:
-      - school_db_data:/var/lib/postgresql/data
+      - school_db_volume:/var/lib/postgresql/data
 
   server:
-    container_name: school-api
-    image: school-server:latest
+    container_name: school-api-prod
+    image: school-api-prod:0.1.0
     env_file:
       - dev.env
     build:
       context: .
       network: host
     # NEEDED ENV VARS
-    environment:
+    # environment:
     #   - DATABASE_URL="postgres://root:mysecretpassword@school-db-prod/school"
     #   - OAUTH_CLIENT_ID=""
     #   - OAUTH_SECRET=""
@@ -36,13 +36,17 @@ services:
       - 8080:8080
     depends_on:
       - db
-    entrypoint:
-      ["/bin/wait-for.sh", "school-db-prod:5432", "--", "/bin/start.sh"]
-    command: ["/bin/server"]
+    entrypoint: [
+        # "/school-api/wait-for.sh",
+        # "school-db-prod:4321",
+        # "--",
+        "/school-api/start.sh",
+      ]
+    command: ["/school-api/server"]
 
 networks:
   school-backend-prod:
     driver: bridge
 
 volumes:
-  school_db_data: {}
+  school_db_volume: {}
