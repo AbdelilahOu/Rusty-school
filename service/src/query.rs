@@ -3,8 +3,7 @@ use std::collections::HashMap;
 use super::types::*;
 use super::utils::filters::*;
 use ::entity::{
-    classes, groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects,
-    teachers,
+    groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects, teachers,
 };
 use chrono::NaiveDateTime;
 use sea_orm::{
