@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use super::types::*;
 use super::utils::filters::*;
 use ::entity::{
-    groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects, teachers,
+    classes, groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects,
+    teachers,
 };
 use chrono::NaiveDateTime;
 use sea_orm::{
@@ -614,6 +615,12 @@ impl QueriesService {
                 groups::Column::GroupDescription,
                 groups::Column::LevelId,
             ])
+            .expr(Expr::col(levels::Column::LevelName))
+            // .expr(Expr::count(Expr::col((Student, students::Column::Id))))
+            // .expr(Expr::count(Expr::col((Class, classes::Column::Id))))
+            .join(JoinType::Join, groups::Relation::Levels.def())
+            .join(JoinType::Join, groups::Relation::Classes.def())
+            .join(JoinType::Join, groups::Relation::Students.def())
             .order_by_desc(groups::Column::CreatedAt)
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
