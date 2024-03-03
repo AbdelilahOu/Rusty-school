@@ -13,8 +13,11 @@ use actix_web::{
 use service::{CUser, TransactionsService};
 
 pub async fn login(state: State) -> HttpResponse {
-    let url =
-        get_google_auth_url(state.env.client_id.clone(), state.env.redirect_uri.clone()).await;
+    let url = get_google_auth_url(
+        state.config.client_id.clone(),
+        state.config.redirect_uri.clone(),
+    )
+    .await;
     HttpResponse::Found()
         .append_header(("Location", url.as_str()))
         .status(StatusCode::FOUND)
@@ -22,7 +25,7 @@ pub async fn login(state: State) -> HttpResponse {
 }
 
 pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
-    let res = request_tokens(q.code.clone(), state.env.clone()).await;
+    let res = request_tokens(q.code.clone(), state.config.clone()).await;
 
     match res {
         Ok(res) => {
@@ -44,13 +47,13 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             // create access token
                             let token = generate_tokens(
                                 user_uuid,
-                                state.env.jwt_secret.clone(),
-                                state.env.jwt_max_age.clone(),
+                                state.config.jwt_secret.clone(),
+                                state.config.jwt_max_age.clone(),
                             );
                             // create cookie
                             let cookie = Cookie::build("token", token.clone())
                                 .path("/")
-                                .max_age(Duration::hours(state.env.jwt_max_age.clone()))
+                                .max_age(Duration::hours(state.config.jwt_max_age.clone()))
                                 .http_only(true)
                                 .finish();
                             let mut response = HttpResponse::Found();

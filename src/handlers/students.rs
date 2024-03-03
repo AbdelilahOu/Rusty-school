@@ -12,7 +12,7 @@ pub async fn create_student(body: StBody, state: State, req: HttpReq) -> HttpRes
     // get headers
     let headers = req.headers();
     // check token for auth
-    let authorized = check_token(headers, state.env.jwt_secret.clone());
+    let authorized = check_token(headers, state.config.jwt_secret.clone());
     // unauth
     if authorized.is_none() {
         return HttpRes::Unauthorized()

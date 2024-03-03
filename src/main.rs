@@ -15,7 +15,7 @@ use database::establish_connection;
 
 pub struct AppState {
     db_conn: DatabaseConnection,
-    env: ConfigObj,
+    config: ConfigObj,
 }
 
 #[actix_web::main]
@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new("> %r status: [%s] took: %T s"))
             .app_data(web::Data::new(AppState {
                 db_conn: conn.clone(),
-                env: loaded_config.clone(),
+                config: loaded_config.clone(),
             }))
             .route("/", web::get().to(handlers::health_check::healthy))
             .service(load_students_routes())
