@@ -5,11 +5,10 @@ use sea_orm::{prelude::Uuid, *};
 
 pub struct TransactionsService;
 
-type TxnRes = Result<(), TransactionError<DbErr>>;
-type TxnResUuid = Result<Uuid, TransactionError<DbErr>>;
+type TxnRes<T> = Result<T, TransactionError<DbErr>>;
 
 impl TransactionsService {
-    pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes {
+    pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create details first
@@ -48,7 +47,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_teacher(db: DbConn, data: TeacherWithAddress) -> TxnRes {
+    pub async fn create_teacher(db: DbConn, data: TeacherWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create details first
@@ -86,7 +85,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_parent(db: DbConn, data: ParentWithAddress) -> TxnRes {
+    pub async fn create_parent(db: DbConn, data: ParentWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create details first
@@ -124,7 +123,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnResUuid {
+    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnRes<Uuid> {
         db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
@@ -161,6 +160,45 @@ impl TransactionsService {
             })
         })
         .await
+    }
+    pub async fn create_event(db: &DbConn) -> TxnRes<Uuid> {
+        db.transaction::<_, (), DbErr>(|txn| {
+            Box::pin(async move {
+                // create time table
+
+                // create create event
+
+                Ok(())
+            })
+        })
+        .await;
+        todo!()
+    }
+    pub async fn create_activity(db: &DbConn) -> TxnRes<Uuid> {
+        db.transaction::<_, (), DbErr>(|txn| {
+            Box::pin(async move {
+                // create time table
+
+                // create create activity
+
+                Ok(())
+            })
+        })
+        .await;
+        todo!()
+    }
+    pub async fn create_lecture(db: &DbConn) -> TxnRes<Uuid> {
+        db.transaction::<_, (), DbErr>(|txn| {
+            Box::pin(async move {
+                // create time table
+
+                // create create lecture
+
+                Ok(())
+            })
+        })
+        .await;
+        todo!()
     }
     //
 }
