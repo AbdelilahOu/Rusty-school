@@ -9,7 +9,6 @@ use serde::Deserialize;
 pub use mutation::*;
 pub use query::*;
 pub use transaction::*;
-pub use utils::filters::*;
 
 pub use chrono;
 pub use sea_orm;
