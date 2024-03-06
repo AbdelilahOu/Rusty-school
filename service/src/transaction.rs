@@ -1,5 +1,4 @@
-use super::{ParentWithAddress, StudentWithAddress, TeacherWithAddress};
-use crate::CUser;
+use crate::models::{CUser, ParentWithAddress, StudentWithAddress, TeacherWithAddress};
 use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
 

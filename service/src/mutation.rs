@@ -2,7 +2,7 @@ use ::entity::prelude::*;
 use chrono::Utc;
 use sea_orm::{prelude::Uuid, *};
 
-use super::types::*;
+use super::models::*;
 
 pub struct MutationsService;
 

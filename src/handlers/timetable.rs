@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::*;
+use service::{models::CTimeTable, *};
 
 type ScBody = ActJson<CTimeTable>;
 

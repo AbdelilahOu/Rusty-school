@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::{uuid::Uuid, *};
+use service::{models::CTeacher, uuid::Uuid, *};
 // i like my functions to stay inline
 type TeBody = ActJson<CTeacher>;
 

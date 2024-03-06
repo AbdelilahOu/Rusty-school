@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use super::types::*;
+use crate::{models::SelectScans, Filters, QueriesFilters};
+
 use super::utils::filters::*;
 use ::entity::{
     groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects, teachers,

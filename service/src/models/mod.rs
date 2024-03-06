@@ -1,0 +1,25 @@
+mod classes;
+mod details;
+mod groups;
+mod levels;
+mod parents;
+mod rooms;
+mod scans;
+mod students;
+mod subjects;
+mod teachers;
+mod timetable;
+mod users;
+
+pub use classes::*;
+pub use details::*;
+pub use groups::*;
+pub use levels::*;
+pub use parents::*;
+pub use rooms::*;
+pub use scans::*;
+pub use students::*;
+pub use subjects::*;
+pub use teachers::*;
+pub use timetable::*;
+pub use users::*;

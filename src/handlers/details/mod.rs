@@ -16,7 +16,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::*;
+use service::{models::CPDetails, *};
 // i like my functions to stay inline
 type CtBody = ActJson<CPDetails>;
 

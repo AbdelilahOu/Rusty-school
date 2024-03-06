@@ -5,7 +5,7 @@ use actix_web::{
     HttpResponse,
 };
 
-use service::*;
+use service::{models::CCity, *};
 // i like my functions to stay inline
 type CtBody = ActJson<CCity>;
 
