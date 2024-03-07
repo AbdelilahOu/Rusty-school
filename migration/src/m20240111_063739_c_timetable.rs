@@ -57,8 +57,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(TimeTable::FullDate).date())
                     .col(ColumnDef::new(TimeTable::StartTime).time())
                     .col(ColumnDef::new(TimeTable::EndTime).time())
-                    .col(ColumnDef::new(TimeTable::Duration).float())
-                    .col(ColumnDef::new(TimeTable::Location).text())
                     .to_owned(),
             )
             .await?;
@@ -256,10 +254,6 @@ pub enum TimeTable {
     StartTime,
     #[sea_orm(iden = "end_time")]
     EndTime,
-    #[sea_orm(iden = "duration")]
-    Duration,
-    #[sea_orm(iden = "location")]
-    Location,
 }
 
 #[derive(DeriveIden)]
