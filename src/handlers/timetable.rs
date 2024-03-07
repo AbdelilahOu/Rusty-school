@@ -18,7 +18,7 @@ pub async fn create_event(body: CEventBody, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("scan created successfully".to_string()),
+                message: Some("time table event created successfully".to_string()),
                 data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -41,7 +41,7 @@ pub async fn create_activity(body: CActivityBody, state: State) -> HttpResponse 
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("scan created successfully".to_string()),
+                message: Some("time table activity created successfully".to_string()),
                 data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()
@@ -64,7 +64,7 @@ pub async fn create_lecture(body: CLectureBody, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("scan created successfully".to_string()),
+                message: Some("time table lecture created successfully".to_string()),
                 data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()

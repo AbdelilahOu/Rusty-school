@@ -176,16 +176,16 @@ impl TransactionsService {
                     start_time: Set(Some(data.start_time)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create create event
                 EventActiveModel {
-                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    time_table_id: Set(Some(timetable_active_modal.id)),
                     event_title: Set(Some(data.event_title)),
                     event_description: Set(Some(data.event_description)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 Ok(())
             })
@@ -203,16 +203,16 @@ impl TransactionsService {
                     day_of_week: Set(to_day_of_week(data.day_of_week)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create create activity
                 ActivityActiveModel {
-                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    time_table_id: Set(Some(timetable_active_modal.id)),
                     activity_title: Set(Some(data.activity_title)),
                     activity_description: Set(Some(data.activity_description)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 Ok(())
             })
@@ -230,15 +230,15 @@ impl TransactionsService {
                     day_of_week: Set(to_day_of_week(data.day_of_week)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create create lecture
                 LectureActiveModel {
-                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    time_table_id: Set(Some(timetable_active_modal.id)),
                     class_id: Set(Some(data.class_id)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 Ok(())
             })
