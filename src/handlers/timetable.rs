@@ -4,12 +4,60 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::{models::CTimeTable, *};
+use service::{
+    models::{CActivity, CEvent, CLecture},
+    *,
+};
 
-type ScBody = ActJson<CTimeTable>;
+type CEventBody = ActJson<CEvent>;
+pub async fn create_event(body: CEventBody, state: State) -> HttpResponse {
+    let res = TransactionsService::create_event(&state.db_conn, body.into_inner()).await;
+    match res {
+        Ok(id) => HttpResponse::Created()
+            .status(StatusCode::CREATED)
+            .content_type(ContentType::json())
+            .json(ResponseData {
+                error: None,
+                message: Some("scan created successfully".to_string()),
+                data: Some(id.to_string()),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type(ContentType::json())
+            .json(ResponseData::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
+    }
+}
 
-pub async fn create_timetable(body: ScBody, state: State) -> HttpResponse {
-    let res = MutationsService::create_time_table(&state.db_conn, body.into_inner()).await;
+type CActivityBody = ActJson<CActivity>;
+pub async fn create_activity(body: CActivityBody, state: State) -> HttpResponse {
+    let res = TransactionsService::create_activity(&state.db_conn, body.into_inner()).await;
+    match res {
+        Ok(id) => HttpResponse::Created()
+            .status(StatusCode::CREATED)
+            .content_type(ContentType::json())
+            .json(ResponseData {
+                error: None,
+                message: Some("scan created successfully".to_string()),
+                data: Some(id.to_string()),
+            }),
+        Err(e) => HttpResponse::InternalServerError()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .content_type(ContentType::json())
+            .json(ResponseData::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
+type CLectureBody = ActJson<CLecture>;
+pub async fn create_lecture(body: CLectureBody, state: State) -> HttpResponse {
+    let res = TransactionsService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created()
             .status(StatusCode::CREATED)

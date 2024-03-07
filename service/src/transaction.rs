@@ -1,5 +1,7 @@
-use crate::models::{CUser, ParentWithAddress, StudentWithAddress, TeacherWithAddress};
-use ::entity::prelude::*;
+use crate::models::{
+    CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress, TeacherWithAddress,
+};
+use ::entity::{prelude::*};
 use sea_orm::{prelude::Uuid, *};
 
 pub struct TransactionsService;
@@ -160,11 +162,15 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_event(db: &DbConn) -> TxnRes<Uuid> {
+    pub async fn create_event(db: &DbConn, data: CEvent) -> TxnRes<Uuid> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
-
+                let timetable_active_modal = TimeTableActiveModel {
+                    item_type: Set(TimeTableItemType::Lecture),
+                    day_of_week: Set(DayOfWeekEnum::)
+                    ..Default::default()
+                }
                 // create create event
 
                 Ok(())
@@ -173,7 +179,7 @@ impl TransactionsService {
         .await;
         todo!()
     }
-    pub async fn create_activity(db: &DbConn) -> TxnRes<Uuid> {
+    pub async fn create_activity(db: &DbConn, data: CActivity) -> TxnRes<Uuid> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
@@ -186,7 +192,7 @@ impl TransactionsService {
         .await;
         todo!()
     }
-    pub async fn create_lecture(db: &DbConn) -> TxnRes<Uuid> {
+    pub async fn create_lecture(db: &DbConn, data: CLecture) -> TxnRes<Uuid> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table

@@ -30,11 +30,11 @@ impl MigrationTrait for Migration {
                             SELECT random_start_time_v + (((random() * 1)::INTEGER + 1) * INTERVAL '30 minute') INTO random_end_time_v;
                             -- create a timetable
                             INSERT INTO 
-                                time_table (type, day_of_week, start_time, end_time) 
+                                time_table (item_type, day_of_week, start_time, end_time) 
                             VALUES 
                                 (
                                     'activity', 
-                                    ((RANDOM() * 5)::INTEGER + 1)::TEXT::day_of_week_enum, 
+                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::day_of_week_enum, 
                                     random_start_time_v, 
                                     random_end_time_v
                                 );
@@ -58,7 +58,7 @@ impl MigrationTrait for Migration {
                     VALUES 
                         (
                             (
-                                SELECT id FROM time_table WHERE type = 'activity' AND id NOT IN (SELECT time_table_id FROM activities) LIMIT 1
+                                SELECT id FROM time_table WHERE item_type = 'activity' AND id NOT IN (SELECT time_table_id FROM activities) LIMIT 1
                             ), 
                             $1, 
                             $2
@@ -85,7 +85,7 @@ impl MigrationTrait for Migration {
                             SELECT NOW()::date + ((random() * 10)::INTEGER * INTERVAL '1 day') INTO random_date_v;
                             -- create a timetable
                             INSERT INTO 
-                                time_table (type, full_date, start_time) 
+                                time_table (item_type, full_date, start_time) 
                             VALUES 
                                 (
                                     'event', 
@@ -111,7 +111,7 @@ impl MigrationTrait for Migration {
                     VALUES 
                         (
                             (
-                                SELECT id FROM time_table WHERE type = 'event' AND id NOT IN (SELECT time_table_id FROM events) LIMIT 1
+                                SELECT id FROM time_table WHERE item_type = 'event' AND id NOT IN (SELECT time_table_id FROM events) LIMIT 1
                             ), 
                             $1, 
                             $2
@@ -140,11 +140,11 @@ impl MigrationTrait for Migration {
                             SELECT random_start_time_v + (((random() * 1)::INTEGER + 1) * INTERVAL '30 minute') INTO random_end_time_v;
                             -- create a timetable
                             INSERT INTO 
-                                time_table (type, day_of_week, start_time, end_time) 
+                                time_table (item_type, day_of_week, start_time, end_time) 
                             VALUES 
                                 (
                                     'lecture', 
-                                    ((RANDOM() * 5)::INTEGER + 1)::TEXT::day_of_week_enum, 
+                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::day_of_week_enum, 
                                     random_start_time_v, 
                                     random_end_time_v
                                 )

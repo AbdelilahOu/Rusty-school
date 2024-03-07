@@ -2,14 +2,15 @@
 
 use super::sea_orm_active_enums::DayOfWeekEnum;
 use super::sea_orm_active_enums::TimeTableItemType;
-use sea_orm::{entity::prelude::*, Set};
+use sea_orm::entity::prelude::*;
+use sea_orm::Set;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "time_table")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub r#type: TimeTableItemType,
+    pub item_type: TimeTableItemType,
     pub day_of_week: Option<DayOfWeekEnum>,
     pub full_date: Option<Date>,
     pub start_time: Option<Time>,

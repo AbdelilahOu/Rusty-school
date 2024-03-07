@@ -5,20 +5,20 @@ use sea_orm::entity::prelude::*;
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "day_of_week_enum")]
 pub enum DayOfWeekEnum {
-    #[sea_orm(string_value = "1")]
-    _1,
-    #[sea_orm(string_value = "2")]
-    _2,
-    #[sea_orm(string_value = "3")]
-    _3,
-    #[sea_orm(string_value = "4")]
-    _4,
-    #[sea_orm(string_value = "5")]
-    _5,
-    #[sea_orm(string_value = "6")]
-    _6,
-    #[sea_orm(string_value = "7")]
-    _7,
+    #[sea_orm(string_value = "friday")]
+    Friday,
+    #[sea_orm(string_value = "monday")]
+    Monday,
+    #[sea_orm(string_value = "saturday")]
+    Saturday,
+    #[sea_orm(string_value = "sunday")]
+    Sunday,
+    #[sea_orm(string_value = "thursday")]
+    Thursday,
+    #[sea_orm(string_value = "tuesday")]
+    Tuesday,
+    #[sea_orm(string_value = "wednesday")]
+    Wednesday,
 }
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(

@@ -224,19 +224,12 @@ impl MigrationTrait for Migration {
 enum DayOfWeekEnum {
     #[iden = "day_of_week_enum"]
     Table,
-    #[iden = "1"]
     Monday,
-    #[iden = "2"]
     Tuesday,
-    #[iden = "3"]
     Wednesday,
-    #[iden = "4"]
     Thursday,
-    #[iden = "5"]
     Friday,
-    #[iden = "6"]
     Saturday,
-    #[iden = "7"]
     Sunday,
 }
 
@@ -253,7 +246,7 @@ pub enum TimeTable {
     #[sea_orm(iden = "time_table")]
     Table,
     Id,
-    #[sea_orm(iden = "type")]
+    #[sea_orm(iden = "item_type")]
     Type,
     #[sea_orm(iden = "day_of_week")]
     DayOfWeek,
