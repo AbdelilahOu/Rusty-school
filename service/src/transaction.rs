@@ -1,5 +1,9 @@
-use crate::models::{
-    CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress, TeacherWithAddress,
+use crate::{
+    models::{
+        CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress,
+        TeacherWithAddress,
+    },
+    utils::convert_to_enum::to_day_of_week,
 };
 use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
@@ -188,31 +192,58 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_activity(db: &DbConn, data: CActivity) -> TxnRes<Uuid> {
+    pub async fn create_activity(db: &DbConn, data: CActivity) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
-
+                let timetable_active_modal = TimeTableActiveModel {
+                    item_type: Set(TimeTableItemType::Activity),
+                    start_time: Set(Some(data.start_time)),
+                    end_time: Set(Some(data.end_time)),
+                    day_of_week: Set(to_day_of_week(data.day_of_week)),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
                 // create create activity
-
+                ActivityActiveModel {
+                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    activity_title: Set(Some(data.activity_title)),
+                    activity_description: Set(Some(data.activity_description)),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
                 Ok(())
             })
         })
-        .await;
-        todo!()
+        .await
     }
-    pub async fn create_lecture(db: &DbConn, data: CLecture) -> TxnRes<Uuid> {
+    pub async fn create_lecture(db: &DbConn, data: CLecture) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
-
+                let timetable_active_modal = TimeTableActiveModel {
+                    item_type: Set(TimeTableItemType::Lecture),
+                    start_time: Set(Some(data.start_time)),
+                    end_time: Set(Some(data.end_time)),
+                    day_of_week: Set(to_day_of_week(data.day_of_week)),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
                 // create create lecture
-
+                LectureActiveModel {
+                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    class_id: Set(Some(data.class_id)),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
                 Ok(())
             })
         })
-        .await;
-        todo!()
+        .await
     }
     //
 }

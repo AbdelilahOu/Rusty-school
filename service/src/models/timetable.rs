@@ -17,7 +17,7 @@ pub struct CEvent {
 pub struct CActivity {
     pub start_time: NaiveTime,
     pub end_time: NaiveTime,
-    pub day_of_week: String,
+    pub day_of_week: u32,
     pub activity_title: String,
     pub activity_description: String,
 }
@@ -26,6 +26,6 @@ pub struct CActivity {
 pub struct CLecture {
     pub start_time: NaiveTime,
     pub end_time: NaiveTime,
-    pub day_of_week: String,
+    pub day_of_week: u32,
     pub class_id: Uuid,
 }

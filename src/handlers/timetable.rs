@@ -36,13 +36,13 @@ type CActivityBody = ActJson<CActivity>;
 pub async fn create_activity(body: CActivityBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created()
+        Ok(_) => HttpResponse::Created()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("scan created successfully".to_string()),
-                data: Some(id.to_string()),
+                data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
@@ -59,13 +59,13 @@ type CLectureBody = ActJson<CLecture>;
 pub async fn create_lecture(body: CLectureBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created()
+        Ok(_) => HttpResponse::Created()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("scan created successfully".to_string()),
-                data: Some(id.to_string()),
+                data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
