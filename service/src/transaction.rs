@@ -1,7 +1,7 @@
 use crate::models::{
     CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress, TeacherWithAddress,
 };
-use ::entity::{prelude::*};
+use ::entity::prelude::*;
 use sea_orm::{prelude::Uuid, *};
 
 pub struct TransactionsService;
@@ -162,22 +162,31 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_event(db: &DbConn, data: CEvent) -> TxnRes<Uuid> {
+    pub async fn create_event(db: &DbConn, data: CEvent) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
                     item_type: Set(TimeTableItemType::Lecture),
-                    day_of_week: Set(DayOfWeekEnum::)
+                    full_date: Set(Some(data.full_date)),
+                    start_time: Set(Some(data.start_time)),
                     ..Default::default()
                 }
+                .save(txn)
+                .await?;
                 // create create event
-
+                EventActiveModel {
+                    time_table_id: Set(Some(timetable_active_modal.id.unwrap())),
+                    event_title: Set(Some(data.event_title)),
+                    event_description: Set(Some(data.event_description)),
+                    ..Default::default()
+                }
+                .save(txn)
+                .await?;
                 Ok(())
             })
         })
-        .await;
-        todo!()
+        .await
     }
     pub async fn create_activity(db: &DbConn, data: CActivity) -> TxnRes<Uuid> {
         db.transaction::<_, (), DbErr>(|txn| {

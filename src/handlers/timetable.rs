@@ -13,13 +13,13 @@ type CEventBody = ActJson<CEvent>;
 pub async fn create_event(body: CEventBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created()
+        Ok(_) => HttpResponse::Created()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("scan created successfully".to_string()),
-                data: Some(id.to_string()),
+                data: Some(()),
             }),
         Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
