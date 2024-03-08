@@ -595,9 +595,6 @@ impl MutationsService {
         }
     }
     //
-    pub async fn create_time_table(_db: &DbConn, _data: CTimeTable) -> DyResult<Uuid> {
-        todo!()
-    }
     pub async fn delete_time_table(db: &DbConn, id: Uuid) -> DyResult<u64> {
         let time_table_model = TimeTable::find_by_id(id).one(db).await?;
         match time_table_model {

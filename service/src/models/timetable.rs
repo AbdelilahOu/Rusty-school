@@ -1,9 +1,18 @@
 use chrono::{NaiveDate, NaiveTime};
+use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct CTimeTable {}
+#[derive(Deserialize, Serialize, Debug, PartialEq, FromQueryResult)]
+pub struct SelectTimeTable {
+    pub id: Uuid,
+    pub item_type: String,
+    pub day_of_week: Option<String>,
+    pub full_date: Option<NaiveDate>,
+    pub start_time: Option<NaiveTime>,
+    pub end_time: Option<NaiveTime>,
+    pub title: Option<String>,
+}
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CEvent {

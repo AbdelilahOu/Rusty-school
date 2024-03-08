@@ -1,10 +1,14 @@
 use std::collections::HashMap;
 
-use crate::{models::SelectScans, Filters, QueriesFilters};
+use crate::{
+    models::{SelectScans, SelectTimeTable},
+    Filters, QueriesFilters,
+};
 
 use super::utils::filters::*;
 use ::entity::{
-    groups, levels, parents, persons, pickups, prelude::*, scans, students, subjects, teachers,
+    activities, classes, events, groups, lectures, levels, parents, persons, pickups, prelude::*,
+    scans, students, subjects, teachers, time_table,
 };
 use chrono::NaiveDateTime;
 use sea_orm::{
@@ -651,7 +655,94 @@ impl QueriesService {
         Ok(classes)
     }
     //
-    pub async fn list_time_table(_db: &DbConn) -> Result<Values, DbErr> {
-        todo!();
+    pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
+        let (sql, values) = Query::select()
+            .from(TimeTable)
+            .columns(time_table::Column::iter())
+            .expr_as(
+                Expr::case(
+                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemType::Event),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Event)
+                                .column(events::Column::EventTitle)
+                                .cond_where(
+                                    Expr::col((Event, events::Column::TimeTableId))
+                                        .equals((TimeTable, time_table::Column::Id)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .case(
+                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemType::Activity),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Activity)
+                                .column(activities::Column::ActivityTitle)
+                                .cond_where(
+                                    Expr::col((Activity, activities::Column::TimeTableId))
+                                        .equals((TimeTable, time_table::Column::Id)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                )
+                .finally(SimpleExpr::SubQuery(
+                    None,
+                    Box::new(SubQueryStatement::SelectStatement(
+                        Query::select()
+                            .from(Lecture)
+                            .expr(Expr::cust(" FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)"))
+                            .join(
+                                JoinType::Join,
+                                Class,
+                                Expr::col((Class, classes::Column::Id))
+                                    .equals((Lecture, lectures::Column::ClassId)),
+                            )
+                            .join(
+                                JoinType::Join,
+                                Teacher,
+                                Expr::col((Teacher, classes::Column::Id))
+                                    .equals((Class, classes::Column::TeacherId)),
+                            )
+                            .join(
+                                JoinType::Join,
+                                Group,
+                                Expr::col((Group, classes::Column::Id))
+                                    .equals((Class, classes::Column::GroupId)),
+                            )
+                            .join(
+                                JoinType::Join,
+                                Subject,
+                                Expr::col((Subject, classes::Column::Id))
+                                    .equals((Class, classes::Column::SubjectId)),
+                            )
+                            .cond_where(
+                                Expr::col((Lecture, lectures::Column::TimeTableId))
+                                    .equals((TimeTable, time_table::Column::Id)),
+                            )
+                            .to_owned(),
+                    )),
+                )),
+                Alias::new("title"),
+            )
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let result = SelectTimeTable::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .into_json()
+        .all(db)
+        .await?;
+
+        Ok(result)
     }
 }
