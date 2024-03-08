@@ -58,11 +58,7 @@ impl QueriesService {
     pub async fn list_teachers(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let teachers = Teacher::find()
             .select_only()
-            .columns([
-                students::Column::Id,
-                students::Column::FullName,
-                students::Column::GroupId,
-            ])
+            .columns([teachers::Column::Id, teachers::Column::FullName])
             .expr(Expr::col(levels::Column::LevelName))
             .join(JoinType::LeftJoin, teachers::Relation::Levels.def())
             .filter(generate_teacher_filters(qf.filters))
