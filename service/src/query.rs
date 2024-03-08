@@ -658,7 +658,13 @@ impl QueriesService {
     pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
         let (sql, values) = Query::select()
             .from(TimeTable)
-            .columns(time_table::Column::iter())
+            .columns(time_table::Column::iter().filter(|f| match f {
+                time_table::Column::DayOfWeek => false,
+                time_table::Column::ItemType => false,
+                _ => true
+            }))
+            .expr_as(Expr::col((TimeTable,time_table::Column::DayOfWeek)).cast_as(Alias::new("TEXT")),Alias::new("day_of_week"))
+            .expr_as(Expr::col((TimeTable,time_table::Column::ItemType)).cast_as(Alias::new("TEXT")),Alias::new("item_type"))
             .expr_as(
                 Expr::case(
                     Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemType::Event),
