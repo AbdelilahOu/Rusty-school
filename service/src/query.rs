@@ -699,7 +699,7 @@ impl QueriesService {
                     Box::new(SubQueryStatement::SelectStatement(
                         Query::select()
                             .from(Lecture)
-                            .expr(Expr::cust(" FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)"))
+                            .expr(Expr::cust("FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)"))
                             .join(
                                 JoinType::Join,
                                 Class,
