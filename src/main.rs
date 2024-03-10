@@ -26,8 +26,6 @@ async fn main() -> std::io::Result<()> {
     let conn = establish_connection(loaded_config.db_url.clone())
         .await
         .unwrap();
-    // run migrations
-    // let _ = run_migrations(&conn).await.unwrap();
     //
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     // start server
