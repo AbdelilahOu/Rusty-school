@@ -61,7 +61,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             response.cookie(cookie);
                             response.json(ResponseData::<String> {
                                 error: None,
-                                message: Some(String::from("user logged in successfully")),
+                                message: Some("user logged in successfully".to_string()),
                                 data: Some(token.clone()),
                             });
                             response.finish()
@@ -71,7 +71,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             .content_type(ContentType::json())
                             .json(ResponseData::<Option<String>> {
                                 error: Some(e.to_string()),
-                                message: Some(String::from("coudnt insert user into db")),
+                                message: Some("coudnt insert user into db".to_string()),
                                 data: None,
                             }),
                     }
@@ -81,7 +81,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                     .content_type(ContentType::json())
                     .json(ResponseData::<Option<String>> {
                         error: Some(e.to_string()),
-                        message: Some(String::from("coudnt get user profile from google")),
+                        message: Some("coudnt get user profile from google".to_string()),
                         data: None,
                     }),
             }
@@ -91,7 +91,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
-                message: Some(String::from("coudnt get access token from google")),
+                message: Some("coudnt get access token from google".to_string()),
                 data: None,
             }),
     }

@@ -50,7 +50,7 @@ pub async fn request_tokens(code: String, secrets: ConfigObj) -> Res<TokenRespon
             .expect("Failed to parse response");
         return Ok(resp);
     } else {
-        Err(String::from("Error getting tokens"))
+        Err("Error getting tokens".to_string())
     }
 }
 // #3
@@ -70,6 +70,6 @@ pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleU
         let resp = req.json::<GoogleUser>().await.expect("coudnt parse user");
         return Ok(resp);
     } else {
-        Err(String::from("Error getting user"))
+        Err("Error getting user".to_string())
     }
 }
