@@ -14,15 +14,11 @@ pub fn check_token(headers: &HeaderMap, secret: String) -> Option<Claims> {
                 println!("header is empty");
                 return None;
             }
-            // check header
-            if header.split(" ").collect::<Vec<&str>>().len() != 2 {
+            // get token
+            let [token, authorization_type] = header.split(" ").collect::<Vec<&str>>()[..] else {
                 println!("header is not valid");
                 return None;
-            }
-            // get token
-            let token = header.split(" ").collect::<Vec<&str>>()[1];
-            // get auth type
-            let authorization_type = header.split(" ").collect::<Vec<&str>>()[0];
+            };
             // check if auth type is bearer
             if authorization_type == "Bearer".to_string() {
                 let payload_res = utils::token::verify_token(token, secret);
