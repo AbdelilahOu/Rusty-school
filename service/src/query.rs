@@ -616,8 +616,6 @@ impl QueriesService {
                 groups::Column::LevelId,
             ])
             .expr(Expr::col(levels::Column::LevelName))
-            // .expr(Expr::count(Expr::col((Student, students::Column::Id))))
-            // .expr(Expr::count(Expr::col((Class, classes::Column::Id))))
             .join(JoinType::Join, groups::Relation::Levels.def())
             .join(JoinType::Join, groups::Relation::Classes.def())
             .join(JoinType::Join, groups::Relation::Students.def())
