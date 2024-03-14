@@ -91,27 +91,6 @@ pub async fn delete_teacher(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_teacher(id: IdParam, state: State) -> HttpResponse {
-    let selected_teacher = QueriesService::get_teacher(&state.db_conn, id.into_inner()).await;
-
-    match selected_teacher {
-        Ok(i) => HttpResponse::Created()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Teacher selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn list_teachers(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let teachers = QueriesService::list_teachers(
         &state.db_conn,

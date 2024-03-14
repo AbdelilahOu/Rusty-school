@@ -11,7 +11,6 @@ use {cities::*, countries::*, districts::*, states::*, streets::*};
 pub fn load_details_routes() -> Scope {
     web::scope("/details")
         .route("/", web::post().to(details::create_details))
-        .route("/{id}", web::get().to(details::get_details))
         .route("/{id}", web::put().to(details::update_details))
         .route("/{id}", web::delete().to(details::delete_details))
         .service(load_countries_routes())

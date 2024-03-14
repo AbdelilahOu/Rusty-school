@@ -51,8 +51,15 @@ pub async fn delete_class(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_classes(state: State) -> HttpRes {
-    let classes = QueriesService::list_classes(&state.db_conn).await;
+pub async fn list_classes(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+    let classes = QueriesService::list_classes(
+        &state.db_conn,
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+    )
+    .await;
 
     match classes {
         Ok(i) => HttpRes::Created()

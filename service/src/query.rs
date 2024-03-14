@@ -50,11 +50,6 @@ impl QueriesService {
         Ok(students)
     }
     //
-    pub async fn get_student(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let student = Student::find_by_id(id).into_json().one(db).await?;
-        Ok(student)
-    }
-    //
     pub async fn list_teachers(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let teachers = Teacher::find()
             .select_only()
@@ -70,11 +65,6 @@ impl QueriesService {
             .await?;
 
         Ok(teachers)
-    }
-    //
-    pub async fn get_teacher(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let teacher = Teacher::find_by_id(id).into_json().one(db).await?;
-        Ok(teacher)
     }
     //
     pub async fn list_parents(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
@@ -94,16 +84,6 @@ impl QueriesService {
             .await?;
 
         Ok(parents)
-    }
-    //
-    pub async fn get_parent(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let parent = Parent::find_by_id(id).into_json().one(db).await?;
-        Ok(parent)
-    }
-    //
-    pub async fn get_details(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
-        let details = PersonDetails::find_by_id(id).into_json().one(db).await?;
-        Ok(details)
     }
     //
     pub async fn list_countries(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
@@ -639,13 +619,23 @@ impl QueriesService {
         Ok(level_groups)
     }
     //
-    pub async fn list_rooms(db: &DbConn) -> Result<Values, DbErr> {
-        let rooms = Room::find().into_json().all(db).await?;
+    pub async fn list_rooms(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let rooms = Room::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
         Ok(rooms)
     }
     //
-    pub async fn list_classes(db: &DbConn) -> Result<Values, DbErr> {
-        let classes = Class::find().into_json().all(db).await?;
+    pub async fn list_classes(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let classes = Class::find()
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
         Ok(classes)
     }
     //

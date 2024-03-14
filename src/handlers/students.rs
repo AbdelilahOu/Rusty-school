@@ -67,27 +67,6 @@ pub async fn delete_student(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn get_student(id: IdParam, state: State) -> HttpRes {
-    let selected_student = QueriesService::get_student(&state.db_conn, id.into_inner()).await;
-
-    match selected_student {
-        Ok(i) => HttpRes::Created()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Student selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpRes::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let students = QueriesService::list_students(
         &state.db_conn,

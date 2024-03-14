@@ -52,27 +52,6 @@ pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_parent(id: IdParam, state: State) -> HttpResponse {
-    let selected_parent = QueriesService::get_parent(&state.db_conn, id.into_inner()).await;
-
-    match selected_parent {
-        Ok(i) => HttpResponse::Created()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Parent selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let parents = QueriesService::list_parents(
         &state.db_conn,

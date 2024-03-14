@@ -51,8 +51,15 @@ pub async fn delete_room(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_rooms(state: State) -> HttpRes {
-    let rooms = QueriesService::list_rooms(&state.db_conn).await;
+pub async fn list_rooms(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+    let rooms = QueriesService::list_rooms(
+        &state.db_conn,
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+    )
+    .await;
 
     match rooms {
         Ok(i) => HttpRes::Created()

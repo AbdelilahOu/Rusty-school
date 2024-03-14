@@ -63,27 +63,6 @@ pub async fn delete_details(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn get_details(id: IdParam, state: State) -> HttpResponse {
-    let selected_details = QueriesService::get_details(&state.db_conn, id.into_inner()).await;
-
-    match selected_details {
-        Ok(i) => HttpResponse::Created()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Details selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
-    }
-}
-
 pub async fn update_details(id: IdParam, body: CtBody, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_details(&state.db_conn, id.into_inner(), body.into_inner()).await;
