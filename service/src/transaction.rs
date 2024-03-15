@@ -26,25 +26,25 @@ impl TransactionsService {
                     street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id.unwrap())),
+                    details_id: Set(Some(details.id)),
                     person_type: Set("student".to_owned()),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create student
                 let _student = StudentActiveModel {
                     first_name: Set(data.student.first_name),
                     last_name: Set(data.student.last_name),
                     group_id: Set(data.student.group_id),
-                    person_id: Set(Some(person.id.unwrap())),
+                    person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
 
                 Ok(())
@@ -65,24 +65,24 @@ impl TransactionsService {
                     street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id.unwrap())),
+                    details_id: Set(Some(details.id)),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create student
                 let _teacher = TeacherActiveModel {
                     first_name: Set(data.teacher.first_name),
                     last_name: Set(data.teacher.last_name),
-                    person_id: Set(Some(person.id.unwrap())),
+                    person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
 
                 Ok(())
@@ -103,24 +103,24 @@ impl TransactionsService {
                     street_id: Set(data.details.street_id),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id.unwrap())),
+                    details_id: Set(Some(details.id)),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
                 // create student
                 let _parent = ParentActiveModel {
                     first_name: Set(data.parent.first_name),
                     last_name: Set(data.parent.last_name),
-                    person_id: Set(Some(person.id.unwrap())),
+                    person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
 
                 Ok(())
@@ -147,21 +147,21 @@ impl TransactionsService {
                     person_type: Set("NOT DEFINED".to_owned()),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
 
-                let _c_user = UserActiveModel {
+                let c_user = UserActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
                     email: Set(data.email),
                     picture: Set(data.picture),
-                    person_id: Set(c_person.id.unwrap()),
+                    person_id: Set(c_person.id),
                     ..Default::default()
                 }
-                .save(txn)
+                .insert(txn)
                 .await?;
 
-                Ok(_c_user.id.unwrap())
+                Ok(c_user.id)
             })
         })
         .await
