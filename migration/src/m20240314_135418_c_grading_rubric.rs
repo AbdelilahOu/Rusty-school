@@ -1,3 +1,4 @@
+use sea_orm::{sea_query::extension::postgres::Type, EnumIter, Iterable};
 use sea_orm_migration::prelude::*;
 
 #[derive(DeriveMigrationName)]
@@ -55,6 +56,15 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
+            .create_type(
+                Type::create()
+                    .as_enum(PerformanceLevelType::Table)
+                    .values(PerformanceLevelType::iter().skip(1))
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .create_table(
                 Table::create()
                     .table(PerformanceLevel::Table)
@@ -68,7 +78,10 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(PerformanceLevel::LevelName)
-                            .string()
+                            .enumeration(
+                                PerformanceLevelType::Table,
+                                PerformanceLevelType::iter().skip(1),
+                            )
                             .not_null(),
                     )
                     .col(
@@ -142,4 +155,14 @@ enum PerformanceLevel {
     GradingCriteriaId,
     LevelName,
     Description,
+}
+
+#[derive(Iden, EnumIter)]
+enum PerformanceLevelType {
+    Table,
+    ExceedsExpectations,
+    MeetsExpectations,
+    NeedsImprovement,
+    BelowExpectations,
+    NotYetMeetingExpectations,
 }
