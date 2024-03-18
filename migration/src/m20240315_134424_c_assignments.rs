@@ -18,9 +18,9 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(
                         ColumnDef::new(Assignment::Id)
-                            .integer()
+                            .uuid()
                             .not_null()
-                            .auto_increment()
+                            .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Assignment::Title).string().not_null())
