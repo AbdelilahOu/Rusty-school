@@ -74,6 +74,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20240111_064739_seed_teacher_subjects::Migration),
             Box::new(m20240124_092854_seed_classes::Migration),
             Box::new(m20240124_092916_seed_time_table::Migration),
+            Box::new(m20240314_135418_c_grading_rubric::Migration),
+            Box::new(m20240315_134424_c_assignments::Migration),
         ]
     }
 }
