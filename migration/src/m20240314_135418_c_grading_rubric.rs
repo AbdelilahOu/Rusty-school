@@ -132,7 +132,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum GradingRubrics {
+pub enum GradingRubrics {
     Table,
     Id,
     Title,
