@@ -99,7 +99,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Assignment {
+pub enum Assignment {
     #[sea_orm(iden = "assignments")]
     Table,
     Id,
