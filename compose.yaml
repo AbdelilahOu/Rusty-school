@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=mysecretpassword
     ports:
-      - 4321:5432
+      - 5432:5432
     volumes:
       - school_db_volume:/var/lib/postgresql/data
 
