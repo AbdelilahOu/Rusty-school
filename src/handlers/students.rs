@@ -24,7 +24,6 @@ pub async fn create_student(body: StBody, state: State, req: HttpReq) -> HttpRes
                 data: None,
             });
     }
-    println!("{:?}", authorized);
     let res = MutationsService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
