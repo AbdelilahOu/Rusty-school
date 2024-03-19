@@ -3,15 +3,20 @@
 pub mod prelude;
 
 pub mod activities;
+pub mod assignments;
 pub mod cities;
 pub mod classes;
 pub mod countries;
+pub mod disciplinary_actions;
 pub mod districts;
 pub mod events;
+pub mod grading_criteria;
+pub mod grading_rubrics;
 pub mod groups;
 pub mod lectures;
 pub mod levels;
 pub mod parents;
+pub mod performance_level;
 pub mod person_details;
 pub mod persons;
 pub mod pickups;

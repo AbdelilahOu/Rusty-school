@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::{models::CScan, *};
+use service::{models::CScan, mutation::*, query::*};
 
 type ScBody = ActJson<CScan>;
 

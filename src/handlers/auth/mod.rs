@@ -10,7 +10,7 @@ use actix_web::{
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
-use service::{models::CUser, TransactionsService};
+use service::{models::CUser, transaction::TransactionsService};
 
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(

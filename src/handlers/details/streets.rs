@@ -5,7 +5,7 @@ use actix_web::{
     HttpResponse,
 };
 
-use service::{models::CStreet, *};
+use service::{models::CStreet, mutation::*, query::*};
 
 // i like my functions to stay inline
 type CtBody = ActJson<CStreet>;

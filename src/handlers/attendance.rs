@@ -1,6 +1,6 @@
 use crate::models::commen::*;
 use actix_web::{http::header::ContentType, HttpResponse as HttpRes};
-use service::*;
+use service::query::*;
 //
 pub async fn list_attendance(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let attendances = QueriesService::list_attendance(

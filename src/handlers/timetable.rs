@@ -6,7 +6,9 @@ use actix_web::{
 };
 use service::{
     models::{CActivity, CEvent, CLecture},
-    *,
+    mutation::*,
+    query::*,
+    transaction::*,
 };
 
 type CEventBody = ActJson<CEvent>;

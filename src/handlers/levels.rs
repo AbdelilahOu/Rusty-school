@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::{models::CLevel, *};
+use service::{models::CLevel, mutation::*, query::*};
 
 // i like my functions to stay inline
 type StBody = ActJson<CLevel>;

@@ -24,6 +24,24 @@ pub enum DayOfWeekEnum {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
+    enum_name = "performance_level_type"
+)]
+pub enum PerformanceLevelType {
+    #[sea_orm(string_value = "below_expectations")]
+    BelowExpectations,
+    #[sea_orm(string_value = "exceeds_expectations")]
+    ExceedsExpectations,
+    #[sea_orm(string_value = "meets_expectations")]
+    MeetsExpectations,
+    #[sea_orm(string_value = "needs_improvement")]
+    NeedsImprovement,
+    #[sea_orm(string_value = "not_yet_meeting_expectations")]
+    NotYetMeetingExpectations,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
     enum_name = "time_table_item_type"
 )]
 pub enum TimeTableItemType {

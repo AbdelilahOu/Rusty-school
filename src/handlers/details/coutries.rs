@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse,
 };
-use service::{models::CCountry, *};
+use service::{models::CCountry, mutation::*, query::*};
 // i like my functions to stay inline
 type CtBody = ActJson<CCountry>;
 

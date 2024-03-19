@@ -1,4 +1,4 @@
-use crate::Filters;
+use crate::query::Filters;
 use entity::parents::Column as ParentCol;
 use entity::students::Column as StudentCol;
 use entity::teachers::Column as TeacherCol;

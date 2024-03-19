@@ -5,7 +5,7 @@ use actix_web::{
     HttpResponse,
 };
 
-use service::{models::CDistrict, *};
+use service::{models::CDistrict, mutation::*, query::*};
 
 // i like my functions to stay inline
 type CtBody = ActJson<CDistrict>;

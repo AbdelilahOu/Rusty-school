@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse as HttpRes,
 };
-use service::{models::CClass, *};
+use service::{models::CClass, mutation::*, query::*};
 //
 type StBody = ActJson<CClass>;
 

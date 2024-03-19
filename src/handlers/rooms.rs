@@ -4,7 +4,7 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse as HttpRes,
 };
-use service::{models::CRoom, *};
+use service::{models::CRoom, mutation::*, query::*};
 //
 type StBody = ActJson<CRoom>;
 

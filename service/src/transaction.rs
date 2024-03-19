@@ -1,11 +1,12 @@
 use crate::{
+    entities::*,
     models::{
         CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress,
         TeacherWithAddress,
     },
     utils::convert_to_enum::to_day_of_week,
 };
-use ::entity::prelude::*;
+
 use sea_orm::{prelude::Uuid, *};
 
 pub struct TransactionsService;

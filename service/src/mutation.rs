@@ -1,8 +1,8 @@
-use ::entity::prelude::*;
 use chrono::Utc;
 use sea_orm::{prelude::Uuid, *};
 
 use super::models::*;
+use crate::entities::*;
 
 pub struct MutationsService;
 
