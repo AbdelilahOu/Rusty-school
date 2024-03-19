@@ -32,7 +32,8 @@ mod m20240111_064739_seed_teacher_subjects;
 mod m20240124_092854_seed_classes;
 mod m20240124_092916_seed_time_table;
 mod m20240314_135418_c_grading_rubric;
-mod m20240315_134424_c_assignments;
+mod m20240315_134424_c_assignments;mod m20240318_222105_c_grades;
+
 
 //
 mod utils;
