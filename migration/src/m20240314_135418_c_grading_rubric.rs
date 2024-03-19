@@ -50,7 +50,7 @@ impl MigrationTrait for Migration {
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(ColumnDef::new(GradingCriteria::Description).string())
-                    .col(ColumnDef::new(GradingCriteria::Points).integer())
+                    .col(ColumnDef::new(GradingCriteria::Points).decimal_len(4, 2))
                     .to_owned(),
             )
             .await?;
@@ -107,6 +107,15 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_table(Table::drop().table(GradingRubrics::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(PerformanceLevelType::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
