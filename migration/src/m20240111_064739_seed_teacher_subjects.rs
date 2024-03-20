@@ -41,8 +41,6 @@ impl MigrationTrait for Migration {
 
                                 -- check if all teachers has teacher_subjects
                                 SELECT COUNT(id) FROM teachers WHERE id NOT IN (SELECT teacher_id FROM teacher_subjects) INTO counter;
-
-                                RAISE NOTICE 'counter = %', counter;
                                 -- Loop stuff
                                 EXIT WHEN counter = 0;
                             END LOOP;
