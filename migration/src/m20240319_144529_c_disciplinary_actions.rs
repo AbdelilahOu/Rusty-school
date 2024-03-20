@@ -60,7 +60,7 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_foreign_key(
-                sea_query::ForeignKey::drop()
+                ForeignKey::drop()
                     .name("fk_disciplinary_actions_student_id")
                     .table(DisciplinaryActions::Table)
                     .to_owned(),
