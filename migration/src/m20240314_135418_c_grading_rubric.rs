@@ -106,19 +106,6 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(GradingRubrics::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_type(
-                Type::drop()
-                    .if_exists()
-                    .name(PerformanceLevelType::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
                     .name("fk_grading_criteria_rubrics_id")
@@ -134,6 +121,23 @@ impl MigrationTrait for Migration {
                     .table(PerformanceLevel::Table)
                     .to_owned(),
             )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(PerformanceLevel::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(PerformanceLevelType::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(GradingRubrics::Table).to_owned())
             .await?;
 
         Ok(())

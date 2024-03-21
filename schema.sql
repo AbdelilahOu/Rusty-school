@@ -21,13 +21,13 @@ SET row_security = off;
 --
 
 CREATE TYPE public.day_of_week_enum AS ENUM (
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7'
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
 );
 
 
@@ -143,6 +143,22 @@ CREATE TABLE public.countries (
 ALTER TABLE public.countries OWNER TO root;
 
 --
+-- Name: disciplinary_actions; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.disciplinary_actions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    student_id uuid NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    issued_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    description text NOT NULL,
+    consequences text NOT NULL
+);
+
+
+ALTER TABLE public.disciplinary_actions OWNER TO root;
+
+--
 -- Name: districts; Type: TABLE; Schema: public; Owner: root
 --
 
@@ -177,7 +193,7 @@ CREATE TABLE public.grading_criteria (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     grading_rubric_id uuid NOT NULL,
     description character varying,
-    points integer
+    points numeric(4,2)
 );
 
 
@@ -449,13 +465,11 @@ ALTER TABLE public.teachers OWNER TO root;
 
 CREATE TABLE public.time_table (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    type public.time_table_item_type NOT NULL,
+    item_type public.time_table_item_type NOT NULL,
     day_of_week public.day_of_week_enum,
     full_date date,
     start_time time without time zone,
-    end_time time without time zone,
-    duration real,
-    location text
+    end_time time without time zone
 );
 
 
@@ -516,6 +530,14 @@ ALTER TABLE ONLY public.classes
 
 ALTER TABLE ONLY public.countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: disciplinary_actions disciplinary_actions_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.disciplinary_actions
+    ADD CONSTRAINT disciplinary_actions_pkey PRIMARY KEY (id);
 
 
 --
@@ -875,6 +897,14 @@ ALTER TABLE ONLY public.groups
 
 
 --
+-- Name: disciplinary_actions fk_disciplinary_actions_student_id; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.disciplinary_actions
+    ADD CONSTRAINT fk_disciplinary_actions_student_id FOREIGN KEY (student_id) REFERENCES public.students(id) ON DELETE RESTRICT;
+
+
+--
 -- Name: districts fk_districts_city_id; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -888,14 +918,6 @@ ALTER TABLE ONLY public.districts
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT fk_events_time_table_id FOREIGN KEY (time_table_id) REFERENCES public.time_table(id) ON DELETE CASCADE;
-
-
---
--- Name: grading_criteria fk_grading_criteria_rubrics_id; Type: FK CONSTRAINT; Schema: public; Owner: root
---
-
-ALTER TABLE ONLY public.grading_criteria
-    ADD CONSTRAINT fk_grading_criteria_rubrics_id FOREIGN KEY (grading_rubric_id) REFERENCES public.grading_rubrics(id) ON DELETE CASCADE;
 
 
 --
