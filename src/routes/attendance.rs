@@ -1,4 +1,3 @@
-// use crate::handlers::attendance;
 use actix_web::{web, Scope};
 
 use crate::handlers::attendance;
