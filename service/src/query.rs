@@ -751,7 +751,7 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_assignmentes(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+    pub async fn list_assignments(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let classes = Assignment::find()
             .select_only()
             .columns(assignments::Column::iter().filter(|f| match f {

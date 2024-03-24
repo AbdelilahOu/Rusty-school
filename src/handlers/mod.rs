@@ -1,3 +1,4 @@
+pub mod assignments;
 pub mod attendance;
 pub mod auth;
 pub mod classes;

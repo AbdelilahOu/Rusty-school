@@ -51,8 +51,8 @@ pub async fn delete_assignment(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_assignmentes(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
-    let assignmentes = QueriesService::list_assignmentes(
+pub async fn list_assignments(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+    let assignmentes = QueriesService::list_assignments(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
