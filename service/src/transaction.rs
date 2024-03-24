@@ -1,3 +1,5 @@
+use sea_orm::{prelude::Uuid, *};
+
 use crate::{
     entities::*,
     models::{
@@ -6,8 +8,6 @@ use crate::{
     },
     utils::convert_to_enum::to_day_of_week,
 };
-
-use sea_orm::{prelude::Uuid, *};
 
 pub struct TransactionsService;
 

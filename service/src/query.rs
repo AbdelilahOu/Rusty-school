@@ -1,13 +1,3 @@
-use serde::Deserialize;
-use serde_json::Value as SerdValue;
-use std::collections::HashMap;
-
-use super::utils::filters::*;
-use crate::{
-    entities::*,
-    models::{SelectScans, SelectTimeTable},
-};
-
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -17,9 +7,15 @@ use sea_orm::{
     },
     *,
 };
+use serde::Deserialize;
+use serde_json::Value as SerdValue;
+use std::collections::HashMap;
 
-type JsonV = SerdValue;
-type Values = Vec<JsonV>;
+use super::utils::filters::*;
+use crate::{
+    entities::*,
+    models::{SelectScans, SelectTimeTable},
+};
 
 #[derive(Deserialize)]
 pub struct ListQuery {
@@ -38,6 +34,9 @@ pub struct Filters {
     pub operation: String,
     pub value: String,
 }
+
+type JsonV = SerdValue;
+type Values = Vec<JsonV>;
 
 pub struct QueriesService;
 
