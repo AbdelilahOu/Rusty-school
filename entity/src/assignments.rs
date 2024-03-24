@@ -12,7 +12,7 @@ pub struct Model {
     pub due_date: DateTime,
     pub submission_type: String,
     pub gradin_rubric_id: Option<Uuid>,
-    pub files: Option<String>,
+    pub file: Option<String>,
     pub class_id: Option<Uuid>,
     pub teacher_id: Option<Uuid>,
 }
