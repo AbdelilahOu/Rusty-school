@@ -628,4 +628,64 @@ impl MutationsService {
             None => Ok(0),
         }
     }
+    //
+    pub async fn create_assignment(db: &DbConn, data: CAssignment) -> DyResult<Uuid> {
+        let assignment_model = AssignmentActiveModel {
+            title: Set(data.title),
+            description: Set(data.description),
+            due_date: Set(data.due_date),
+            submission_type: Set(data.submission_type),
+            gradin_rubric_id: Set(data.gradin_rubric_id),
+            file: Set(data.file),
+            class_id: Set(data.class_id),
+            teacher_id: Set(data.teacher_id),
+            ..Default::default()
+        };
+        let assignment = Assignment::insert(assignment_model).exec(db).await?;
+        Ok(assignment.last_insert_id)
+    }
+    pub async fn update_assignment(
+        db: &DbConn,
+        id: Uuid,
+        data: CAssignment,
+    ) -> DyResult<CAssignment> {
+        let assignment_model = Assignment::find_by_id(id).one(db).await?;
+        match assignment_model {
+            Some(assignment_model) => {
+                //
+                let mut assignment_model: AssignmentActiveModel = assignment_model.into();
+                assignment_model.title = Set(data.title);
+                assignment_model.description = Set(data.description);
+                assignment_model.due_date = Set(data.due_date);
+                assignment_model.submission_type = Set(data.submission_type);
+                assignment_model.gradin_rubric_id = Set(data.gradin_rubric_id);
+                assignment_model.file = Set(data.file);
+                assignment_model.class_id = Set(data.class_id);
+                assignment_model.teacher_id = Set(data.teacher_id);
+                //
+                let assignment = assignment_model.update(db).await?;
+                Ok(CAssignment {
+                    title: assignment.title,
+                    description: assignment.description,
+                    due_date: assignment.due_date,
+                    submission_type: assignment.submission_type,
+                    gradin_rubric_id: assignment.gradin_rubric_id,
+                    file: assignment.file,
+                    class_id: assignment.class_id,
+                    teacher_id: assignment.teacher_id,
+                })
+            }
+            None => Ok(data),
+        }
+    }
+    pub async fn delete_assignment(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let assignment_model = Assignment::find_by_id(id).one(db).await?;
+        match assignment_model {
+            Some(assignment_model) => {
+                let assignment = assignment_model.delete(db).await?;
+                Ok(assignment.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
 }
