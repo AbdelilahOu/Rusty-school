@@ -40,14 +40,6 @@ impl MigrationTrait for Migration {
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(ColumnDef::new(Assignment::File).string())
-                    .col(ColumnDef::new(Assignment::ClassId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk_assignment_class_id")
-                            .from(Assignment::Table, Assignment::ClassId)
-                            .to(Class::Table, Class::Id)
-                            .on_delete(ForeignKeyAction::SetNull),
-                    )
                     .col(ColumnDef::new(Assignment::TeacherId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -59,6 +51,39 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await?;
+
+        manager
+            .create_table(
+                Table::create()
+                    .table(ClassAssignment::Table)
+                    .if_not_exists()
+                    .col(
+                        ColumnDef::new(ClassAssignment::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(ClassAssignment::ClassId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_class_assignments_class_id")
+                            .from(ClassAssignment::Table, ClassAssignment::ClassId)
+                            .to(Class::Table, Class::Id)
+                            .on_delete(ForeignKeyAction::SetNull),
+                    )
+                    .col(ColumnDef::new(ClassAssignment::AssignmentId).uuid())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk_class_assignments_assignment_id")
+                            .from(ClassAssignment::Table, ClassAssignment::ClassId)
+                            .to(Class::Table, Class::Id)
+                            .on_delete(ForeignKeyAction::SetNull),
+                    )
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 
@@ -75,8 +100,17 @@ impl MigrationTrait for Migration {
         manager
             .drop_foreign_key(
                 sea_query::ForeignKey::drop()
-                    .name("fk_assignment_class_id")
-                    .table(Assignment::Table)
+                    .name("fk_class_assignments_class_id")
+                    .table(ClassAssignment::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_class_assignments_assignment_id")
+                    .table(ClassAssignment::Table)
                     .to_owned(),
             )
             .await?;
@@ -88,6 +122,10 @@ impl MigrationTrait for Migration {
                     .table(Assignment::Table)
                     .to_owned(),
             )
+            .await?;
+
+        manager
+            .drop_table(Table::drop().table(ClassAssignment::Table).to_owned())
             .await?;
 
         manager
@@ -109,6 +147,14 @@ pub enum Assignment {
     SubmissionType,
     GradinRubricId,
     File,
-    ClassId,
     TeacherId,
+}
+
+#[derive(DeriveIden)]
+pub enum ClassAssignment {
+    #[sea_orm(iden = "class_assignments")]
+    Table,
+    Id,
+    ClassId,
+    AssignmentId,
 }
