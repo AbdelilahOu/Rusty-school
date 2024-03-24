@@ -107,7 +107,7 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_foreign_key(
-                sea_query::ForeignKey::drop()
+                ForeignKey::drop()
                     .name("fk_grading_criteria_rubrics_id")
                     .table(GradingCriteria::Table)
                     .to_owned(),
@@ -116,7 +116,7 @@ impl MigrationTrait for Migration {
 
         manager
             .drop_foreign_key(
-                sea_query::ForeignKey::drop()
+                ForeignKey::drop()
                     .name("fk_performance_criteria_id")
                     .table(PerformanceLevel::Table)
                     .to_owned(),

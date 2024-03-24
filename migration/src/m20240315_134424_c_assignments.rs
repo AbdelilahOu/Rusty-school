@@ -39,7 +39,7 @@ impl MigrationTrait for Migration {
                             .to(GradingRubrics::Table, GradingRubrics::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(Assignment::Files).string())
+                    .col(ColumnDef::new(Assignment::File).string())
                     .col(ColumnDef::new(Assignment::ClassId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -108,7 +108,7 @@ pub enum Assignment {
     DueDate,
     SubmissionType,
     GradinRubricId,
-    Files,
+    File,
     ClassId,
     TeacherId,
 }

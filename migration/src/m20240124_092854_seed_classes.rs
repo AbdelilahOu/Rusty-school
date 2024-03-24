@@ -44,7 +44,8 @@ impl MigrationTrait for Migration {
                                         ),(
                                             SELECT id FROM rooms ORDER BY RANDOM() LIMIT 1
                                         )
-                                    );
+                                    )
+                                ON CONFLICT DO NOTHING;
 
                                 -- Loop stuff
                                 counter := counter + 1;
