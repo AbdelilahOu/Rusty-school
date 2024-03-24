@@ -1,3 +1,4 @@
+mod assignments;
 mod classes;
 mod details;
 mod groups;
@@ -11,6 +12,7 @@ mod teachers;
 mod timetable;
 mod users;
 
+pub use assignments::*;
 pub use classes::*;
 pub use details::*;
 pub use groups::*;
