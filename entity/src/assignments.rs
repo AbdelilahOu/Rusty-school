@@ -13,20 +13,11 @@ pub struct Model {
     pub submission_type: String,
     pub gradin_rubric_id: Option<Uuid>,
     pub file: Option<String>,
-    pub class_id: Option<Uuid>,
     pub teacher_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::classes::Entity",
-        from = "Column::ClassId",
-        to = "super::classes::Column::Id",
-        on_update = "NoAction",
-        on_delete = "SetNull"
-    )]
-    Classes,
     #[sea_orm(
         belongs_to = "super::grading_rubrics::Entity",
         from = "Column::GradinRubricId",
@@ -43,12 +34,6 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Teachers,
-}
-
-impl Related<super::classes::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Classes.def()
-    }
 }
 
 impl Related<super::grading_rubrics::Entity> for Entity {

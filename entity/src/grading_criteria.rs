@@ -15,8 +15,22 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::grading_rubrics::Entity",
+        from = "Column::GradingRubricId",
+        to = "super::grading_rubrics::Column::Id",
+        on_update = "NoAction",
+        on_delete = "Cascade"
+    )]
+    GradingRubrics,
     #[sea_orm(has_many = "super::performance_level::Entity")]
     PerformanceLevel,
+}
+
+impl Related<super::grading_rubrics::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GradingRubrics.def()
+    }
 }
 
 impl Related<super::performance_level::Entity> for Entity {
