@@ -15,19 +15,11 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::assignments::Entity")]
     Assignments,
-    #[sea_orm(has_many = "super::grading_criteria::Entity")]
-    GradingCriteria,
 }
 
 impl Related<super::assignments::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Assignments.def()
-    }
-}
-
-impl Related<super::grading_criteria::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::GradingCriteria.def()
     }
 }
 
