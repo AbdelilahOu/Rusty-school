@@ -750,4 +750,20 @@ impl QueriesService {
 
         Ok(result)
     }
+    //
+    pub async fn list_assignmentes(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let classes = Assignment::find()
+            .select_only()
+            .columns(assignments::Column::iter().filter(|f| match f {
+                assignments::Column::GradinRubricId => false,
+                assignments::Column::File => false,
+                _ => true,
+            }))
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+        Ok(classes)
+    }
 }

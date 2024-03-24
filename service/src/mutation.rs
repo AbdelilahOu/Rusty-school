@@ -637,7 +637,6 @@ impl MutationsService {
             submission_type: Set(data.submission_type),
             gradin_rubric_id: Set(data.gradin_rubric_id),
             file: Set(data.file),
-            class_id: Set(data.class_id),
             teacher_id: Set(data.teacher_id),
             ..Default::default()
         };
@@ -660,7 +659,6 @@ impl MutationsService {
                 assignment_model.submission_type = Set(data.submission_type);
                 assignment_model.gradin_rubric_id = Set(data.gradin_rubric_id);
                 assignment_model.file = Set(data.file);
-                assignment_model.class_id = Set(data.class_id);
                 assignment_model.teacher_id = Set(data.teacher_id);
                 //
                 let assignment = assignment_model.update(db).await?;
@@ -671,7 +669,6 @@ impl MutationsService {
                     submission_type: assignment.submission_type,
                     gradin_rubric_id: assignment.gradin_rubric_id,
                     file: assignment.file,
-                    class_id: assignment.class_id,
                     teacher_id: assignment.teacher_id,
                 })
             }

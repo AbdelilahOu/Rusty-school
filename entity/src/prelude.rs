@@ -3,6 +3,7 @@
 pub use super::activities::Entity as Activities;
 pub use super::assignments::Entity as Assignments;
 pub use super::cities::Entity as Cities;
+pub use super::class_assignments::Entity as ClassAssignments;
 pub use super::classes::Entity as Classes;
 pub use super::countries::Entity as Countries;
 pub use super::disciplinary_actions::Entity as DisciplinaryActions;

@@ -5,6 +5,7 @@ pub mod prelude;
 pub mod activities;
 pub mod assignments;
 pub mod cities;
+pub mod class_assignments;
 pub mod classes;
 pub mod countries;
 pub mod disciplinary_actions;

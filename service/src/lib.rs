@@ -7,7 +7,9 @@ pub mod utils;
 // group imports from entity
 mod entities {
     pub use ::entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activity};
-    pub use ::entity::assignments::{ActiveModel as AssignmentActiveModel, Entity as Assignment};
+    pub use ::entity::assignments::{
+        self, ActiveModel as AssignmentActiveModel, Entity as Assignment,
+    };
     pub use ::entity::cities::{ActiveModel as CityActiveModel, Entity as City};
     pub use ::entity::classes::{self, ActiveModel as ClassActiveModel, Entity as Class};
     pub use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};

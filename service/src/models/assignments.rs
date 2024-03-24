@@ -10,6 +10,5 @@ pub struct CAssignment {
     pub submission_type: String,
     pub gradin_rubric_id: Option<Uuid>,
     pub file: Option<String>,
-    pub class_id: Option<Uuid>,
     pub teacher_id: Option<Uuid>,
 }
