@@ -4,7 +4,6 @@ use std::env;
 pub fn load_config() -> ConfigObj {
     // load vars
     dotenv::from_filename("app.env").ok();
-    //
     // set logging env
     env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
     //
