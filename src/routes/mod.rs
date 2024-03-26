@@ -12,8 +12,10 @@ pub mod students;
 pub mod subjects;
 pub mod teachers;
 pub mod timetable;
+pub mod grades;
 
-pub use assignments::load_assignment_routes;
+pub use assignments::load_assignments_routes;
+pub use grades::load_grades_routes;
 pub use attendance::load_attendance_routes;
 pub use auth::load_auth_routes;
 pub use classes::load_classes_routes;

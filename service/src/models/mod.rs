@@ -11,6 +11,7 @@ mod subjects;
 mod teachers;
 mod timetable;
 mod users;
+mod grades;
 
 pub use assignments::*;
 pub use classes::*;
@@ -25,3 +26,4 @@ pub use subjects::*;
 pub use teachers::*;
 pub use timetable::*;
 pub use users::*;
+pub use grades::*;
