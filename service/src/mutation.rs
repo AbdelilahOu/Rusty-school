@@ -685,4 +685,54 @@ impl MutationsService {
             None => Ok(0),
         }
     }
+    // 
+    pub async fn create_grade(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
+         let grade_model = GradeActiveModel {
+            student_id: Set(data.student_id),
+            assignment_id: Set(data.assignment_id),
+            feedback: Set(data.feedback),
+            score: Set(data.score),
+            ..Default::default()
+        };
+        let grade = Grade::insert(grade_model).exec(db).await?;
+        Ok(grade.last_insert_id)
+    }
+    // 
+    pub async fn update_grade(
+        db: &DbConn,
+        id: Uuid,
+        data: CGrade
+    ) -> DyResult<CGrade> {
+        let grade_model = Grade::find_by_id(id).one(db).await?;
+        match grade_model {
+            Some(grade_model) => {
+                //
+                let mut grade_model: GradeActiveModel = grade_model.into();
+                grade_model.student_id = Set(data.student_id);
+                grade_model.feedback = Set(data.feedback);
+                grade_model.assignment_id = Set(data.assignment_id);
+                grade_model.score = Set(data.score);
+                //
+                let grade = grade_model.update(db).await?;
+                Ok(CGrade {
+                    student_id: grade.student_id,
+                    feedback: grade.feedback,
+                    assignment_id: grade.assignment_id,
+                    score: grade.score,
+                })
+            }
+            None => Ok(data),
+        }
+    }
+    // 
+    pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let grade_model = Grade::find_by_id(id).one(db).await?;
+        match grade_model {
+            Some(grade_model) => {
+                let grade = grade_model.delete(db).await?;
+                Ok(grade.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
 }
