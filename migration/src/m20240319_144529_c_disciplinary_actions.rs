@@ -77,6 +77,7 @@ impl MigrationTrait for Migration {
 
 #[derive(DeriveIden)]
 enum DisciplinaryActions {
+    #[sea_orm(iden = "disciplinary_actions")]
     Table,
     Id,
     StudentId,
