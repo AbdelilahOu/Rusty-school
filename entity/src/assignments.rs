@@ -18,6 +18,8 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::grades::Entity")]
+    Grades,
     #[sea_orm(
         belongs_to = "super::grading_rubrics::Entity",
         from = "Column::GradinRubricId",
@@ -34,6 +36,12 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     Teachers,
+}
+
+impl Related<super::grades::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Grades.def()
+    }
 }
 
 impl Related<super::grading_rubrics::Entity> for Entity {

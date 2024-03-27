@@ -11,6 +11,7 @@ pub mod countries;
 pub mod disciplinary_actions;
 pub mod districts;
 pub mod events;
+pub mod grades;
 pub mod grading_criteria;
 pub mod grading_rubrics;
 pub mod groups;

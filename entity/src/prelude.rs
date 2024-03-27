@@ -9,6 +9,7 @@ pub use super::countries::Entity as Countries;
 pub use super::disciplinary_actions::Entity as DisciplinaryActions;
 pub use super::districts::Entity as Districts;
 pub use super::events::Entity as Events;
+pub use super::grades::Entity as Grades;
 pub use super::grading_criteria::Entity as GradingCriteria;
 pub use super::grading_rubrics::Entity as GradingRubrics;
 pub use super::groups::Entity as Groups;
