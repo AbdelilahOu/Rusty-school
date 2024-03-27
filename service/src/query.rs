@@ -767,6 +767,14 @@ impl QueriesService {
     }
     //
     pub async fn list_grades(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        todo!()
+        let classes = Grade::find()
+            .select_only()
+            .columns(grades::Column::iter())
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+        Ok(classes)
     }
 }

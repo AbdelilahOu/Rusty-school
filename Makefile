@@ -23,6 +23,7 @@ migrationsfresh:
 	sea-orm-cli migrate fresh -u postgres://root:mysecretpassword@localhost:5432/school
 
 entity:
+	del /S C:\Users\abdel\OneDrive\Desktop\Projects\Personal\rust\school-management-api\entity\src\*.rs
 	sea-orm-cli generate entity -o entity/src --lib -u postgres://root:mysecretpassword@localhost:5432/school
 
 server:

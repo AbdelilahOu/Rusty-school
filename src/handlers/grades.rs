@@ -8,6 +8,34 @@ use service::{models::CGrade, mutation::*, query::*};
 //
 type StBody = ActJson<CGrade>;
 
+pub async fn list_grades(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+    let gradees = QueriesService::list_grades(
+        &state.db_conn,
+        QueriesFilters {
+            queries: queries.into_inner(),
+            filters: body.clone().filters,
+        },
+    )
+    .await;
+
+    match gradees {
+        Ok(i) => HttpRes::Created()
+            .content_type(ContentType::json())
+            .json(ResponseData {
+                error: None,
+                message: Some("Grades selected successfully".to_string()),
+                data: Some(i),
+            }),
+        Err(e) => HttpRes::InternalServerError()
+            .content_type(ContentType::json())
+            .json(ResponseData::<Option<String>> {
+                error: Some(e.to_string()),
+                message: None,
+                data: None,
+            }),
+    }
+}
+
 pub async fn create_grade(body: StBody, state: State) -> HttpRes {
     let res = MutationsService::create_grade(&state.db_conn, body.into_inner()).await;
     match res {
@@ -53,8 +81,7 @@ pub async fn delete_grade(id: IdParam, state: State) -> HttpRes {
 
 pub async fn update_grade(id: IdParam, body: StBody, state: State) -> HttpRes {
     let update_res =
-        MutationsService::update_grade(&state.db_conn, id.into_inner(), body.into_inner())
-            .await;
+        MutationsService::update_grade(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())
