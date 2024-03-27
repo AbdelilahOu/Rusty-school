@@ -685,9 +685,9 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    // 
+    //
     pub async fn create_grade(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
-         let grade_model = GradeActiveModel {
+        let grade_model = GradeActiveModel {
             student_id: Set(data.student_id),
             assignment_id: Set(data.assignment_id),
             feedback: Set(data.feedback),
@@ -697,12 +697,8 @@ impl MutationsService {
         let grade = Grade::insert(grade_model).exec(db).await?;
         Ok(grade.last_insert_id)
     }
-    // 
-    pub async fn update_grade(
-        db: &DbConn,
-        id: Uuid,
-        data: CGrade
-    ) -> DyResult<CGrade> {
+    //
+    pub async fn update_grade(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<CGrade> {
         let grade_model = Grade::find_by_id(id).one(db).await?;
         match grade_model {
             Some(grade_model) => {
@@ -724,7 +720,7 @@ impl MutationsService {
             None => Ok(data),
         }
     }
-    // 
+    //
     pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
         let grade_model = Grade::find_by_id(id).one(db).await?;
         match grade_model {

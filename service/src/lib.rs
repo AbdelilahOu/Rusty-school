@@ -15,6 +15,7 @@ mod entities {
     pub use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};
     pub use ::entity::districts::{ActiveModel as DistrictActiveModel, Entity as District};
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Event};
+    pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grade};
     pub use ::entity::groups::{self, ActiveModel as GroupActiveModel, Entity as Group};
     pub use ::entity::lectures::{self, ActiveModel as LectureActiveModel, Entity as Lecture};
     pub use ::entity::levels::{self, ActiveModel as LevelActiveModel, Entity as Level};

@@ -765,4 +765,8 @@ impl QueriesService {
             .await?;
         Ok(classes)
     }
+    //
+    pub async fn list_grades(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        todo!()
+    }
 }
