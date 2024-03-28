@@ -8,7 +8,7 @@ use service::{models::CTeacher, mutation::*, query::*, uuid::Uuid};
 // i like my functions to stay inline
 type TeBody = ActJson<CTeacher>;
 
-pub async fn create_teacher(body: TeBody, state: State) -> HttpResponse {
+pub async fn create(body: TeBody, state: State) -> HttpResponse {
     let res = MutationsService::create_teacher(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -70,7 +70,7 @@ pub async fn delete_subject(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_teacher(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_teacher(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -91,7 +91,7 @@ pub async fn delete_teacher(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_teachers(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let teachers = QueriesService::list_teachers(
         &state.db_conn,
         QueriesFilters {
@@ -119,7 +119,7 @@ pub async fn list_teachers(queries: TQueries, body: TFiltersBody, state: State) 
     }
 }
 
-pub async fn update_teacher(id: IdParam, body: TeBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: TeBody, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_teacher(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

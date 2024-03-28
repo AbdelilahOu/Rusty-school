@@ -20,6 +20,7 @@ pub use attendance::load_attendance_routes;
 pub use auth::load_auth_routes;
 pub use classes::load_classes_routes;
 pub use details::load_details_routes;
+pub use disciplinary_actions::load_disciplinary_actions_routes;
 pub use grades::load_grades_routes;
 pub use groups::load_groups_routes;
 pub use levels::load_levels_routes;

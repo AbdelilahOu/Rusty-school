@@ -9,7 +9,7 @@ use service::{models::CParent, mutation::*, query::*};
 // i like my functions to stay inline
 type Body = ActJson<CParent>;
 
-pub async fn create_parent(body: Body, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -31,7 +31,7 @@ pub async fn create_parent(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_parent(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -52,7 +52,7 @@ pub async fn delete_parent(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let parents = QueriesService::list_parents(
         &state.db_conn,
         QueriesFilters {
@@ -80,7 +80,7 @@ pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -
     }
 }
 
-pub async fn update_parent(id: IdParam, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

@@ -1,15 +1,15 @@
-use crate::models::commen::*;
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpResponse,
 };
 
+use crate::models::commen::*;
 use service::{models::CCity, mutation::*, query::*};
 // i like my functions to stay inline
-type CtBody = ActJson<CCity>;
+type Body = ActJson<CCity>;
 
-pub async fn create_city(body: CtBody, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_city(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -31,7 +31,7 @@ pub async fn create_city(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_city(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -52,7 +52,7 @@ pub async fn delete_city(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_cities(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = QueriesService::list_cities(
         &state.db_conn,
         QueriesFilters {
@@ -79,7 +79,7 @@ pub async fn list_cities(queries: TQueries, body: TFiltersBody, state: State) ->
     }
 }
 
-pub async fn update_city(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_city(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

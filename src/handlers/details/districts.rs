@@ -8,9 +8,9 @@ use actix_web::{
 use service::{models::CDistrict, mutation::*, query::*};
 
 // i like my functions to stay inline
-type CtBody = ActJson<CDistrict>;
+type Body = ActJson<CDistrict>;
 
-pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_district(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -32,7 +32,7 @@ pub async fn create_district(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_districts(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = QueriesService::list_districts(
         &state.db_conn,
         QueriesFilters {
@@ -59,7 +59,7 @@ pub async fn list_districts(queries: TQueries, body: TFiltersBody, state: State)
     }
 }
 
-pub async fn delete_district(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_district(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -80,7 +80,7 @@ pub async fn delete_district(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update_district(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_district(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

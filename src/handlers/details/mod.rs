@@ -1,14 +1,8 @@
-mod cities;
-mod coutries;
-mod districts;
-mod states;
-mod streets;
-
-pub use cities::*;
-pub use coutries::*;
-pub use districts::*;
-pub use states::*;
-pub use streets::*;
+pub mod cities;
+pub mod coutries;
+pub mod districts;
+pub mod states;
+pub mod streets;
 
 use crate::models::commen::*;
 use actix_web::{
@@ -18,9 +12,9 @@ use actix_web::{
 };
 use service::{models::CPDetails, mutation::*};
 // i like my functions to stay inline
-type CtBody = ActJson<CPDetails>;
+type Body = ActJson<CPDetails>;
 
-pub async fn create_details(body: CtBody, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_details(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -42,7 +36,7 @@ pub async fn create_details(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_details(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_details(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -63,7 +57,7 @@ pub async fn delete_details(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update_details(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_details(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

@@ -8,7 +8,7 @@ use service::{models::CScan, mutation::*, query::*};
 
 type ScBody = ActJson<CScan>;
 
-pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
+pub async fn create(body: ScBody, state: State) -> HttpResponse {
     let res = MutationsService::create_scan(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created()
@@ -30,7 +30,7 @@ pub async fn create_scan(body: ScBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_scans(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let scans = QueriesService::list_scans(
         &state.db_conn,
         QueriesFilters {

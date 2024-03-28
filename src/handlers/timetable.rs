@@ -80,7 +80,7 @@ pub async fn create_lecture(body: CLectureBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_timetable(state: State) -> HttpResponse {
+pub async fn list(state: State) -> HttpResponse {
     let timetable = QueriesService::list_time_table(&state.db_conn).await;
 
     match timetable {

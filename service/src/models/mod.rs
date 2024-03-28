@@ -1,6 +1,8 @@
 mod assignments;
 mod classes;
 mod details;
+mod disciplinary_actions;
+mod grades;
 mod groups;
 mod levels;
 mod parents;
@@ -11,11 +13,12 @@ mod subjects;
 mod teachers;
 mod timetable;
 mod users;
-mod grades;
 
 pub use assignments::*;
 pub use classes::*;
 pub use details::*;
+pub use disciplinary_actions::*;
+pub use grades::*;
 pub use groups::*;
 pub use levels::*;
 pub use parents::*;
@@ -26,4 +29,3 @@ pub use subjects::*;
 pub use teachers::*;
 pub use timetable::*;
 pub use users::*;
-pub use grades::*;

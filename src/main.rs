@@ -53,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             .service(load_timetable_routes())
             .service(load_assignments_routes())
             .service(load_grades_routes())
+            .service(load_disciplinary_actions_routes())
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
     .bind(("0.0.0.0", 8080))?

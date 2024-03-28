@@ -8,7 +8,7 @@ use service::{models::CAssignment, mutation::*, query::*};
 //
 type Body = ActJson<CAssignment>;
 
-pub async fn create_assignment(body: Body, state: State) -> HttpRes {
+pub async fn create(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_assignment(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -30,7 +30,7 @@ pub async fn create_assignment(body: Body, state: State) -> HttpRes {
     }
 }
 
-pub async fn delete_assignment(id: IdParam, state: State) -> HttpRes {
+pub async fn delete(id: IdParam, state: State) -> HttpRes {
     let delete_res = MutationsService::delete_assignment(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -51,7 +51,7 @@ pub async fn delete_assignment(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_assignments(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let assignmentes = QueriesService::list_assignments(
         &state.db_conn,
         QueriesFilters {
@@ -79,7 +79,7 @@ pub async fn list_assignments(queries: TQueries, body: TFiltersBody, state: Stat
     }
 }
 
-pub async fn update_assignment(id: IdParam, body: Body, state: State) -> HttpRes {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner())
             .await;

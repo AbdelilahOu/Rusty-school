@@ -8,7 +8,7 @@ use service::{models::CRoom, mutation::*, query::*};
 //
 type Body = ActJson<CRoom>;
 
-pub async fn create_room(body: Body, state: State) -> HttpRes {
+pub async fn create(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_room(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -30,7 +30,7 @@ pub async fn create_room(body: Body, state: State) -> HttpRes {
     }
 }
 
-pub async fn delete_room(id: IdParam, state: State) -> HttpRes {
+pub async fn delete(id: IdParam, state: State) -> HttpRes {
     let delete_res = MutationsService::delete_room(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -51,7 +51,7 @@ pub async fn delete_room(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_rooms(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let rooms = QueriesService::list_rooms(
         &state.db_conn,
         QueriesFilters {
@@ -79,7 +79,7 @@ pub async fn list_rooms(queries: TQueries, body: TFiltersBody, state: State) -> 
     }
 }
 
-pub async fn update_room(id: IdParam, body: Body, state: State) -> HttpRes {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_room(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

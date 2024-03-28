@@ -1,16 +1,16 @@
-use crate::models::commen::*;
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpResponse,
 };
 
+use crate::models::commen::*;
 use service::{models::CStreet, mutation::*, query::*};
 
 // i like my functions to stay inline
-type CtBody = ActJson<CStreet>;
+type Body = ActJson<CStreet>;
 
-pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_street(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -32,7 +32,7 @@ pub async fn create_street(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_streets(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = QueriesService::list_streets(
         &state.db_conn,
         QueriesFilters {
@@ -59,7 +59,7 @@ pub async fn list_streets(queries: TQueries, body: TFiltersBody, state: State) -
     }
 }
 
-pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_street(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -80,7 +80,7 @@ pub async fn delete_street(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update_street(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_street(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

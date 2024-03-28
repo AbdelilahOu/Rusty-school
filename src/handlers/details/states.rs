@@ -7,9 +7,9 @@ use actix_web::{
 use service::{models::CState, mutation::*, query::*};
 
 // i like my functions to stay inline
-type CtBody = ActJson<CState>;
+type Body = ActJson<CState>;
 
-pub async fn create_state(body: CtBody, state: State) -> HttpResponse {
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_state(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -31,7 +31,7 @@ pub async fn create_state(body: CtBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list_states(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let res = QueriesService::list_states(
         &state.db_conn,
         QueriesFilters {
@@ -58,7 +58,7 @@ pub async fn list_states(queries: TQueries, body: TFiltersBody, state: State) ->
     }
 }
 
-pub async fn delete_state(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_state(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -79,7 +79,7 @@ pub async fn delete_state(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update_state(id: IdParam, body: CtBody, state: State) -> HttpResponse {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_state(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

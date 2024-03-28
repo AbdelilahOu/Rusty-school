@@ -8,7 +8,7 @@ use service::{models::CGroup, mutation::*, query::*};
 //
 type Body = ActJson<CGroup>;
 
-pub async fn create_group(body: Body, state: State) -> HttpRes {
+pub async fn create(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_group(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -30,7 +30,7 @@ pub async fn create_group(body: Body, state: State) -> HttpRes {
     }
 }
 
-pub async fn delete_group(id: IdParam, state: State) -> HttpRes {
+pub async fn delete(id: IdParam, state: State) -> HttpRes {
     let delete_res = MutationsService::delete_group(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -51,7 +51,7 @@ pub async fn delete_group(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn get_level_groups(id: IdParam, state: State) -> HttpRes {
+pub async fn list_by_level_id(id: IdParam, state: State) -> HttpRes {
     let selected_group = QueriesService::list_level_groups(&state.db_conn, id.into_inner()).await;
 
     match selected_group {
@@ -72,7 +72,7 @@ pub async fn get_level_groups(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_groups(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let groups = QueriesService::list_groups(
         &state.db_conn,
         QueriesFilters {
@@ -100,7 +100,7 @@ pub async fn list_groups(queries: TQueries, body: TFiltersBody, state: State) ->
     }
 }
 
-pub async fn update_group(id: IdParam, body: Body, state: State) -> HttpRes {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

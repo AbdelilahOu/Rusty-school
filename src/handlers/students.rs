@@ -8,7 +8,7 @@ use service::{models::CStudent, mutation::*, query::*};
 //
 type Body = ActJson<CStudent>;
 
-pub async fn create_student(body: Body, state: State, req: HttpReq) -> HttpRes {
+pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -45,7 +45,7 @@ pub async fn create_student(body: Body, state: State, req: HttpReq) -> HttpRes {
     }
 }
 
-pub async fn delete_student(id: IdParam, state: State) -> HttpRes {
+pub async fn delete(id: IdParam, state: State) -> HttpRes {
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -66,7 +66,7 @@ pub async fn delete_student(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let students = QueriesService::list_students(
         &state.db_conn,
         QueriesFilters {
@@ -94,7 +94,7 @@ pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) 
     }
 }
 
-pub async fn update_student(id: IdParam, body: Body, state: State) -> HttpRes {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
