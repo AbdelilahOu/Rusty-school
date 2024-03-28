@@ -697,7 +697,6 @@ impl MutationsService {
         let grade = Grade::insert(grade_model).exec(db).await?;
         Ok(grade.last_insert_id)
     }
-    //
     pub async fn update_grade(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<CGrade> {
         let grade_model = Grade::find_by_id(id).one(db).await?;
         match grade_model {
@@ -720,13 +719,60 @@ impl MutationsService {
             None => Ok(data),
         }
     }
-    //
     pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
         let grade_model = Grade::find_by_id(id).one(db).await?;
         match grade_model {
             Some(grade_model) => {
                 let grade = grade_model.delete(db).await?;
                 Ok(grade.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    //
+    pub async fn create_disciplinary(db: &DbConn, data: CDisciAction) -> DyResult<Uuid> {
+        let disciplinary_model = DisciplinaryActiveModel {
+            student_id: Set(data.student_id),
+            issued_at: Set(data.issued_at),
+            description: Set(data.description),
+            consequences: Set(data.consequences),
+            ..Default::default()
+        };
+        let disciplinary = Disciplinary::insert(disciplinary_model).exec(db).await?;
+        Ok(disciplinary.last_insert_id)
+    }
+    pub async fn update_disciplinary(
+        db: &DbConn,
+        id: Uuid,
+        data: CDisciAction,
+    ) -> DyResult<CDisciAction> {
+        let disciplinary_model = Disciplinary::find_by_id(id).one(db).await?;
+        match disciplinary_model {
+            Some(disciplinary_model) => {
+                //
+                let mut disciplinary_model: DisciplinaryActiveModel = disciplinary_model.into();
+                disciplinary_model.student_id = Set(data.student_id);
+                disciplinary_model.issued_at = Set(data.issued_at);
+                disciplinary_model.description = Set(data.description);
+                disciplinary_model.consequences = Set(data.consequences);
+                //
+                let disciplinary = disciplinary_model.update(db).await?;
+                Ok(CDisciAction {
+                    student_id: disciplinary.student_id,
+                    issued_at: disciplinary.issued_at,
+                    description: disciplinary.description,
+                    consequences: disciplinary.consequences,
+                })
+            }
+            None => Ok(data),
+        }
+    }
+    pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let disciplinary_model = Disciplinary::find_by_id(id).one(db).await?;
+        match disciplinary_model {
+            Some(disciplinary_model) => {
+                let disciplinary = disciplinary_model.delete(db).await?;
+                Ok(disciplinary.rows_affected)
             }
             None => Ok(0),
         }

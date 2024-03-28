@@ -1,3 +1,4 @@
+use ::entity::disciplinary_actions;
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -751,7 +752,7 @@ impl QueriesService {
     }
     //
     pub async fn list_assignments(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let classes = Assignment::find()
+        let assignments = Assignment::find()
             .select_only()
             .columns(assignments::Column::iter().filter(|f| match f {
                 assignments::Column::GradinRubricId => false,
@@ -763,11 +764,11 @@ impl QueriesService {
             .into_json()
             .all(db)
             .await?;
-        Ok(classes)
+        Ok(assignments)
     }
     //
     pub async fn list_grades(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let classes = Grade::find()
+        let grades = Grade::find()
             .select_only()
             .columns(grades::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -775,6 +776,18 @@ impl QueriesService {
             .into_json()
             .all(db)
             .await?;
-        Ok(classes)
+        Ok(grades)
+    }
+    //
+    pub async fn list_disciplinaries(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let disciplinaries = Disciplinary::find()
+            .select_only()
+            .columns(disciplinary_actions::Column::iter())
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+        Ok(disciplinaries)
     }
 }

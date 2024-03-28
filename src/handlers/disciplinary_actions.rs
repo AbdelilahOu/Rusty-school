@@ -8,8 +8,8 @@ use service::{models::CDisciAction, mutation::*, query::*};
 //
 type Body = ActJson<CDisciAction>;
 
-pub async fn create_disciplinary_action(body: Body, state: State) -> HttpRes {
-    let res = MutationsService::create_disciplinary_action(&state.db_conn, body.into_inner()).await;
+pub async fn create(body: Body, state: State) -> HttpRes {
+    let res = MutationsService::create_disciplinary(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
             .status(StatusCode::CREATED)
@@ -30,9 +30,8 @@ pub async fn create_disciplinary_action(body: Body, state: State) -> HttpRes {
     }
 }
 
-pub async fn delete_disciplinary_action(id: IdParam, state: State) -> HttpRes {
-    let delete_res =
-        MutationsService::delete_disciplinary_action(&state.db_conn, id.into_inner()).await;
+pub async fn delete(id: IdParam, state: State) -> HttpRes {
+    let delete_res = MutationsService::delete_disciplinary(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
         Ok(i) => HttpRes::Created()
@@ -52,12 +51,8 @@ pub async fn delete_disciplinary_action(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list_disciplinary_actions(
-    queries: TQueries,
-    body: TFiltersBody,
-    state: State,
-) -> HttpRes {
-    let disciplinary_actions = QueriesService::list_disciplinary_actions(
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+    let disciplinary_actions = QueriesService::list_disciplinaries(
         &state.db_conn,
         QueriesFilters {
             queries: queries.into_inner(),
@@ -84,13 +79,10 @@ pub async fn list_disciplinary_actions(
     }
 }
 
-pub async fn update_disciplinary_action(id: IdParam, body: Body, state: State) -> HttpRes {
-    let update_res = MutationsService::update_disciplinary_action(
-        &state.db_conn,
-        id.into_inner(),
-        body.into_inner(),
-    )
-    .await;
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
+    let update_res =
+        MutationsService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner())
+            .await;
     match update_res {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())
