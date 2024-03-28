@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CSubject, mutation::*, query::*};
 //
-type StBody = ActJson<CSubject>;
+type Body = ActJson<CSubject>;
 
-pub async fn create_subject(body: StBody, state: State) -> HttpRes {
+pub async fn create_subject(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -101,7 +101,7 @@ pub async fn list_subjects(queries: TQueries, body: TFiltersBody, state: State) 
     }
 }
 
-pub async fn update_subject(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_subject(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

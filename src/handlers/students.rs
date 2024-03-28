@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CStudent, mutation::*, query::*};
 //
-type StBody = ActJson<CStudent>;
+type Body = ActJson<CStudent>;
 
-pub async fn create_student(body: StBody, state: State, req: HttpReq) -> HttpRes {
+pub async fn create_student(body: Body, state: State, req: HttpReq) -> HttpRes {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -94,7 +94,7 @@ pub async fn list_students(queries: TQueries, body: TFiltersBody, state: State) 
     }
 }
 
-pub async fn update_student(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_student(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

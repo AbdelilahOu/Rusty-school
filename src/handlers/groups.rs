@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CGroup, mutation::*, query::*};
 //
-type StBody = ActJson<CGroup>;
+type Body = ActJson<CGroup>;
 
-pub async fn create_group(body: StBody, state: State) -> HttpRes {
+pub async fn create_group(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_group(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -100,7 +100,7 @@ pub async fn list_groups(queries: TQueries, body: TFiltersBody, state: State) ->
     }
 }
 
-pub async fn update_group(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_group(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

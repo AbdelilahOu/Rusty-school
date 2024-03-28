@@ -7,9 +7,9 @@ use actix_web::{
 use service::{models::CLevel, mutation::*, query::*};
 
 // i like my functions to stay inline
-type StBody = ActJson<CLevel>;
+type Body = ActJson<CLevel>;
 
-pub async fn create_level(body: StBody, state: State) -> HttpResponse {
+pub async fn create_level(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_level(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -80,7 +80,7 @@ pub async fn list_levels(queries: TQueries, body: TFiltersBody, state: State) ->
     }
 }
 
-pub async fn update_level(id: IdParam, body: StBody, state: State) -> HttpResponse {
+pub async fn update_level(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_level(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

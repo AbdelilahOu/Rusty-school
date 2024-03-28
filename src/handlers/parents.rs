@@ -7,9 +7,9 @@ use actix_web::{
 use service::{models::CParent, mutation::*, query::*};
 
 // i like my functions to stay inline
-type StBody = ActJson<CParent>;
+type Body = ActJson<CParent>;
 
-pub async fn create_parent(body: StBody, state: State) -> HttpResponse {
+pub async fn create_parent(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok()
@@ -80,7 +80,7 @@ pub async fn list_parents(queries: TQueries, body: TFiltersBody, state: State) -
     }
 }
 
-pub async fn update_parent(id: IdParam, body: StBody, state: State) -> HttpResponse {
+pub async fn update_parent(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

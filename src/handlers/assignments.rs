@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CAssignment, mutation::*, query::*};
 //
-type StBody = ActJson<CAssignment>;
+type Body = ActJson<CAssignment>;
 
-pub async fn create_assignment(body: StBody, state: State) -> HttpRes {
+pub async fn create_assignment(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_assignment(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -79,7 +79,7 @@ pub async fn list_assignments(queries: TQueries, body: TFiltersBody, state: Stat
     }
 }
 
-pub async fn update_assignment(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_assignment(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner())
             .await;

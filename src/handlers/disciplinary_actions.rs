@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CDisciAction, mutation::*, query::*};
 //
-type StBody = ActJson<CDisciAction>;
+type Body = ActJson<CDisciAction>;
 
-pub async fn create_disciplinary_action(body: StBody, state: State) -> HttpRes {
+pub async fn create_disciplinary_action(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_disciplinary_action(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -84,7 +84,7 @@ pub async fn list_disciplinary_actions(
     }
 }
 
-pub async fn update_disciplinary_action(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_disciplinary_action(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res = MutationsService::update_disciplinary_action(
         &state.db_conn,
         id.into_inner(),

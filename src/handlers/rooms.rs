@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CRoom, mutation::*, query::*};
 //
-type StBody = ActJson<CRoom>;
+type Body = ActJson<CRoom>;
 
-pub async fn create_room(body: StBody, state: State) -> HttpRes {
+pub async fn create_room(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_room(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -79,7 +79,7 @@ pub async fn list_rooms(queries: TQueries, body: TFiltersBody, state: State) -> 
     }
 }
 
-pub async fn update_room(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_room(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_room(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

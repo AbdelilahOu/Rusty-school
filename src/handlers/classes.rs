@@ -6,9 +6,9 @@ use actix_web::{
 };
 use service::{models::CClass, mutation::*, query::*};
 //
-type StBody = ActJson<CClass>;
+type Body = ActJson<CClass>;
 
-pub async fn create_class(body: StBody, state: State) -> HttpRes {
+pub async fn create_class(body: Body, state: State) -> HttpRes {
     let res = MutationsService::create_class(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
@@ -79,7 +79,7 @@ pub async fn list_classes(queries: TQueries, body: TFiltersBody, state: State) -
     }
 }
 
-pub async fn update_class(id: IdParam, body: StBody, state: State) -> HttpRes {
+pub async fn update_class(id: IdParam, body: Body, state: State) -> HttpRes {
     let update_res =
         MutationsService::update_class(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
