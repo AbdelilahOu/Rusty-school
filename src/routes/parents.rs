@@ -1,4 +1,5 @@
 use crate::handlers::parents;
+
 use actix_web::{web, Scope};
 
 pub fn load_parents_routes() -> Scope {

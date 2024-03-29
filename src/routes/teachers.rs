@@ -1,4 +1,5 @@
 use crate::handlers::teachers;
+
 use actix_web::{web, Scope};
 
 pub fn load_teachers_routes() -> Scope {

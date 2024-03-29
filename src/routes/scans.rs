@@ -1,4 +1,3 @@
-// use crate::handlers::scans;
 use actix_web::{web, Scope};
 
 use crate::handlers::scans;
