@@ -1,6 +1,6 @@
 use super::auth::Res;
 use crate::models::commen::Claims;
-use jsonwebtoken::{encode, EncodingKey, Header};
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use service::chrono::{Duration, Utc};
 use service::uuid::Uuid;
 
@@ -24,10 +24,10 @@ pub fn generate_tokens(user_uuid: Uuid, secret: String, age: i64) -> String {
 }
 
 pub fn verify_token(token: &str, secret: String) -> Res<Claims> {
-    let token_res = jsonwebtoken::decode::<Claims>(
+    let token_res = decode::<Claims>(
         &token,
-        &jsonwebtoken::DecodingKey::from_secret(secret.as_ref()),
-        &jsonwebtoken::Validation::new(jsonwebtoken::Algorithm::HS256),
+        &DecodingKey::from_secret(secret.as_ref()),
+        &Validation::new(Algorithm::HS256),
     );
     match token_res {
         Ok(t) => Ok(t.claims),
