@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::grading::grading_rubric;
+use crate::handlers::academic::grading_rubric;
 
 pub fn load_grading_rubric_routes() -> Scope {
     web::scope("/grading_rubric")

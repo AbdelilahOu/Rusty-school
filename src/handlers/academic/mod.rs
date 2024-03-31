@@ -2,6 +2,8 @@ pub mod assignments;
 pub mod attendance;
 pub mod classes;
 pub mod disciplinary_actions;
+pub mod grades;
+pub mod grading_rubric;
 pub mod groups;
 pub mod levels;
 pub mod rooms;

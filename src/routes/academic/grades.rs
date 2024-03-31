@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::grading::grades;
+use crate::handlers::academic::grades;
 
 pub fn load_grades_routes() -> Scope {
     web::scope("/grades")

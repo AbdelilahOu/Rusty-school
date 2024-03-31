@@ -13,11 +13,11 @@ mod utils;
 use crate::routes::{
     academic::load_assignments_routes, academic::load_attendance_routes,
     academic::load_classes_routes, academic::load_disciplinary_actions_routes,
+    academic::load_grades_routes, academic::load_grading_rubric_routes,
     academic::load_groups_routes, academic::load_levels_routes, academic::load_rooms_routes,
     academic::load_scans_routes, academic::load_subjects_routes, academic::load_timetable_routes,
-    auth::load_auth_routes, details::load_details_routes, grading::load_grades_routes,
-    grading::load_grading_rubric_routes, people::load_parents_routes, people::load_students_routes,
-    people::load_teachers_routes,
+    auth::load_auth_routes, details::load_details_routes, people::load_parents_routes,
+    people::load_students_routes, people::load_teachers_routes,
 };
 
 pub struct AppState {
