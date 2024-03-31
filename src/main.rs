@@ -10,15 +10,7 @@ mod models;
 mod routes;
 mod utils;
 
-use crate::routes::{
-    academic::load_assignments_routes, academic::load_attendance_routes,
-    academic::load_classes_routes, academic::load_disciplinary_actions_routes,
-    academic::load_grades_routes, academic::load_grading_rubric_routes,
-    academic::load_groups_routes, academic::load_levels_routes, academic::load_rooms_routes,
-    academic::load_scans_routes, academic::load_subjects_routes, academic::load_timetable_routes,
-    auth::load_auth_routes, people::load_parents_routes, people::load_students_routes,
-    people::load_teachers_routes,
-};
+use crate::routes::{academic, auth, people};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -45,22 +37,22 @@ async fn main() -> std::io::Result<()> {
                 config: loaded_config.clone(),
             }))
             .route("/", web::get().to(handlers::health_check::healthy))
-            .service(load_students_routes())
-            .service(load_teachers_routes())
-            .service(load_parents_routes())
-            .service(load_levels_routes())
-            .service(load_scans_routes())
-            .service(load_auth_routes())
-            .service(load_subjects_routes())
-            .service(load_groups_routes())
-            .service(load_rooms_routes())
-            .service(load_classes_routes())
-            .service(load_attendance_routes())
-            .service(load_timetable_routes())
-            .service(load_assignments_routes())
-            .service(load_grades_routes())
-            .service(load_grading_rubric_routes())
-            .service(load_disciplinary_actions_routes())
+            .service(people::load_students_routes())
+            .service(people::load_teachers_routes())
+            .service(people::load_parents_routes())
+            .service(auth::load_auth_routes())
+            .service(academic::load_levels_routes())
+            .service(academic::load_scans_routes())
+            .service(academic::load_subjects_routes())
+            .service(academic::load_groups_routes())
+            .service(academic::load_rooms_routes())
+            .service(academic::load_classes_routes())
+            .service(academic::load_attendance_routes())
+            .service(academic::load_timetable_routes())
+            .service(academic::load_assignments_routes())
+            .service(academic::load_grades_routes())
+            .service(academic::load_grading_rubric_routes())
+            .service(academic::load_disciplinary_actions_routes())
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
     .bind(("0.0.0.0", 8080))?
