@@ -17,21 +17,8 @@ impl TransactionsService {
     pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create details first
-                let details = PersonDetailsActiveModel {
-                    email: Set(data.details.email),
-                    phone_number: Set(data.details.phone),
-                    country_id: Set(data.details.country_id),
-                    state_id: Set(data.details.state_id),
-                    city_id: Set(data.details.city_id),
-                    street_id: Set(data.details.street_id),
-                    ..Default::default()
-                }
-                .insert(txn)
-                .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id)),
                     person_type: Set("student".to_owned()),
                     ..Default::default()
                 }
@@ -56,21 +43,8 @@ impl TransactionsService {
     pub async fn create_teacher(db: DbConn, data: TeacherWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create details first
-                let details = PersonDetailsActiveModel {
-                    email: Set(data.details.email),
-                    phone_number: Set(data.details.phone),
-                    country_id: Set(data.details.country_id),
-                    state_id: Set(data.details.state_id),
-                    city_id: Set(data.details.city_id),
-                    street_id: Set(data.details.street_id),
-                    ..Default::default()
-                }
-                .insert(txn)
-                .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id)),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }
@@ -94,21 +68,8 @@ impl TransactionsService {
     pub async fn create_parent(db: DbConn, data: ParentWithAddress) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
-                // create details first
-                let details = PersonDetailsActiveModel {
-                    email: Set(data.details.email),
-                    phone_number: Set(data.details.phone),
-                    country_id: Set(data.details.country_id),
-                    state_id: Set(data.details.state_id),
-                    city_id: Set(data.details.city_id),
-                    street_id: Set(data.details.street_id),
-                    ..Default::default()
-                }
-                .insert(txn)
-                .await?;
                 // create person
                 let person = PersonActiveModel {
-                    details_id: Set(Some(details.id)),
                     person_type: Set("parent".to_owned()),
                     ..Default::default()
                 }

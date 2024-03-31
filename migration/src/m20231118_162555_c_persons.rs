@@ -3,7 +3,6 @@ use sea_orm_migration::prelude::*;
 use super::{
     m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher,
     m20231116_165911_c_parents::Parent, m20231116_214011_c_scans::Scan,
-    m20231118_095513_c_details::PersonDetails,
 };
 
 #[derive(DeriveMigrationName)]
@@ -25,14 +24,6 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Person::PersonType).string().not_null())
-                    .col(ColumnDef::new(Person::DetailsId).uuid())
-                    .foreign_key(
-                        ForeignKey::create()
-                            .name("fk_details_person_id")
-                            .from(Person::Table, Person::DetailsId)
-                            .to(PersonDetails::Table, PersonDetails::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
-                    )
                     .to_owned(),
             )
             .await?;
@@ -194,8 +185,6 @@ pub enum Person {
     #[sea_orm(iden = "persons")]
     Table,
     Id,
-    #[sea_orm(iden = "details_id")]
-    DetailsId,
     #[sea_orm(iden = "person_type")]
     PersonType,
 }

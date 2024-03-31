@@ -10,29 +10,21 @@ mod entities {
     pub use ::entity::assignments::{
         self, ActiveModel as AssignmentActiveModel, Entity as Assignment,
     };
-    pub use ::entity::cities::{ActiveModel as CityActiveModel, Entity as City};
     pub use ::entity::classes::{self, ActiveModel as ClassActiveModel, Entity as Class};
-    pub use ::entity::countries::{ActiveModel as CountryActiveModel, Entity as Country};
     pub use ::entity::disciplinary_actions::{
         ActiveModel as DisciplinaryActiveModel, Entity as Disciplinary,
     };
-    pub use ::entity::districts::{ActiveModel as DistrictActiveModel, Entity as District};
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Event};
     pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grade};
     pub use ::entity::groups::{self, ActiveModel as GroupActiveModel, Entity as Group};
     pub use ::entity::lectures::{self, ActiveModel as LectureActiveModel, Entity as Lecture};
     pub use ::entity::levels::{self, ActiveModel as LevelActiveModel, Entity as Level};
     pub use ::entity::parents::{self, ActiveModel as ParentActiveModel, Entity as Parent};
-    pub use ::entity::person_details::{
-        ActiveModel as PersonDetailsActiveModel, Entity as PersonDetails,
-    };
     pub use ::entity::persons::{self, ActiveModel as PersonActiveModel, Entity as Persons};
     pub use ::entity::pickups;
     pub use ::entity::rooms::{ActiveModel as RoomActiveModel, Entity as Room};
     pub use ::entity::scans::{self, ActiveModel as ScanActiveModel, Entity as Scans};
     pub use ::entity::sea_orm_active_enums::*;
-    pub use ::entity::states::{ActiveModel as StateActiveModel, Entity as State};
-    pub use ::entity::streets::{ActiveModel as StreetActiveModel, Entity as Street};
     pub use ::entity::students::{self, ActiveModel as StudentActiveModel, Entity as Student};
     pub use ::entity::subjects::{self, ActiveModel as SubjectActiveModel, Entity as Subject};
     pub use ::entity::teacher_subjects::{

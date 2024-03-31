@@ -8,19 +8,10 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub person_type: String,
-    pub details_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::levels::Entity",
-        from = "(Column::DetailsId, Column::DetailsId, Column::DetailsId, Column::DetailsId)",
-        to = "(super::levels::Column::Id, super::levels::Column::Id, super::levels::Column::Id, super::levels::Column::Id)",
-        on_update = "NoAction",
-        on_delete = "Cascade"
-    )]
-    Levels,
     #[sea_orm(has_many = "super::parents::Entity")]
     Parents,
     #[sea_orm(has_many = "super::scans::Entity")]
@@ -31,12 +22,6 @@ pub enum Relation {
     Teachers,
     #[sea_orm(has_many = "super::users::Entity")]
     Users,
-}
-
-impl Related<super::levels::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Levels.def()
-    }
 }
 
 impl Related<super::parents::Entity> for Entity {

@@ -18,27 +18,10 @@ impl MigrationTrait for Migration {
                 sea_orm::DatabaseBackend::Postgres,
                 r#"
                 INSERT INTO
-                    persons (person_type, details_id)
+                    persons (person_type)
                 VALUES
-                    (
-                        'student',(
-                            SELECT
-                                pd.id
-                            FROM
-                                person_details as pd
-                            WHERE
-                                pd.id not in (
-                                    SELECT
-                                        p.details_id
-                                    from
-                                        persons as p
-                                )
-                            order by
-                                random()
-                            limit
-                                1
-                        )
-                    ) RETURNING id"#,
+                    ('student') 
+                RETURNING id"#,
             );
             let row = db.query_one(get_person_id).await?;
             let person_id = row.unwrap().try_get::<Uuid>("", "id").unwrap();
@@ -70,26 +53,10 @@ impl MigrationTrait for Migration {
                 sea_orm::DatabaseBackend::Postgres,
                 r#"
                 INSERT INTO
-                    persons (person_type, details_id)
+                    persons (person_type)
                 VALUES
                     (
-                        'parent',(
-                            SELECT
-                                pd.id
-                            FROM
-                                person_details as pd
-                            WHERE
-                                pd.id not in (
-                                    SELECT
-                                        p.details_id
-                                    from
-                                        persons as p
-                                )
-                            order by
-                                random()
-                            limit
-                                1
-                        )
+                        'parent'
                     ) RETURNING id"#,
             );
             let row = db.query_one(get_person_id).await?;
@@ -122,26 +89,10 @@ impl MigrationTrait for Migration {
                 sea_orm::DatabaseBackend::Postgres,
                 r#"
                 INSERT INTO
-                    persons (person_type, details_id)
+                    persons (person_type)
                 VALUES
                     (
-                        'teacher',(
-                            SELECT
-                                pd.id
-                            FROM
-                                person_details as pd
-                            WHERE
-                                pd.id not in (
-                                    SELECT
-                                        p.details_id
-                                    from
-                                        persons as p
-                                )
-                            order by
-                                random()
-                            limit
-                                1
-                        )
+                        'teacher'
                     ) RETURNING id"#,
             );
             let row = db.query_one(get_person_id).await?;

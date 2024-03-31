@@ -16,8 +16,8 @@ use crate::routes::{
     academic::load_grades_routes, academic::load_grading_rubric_routes,
     academic::load_groups_routes, academic::load_levels_routes, academic::load_rooms_routes,
     academic::load_scans_routes, academic::load_subjects_routes, academic::load_timetable_routes,
-    auth::load_auth_routes, details::load_details_routes, people::load_parents_routes,
-    people::load_students_routes, people::load_teachers_routes,
+    auth::load_auth_routes, people::load_parents_routes, people::load_students_routes,
+    people::load_teachers_routes,
 };
 
 pub struct AppState {
@@ -47,7 +47,6 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(handlers::health_check::healthy))
             .service(load_students_routes())
             .service(load_teachers_routes())
-            .service(load_details_routes())
             .service(load_parents_routes())
             .service(load_levels_routes())
             .service(load_scans_routes())

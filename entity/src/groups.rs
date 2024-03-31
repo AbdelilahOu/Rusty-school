@@ -19,8 +19,8 @@ pub enum Relation {
     Classes,
     #[sea_orm(
         belongs_to = "super::levels::Entity",
-        from = "(Column::LevelId, Column::LevelId, Column::LevelId, Column::LevelId)",
-        to = "(super::levels::Column::Id, super::levels::Column::Id, super::levels::Column::Id, super::levels::Column::Id)",
+        from = "Column::LevelId",
+        to = "super::levels::Column::Id",
         on_update = "NoAction",
         on_delete = "Cascade"
     )]

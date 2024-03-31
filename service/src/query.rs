@@ -101,61 +101,6 @@ impl QueriesService {
         Ok(parents)
     }
     //
-    pub async fn list_countries(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let countries = Country::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(countries)
-    }
-    //
-    pub async fn list_states(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let states = State::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(states)
-    }
-    //
-    pub async fn list_cities(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let cities = City::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(cities)
-    }
-    //
-    pub async fn list_districts(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let districts = District::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(districts)
-    }
-    //
-    pub async fn list_streets(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let streets = Street::find()
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
-            .into_json()
-            .all(db)
-            .await?;
-
-        Ok(streets)
-    }
-    //
     pub async fn list_scans(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let mut filters = HashMap::<String, Filters>::new();
         qf.filters.into_iter().for_each(|f| {

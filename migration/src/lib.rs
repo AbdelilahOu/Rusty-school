@@ -5,7 +5,6 @@ mod m20231113_170500_c_teachers;
 mod m20231116_165911_c_parents;
 mod m20231116_171406_c_pickups;
 mod m20231116_214011_c_scans;
-mod m20231118_095513_c_details;
 mod m20231118_162555_c_persons;
 mod m20231127_123039_c_users;
 mod m20231211_172237_c_levels;
@@ -19,7 +18,6 @@ mod m20231229_182506_seed_students;
 mod m20231229_182513_seed_parents;
 mod m20231229_182522_seed_teachers;
 mod m20231229_183159_seed_pickups;
-mod m20231229_194513_seed_details;
 mod m20231229_195116_seed_persons;
 mod m20240101_135233_seed_scans;
 mod m20240104_081431_seed_subjects;
@@ -49,7 +47,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20231116_165911_c_parents::Migration),
             Box::new(m20231116_171406_c_pickups::Migration),
             Box::new(m20231116_214011_c_scans::Migration),
-            Box::new(m20231118_095513_c_details::Migration),
             Box::new(m20231118_162555_c_persons::Migration),
             Box::new(m20231127_123039_c_users::Migration),
             Box::new(m20231211_172237_c_levels::Migration),
@@ -63,7 +60,6 @@ impl MigratorTrait for Migrator {
             Box::new(m20231229_182513_seed_parents::Migration),
             Box::new(m20231229_182522_seed_teachers::Migration),
             Box::new(m20231229_183159_seed_pickups::Migration),
-            Box::new(m20231229_194513_seed_details::Migration),
             Box::new(m20231229_195116_seed_persons::Migration),
             Box::new(m20240101_135233_seed_scans::Migration),
             Box::new(m20240104_081431_seed_subjects::Migration),
