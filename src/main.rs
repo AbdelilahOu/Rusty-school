@@ -50,6 +50,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::academic::load_timetable_routes())
             .service(routes::academic::load_assignments_routes())
             .service(routes::grading::load_grades_routes())
+            .service(routes::grading::load_grading_rubric_routes())
             .service(routes::academic::load_disciplinary_actions_routes())
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
