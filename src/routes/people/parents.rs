@@ -1,4 +1,4 @@
-use crate::handlers::parents;
+use crate::handlers::people::parents;
 
 use actix_web::{web, Scope};
 

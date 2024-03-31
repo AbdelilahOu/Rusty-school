@@ -1,0 +1,10 @@
+pub mod assignments;
+pub mod attendance;
+pub mod classes;
+pub mod disciplinary_actions;
+pub mod groups;
+pub mod levels;
+pub mod rooms;
+pub mod scans;
+pub mod subjects;
+pub mod timetable;

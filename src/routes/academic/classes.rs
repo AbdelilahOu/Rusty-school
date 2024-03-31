@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::classes;
+use crate::handlers::academic::classes;
 
 pub fn load_classes_routes() -> Scope {
     web::scope("/classes")

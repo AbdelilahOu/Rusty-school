@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::scans;
+use crate::handlers::academic::scans;
 
 pub fn load_scans_routes() -> Scope {
     web::scope("/scans")

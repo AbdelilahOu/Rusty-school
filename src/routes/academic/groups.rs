@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::groups;
+use crate::handlers::academic::groups;
 
 pub fn load_groups_routes() -> Scope {
     web::scope("/groups")

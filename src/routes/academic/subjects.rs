@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::subjects;
+use crate::handlers::academic::subjects;
 
 pub fn load_subjects_routes() -> Scope {
     web::scope("/subjects")

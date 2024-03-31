@@ -1,6 +1,6 @@
 use actix_web::{web, Scope};
 
-use crate::handlers::timetable;
+use crate::handlers::academic::timetable;
 
 pub fn load_timetable_routes() -> Scope {
     web::scope("/timetable")

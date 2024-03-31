@@ -1,4 +1,4 @@
-use crate::handlers::teachers;
+use crate::handlers::people::teachers;
 
 use actix_web::{web, Scope};
 
