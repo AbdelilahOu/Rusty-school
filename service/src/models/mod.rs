@@ -1,6 +1,5 @@
 mod assignments;
 mod classes;
-mod details;
 mod disciplinary_actions;
 mod grades;
 mod groups;
@@ -16,7 +15,6 @@ mod users;
 
 pub use assignments::*;
 pub use classes::*;
-pub use details::*;
 pub use disciplinary_actions::*;
 pub use grades::*;
 pub use groups::*;

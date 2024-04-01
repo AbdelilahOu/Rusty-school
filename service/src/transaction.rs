@@ -2,10 +2,7 @@ use sea_orm::{prelude::Uuid, *};
 
 use crate::{
     entities::*,
-    models::{
-        CActivity, CEvent, CLecture, CUser, ParentWithAddress, StudentWithAddress,
-        TeacherWithAddress,
-    },
+    models::{CActivity, CEvent, CLecture, CParent, CStudent, CTeacher, CUser},
     utils::convert_to_enum::to_day_of_week,
 };
 
@@ -14,7 +11,7 @@ pub struct TransactionsService;
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
 
 impl TransactionsService {
-    pub async fn create_student(db: DbConn, data: StudentWithAddress) -> TxnRes<()> {
+    pub async fn create_student(db: DbConn, data: CStudent) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -26,9 +23,9 @@ impl TransactionsService {
                 .await?;
                 // create student
                 let _student = StudentActiveModel {
-                    first_name: Set(data.student.first_name),
-                    last_name: Set(data.student.last_name),
-                    group_id: Set(data.student.group_id),
+                    first_name: Set(data.first_name),
+                    last_name: Set(data.last_name),
+                    group_id: Set(data.group_id),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
@@ -40,7 +37,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_teacher(db: DbConn, data: TeacherWithAddress) -> TxnRes<()> {
+    pub async fn create_teacher(db: DbConn, data: CTeacher) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -52,8 +49,8 @@ impl TransactionsService {
                 .await?;
                 // create student
                 let _teacher = TeacherActiveModel {
-                    first_name: Set(data.teacher.first_name),
-                    last_name: Set(data.teacher.last_name),
+                    first_name: Set(data.first_name),
+                    last_name: Set(data.last_name),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
@@ -65,7 +62,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_parent(db: DbConn, data: ParentWithAddress) -> TxnRes<()> {
+    pub async fn create_parent(db: DbConn, data: CParent) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -77,8 +74,8 @@ impl TransactionsService {
                 .await?;
                 // create student
                 let _parent = ParentActiveModel {
-                    first_name: Set(data.parent.first_name),
-                    last_name: Set(data.parent.last_name),
+                    first_name: Set(data.first_name),
+                    last_name: Set(data.last_name),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
