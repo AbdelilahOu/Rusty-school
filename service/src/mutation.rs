@@ -30,7 +30,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> DyResult<CStudent> {
+    pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> DyResult<Uuid> {
         let student_model = Student::find_by_id(id).one(db).await?;
         match student_model {
             Some(student_model) => {
@@ -42,13 +42,9 @@ impl MutationsService {
                 student_model.id = Set(id);
                 //
                 let student = student_model.update(db).await?;
-                Ok(CStudent {
-                    first_name: student.first_name,
-                    last_name: student.last_name,
-                    group_id: student.group_id,
-                })
+                Ok(student.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     // teachers entity
@@ -71,7 +67,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_teacher(db: &DbConn, id: Uuid, data: CTeacher) -> DyResult<CTeacher> {
+    pub async fn update_teacher(db: &DbConn, id: Uuid, data: CTeacher) -> DyResult<Uuid> {
         let teacher_model = Teacher::find_by_id(id).one(db).await?;
         match teacher_model {
             Some(teacher_model) => {
@@ -82,12 +78,9 @@ impl MutationsService {
                 teacher_model.id = Set(id);
                 //
                 let teacher = teacher_model.update(db).await?;
-                Ok(CTeacher {
-                    first_name: teacher.first_name,
-                    last_name: teacher.last_name,
-                })
+                Ok(teacher.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     // parents entity
@@ -110,7 +103,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> DyResult<CParent> {
+    pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> DyResult<Uuid> {
         let parent_model = Parent::find_by_id(id).one(db).await?;
         match parent_model {
             Some(parent_model) => {
@@ -119,12 +112,9 @@ impl MutationsService {
                 parent_model.last_name = Set(data.last_name);
                 parent_model.id = Set(id);
                 let parent = parent_model.update(db).await?;
-                Ok(CParent {
-                    first_name: parent.first_name,
-                    last_name: parent.last_name,
-                })
+                Ok(parent.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     // scans
@@ -158,7 +148,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_level(db: &DbConn, id: Uuid, data: CLevel) -> DyResult<CLevel> {
+    pub async fn update_level(db: &DbConn, id: Uuid, data: CLevel) -> DyResult<Uuid> {
         let level_model = Level::find_by_id(id).one(db).await?;
         match level_model {
             Some(level_model) => {
@@ -168,12 +158,9 @@ impl MutationsService {
                 level_model.level_description = Set(data.description);
                 //
                 let level = level_model.update(db).await?;
-                Ok(CLevel {
-                    name: level.level_name,
-                    description: level.level_description,
-                })
+                Ok(level.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     //
@@ -197,7 +184,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_subject(db: &DbConn, id: Uuid, data: CSubject) -> DyResult<CSubject> {
+    pub async fn update_subject(db: &DbConn, id: Uuid, data: CSubject) -> DyResult<Uuid> {
         let subject_model = Subject::find_by_id(id).one(db).await?;
         match subject_model {
             Some(subject_model) => {
@@ -208,13 +195,9 @@ impl MutationsService {
                 subject_model.level_id = Set(data.level_id);
                 //
                 let subject = subject_model.update(db).await?;
-                Ok(CSubject {
-                    name: subject.subject_name,
-                    description: subject.subject_description,
-                    level_id: subject.level_id,
-                })
+                Ok(subject.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     //
@@ -238,7 +221,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_group(db: &DbConn, id: Uuid, data: CGroup) -> DyResult<CGroup> {
+    pub async fn update_group(db: &DbConn, id: Uuid, data: CGroup) -> DyResult<Uuid> {
         let group_model = Group::find_by_id(id).one(db).await?;
         match group_model {
             Some(group_model) => {
@@ -249,13 +232,9 @@ impl MutationsService {
                 group_model.level_id = Set(data.level_id);
                 //
                 let group = group_model.update(db).await?;
-                Ok(CGroup {
-                    name: group.group_name,
-                    description: group.group_description,
-                    level_id: group.level_id,
-                })
+                Ok(group.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     //
@@ -278,7 +257,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_room(db: &DbConn, id: Uuid, data: CRoom) -> DyResult<CRoom> {
+    pub async fn update_room(db: &DbConn, id: Uuid, data: CRoom) -> DyResult<Uuid> {
         let room_model = Room::find_by_id(id).one(db).await?;
         match room_model {
             Some(room_model) => {
@@ -288,12 +267,9 @@ impl MutationsService {
                 room_model.room_description = Set(data.description);
                 //
                 let room = room_model.update(db).await?;
-                Ok(CRoom {
-                    name: room.room_name,
-                    description: room.room_description,
-                })
+                Ok(room.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     //
@@ -318,7 +294,7 @@ impl MutationsService {
             None => Ok(0),
         }
     }
-    pub async fn update_class(db: &DbConn, id: Uuid, data: CClass) -> DyResult<CClass> {
+    pub async fn update_class(db: &DbConn, id: Uuid, data: CClass) -> DyResult<Uuid> {
         let class_model = Class::find_by_id(id).one(db).await?;
         match class_model {
             Some(class_model) => {
@@ -330,14 +306,9 @@ impl MutationsService {
                 class_model.room_id = Set(data.room_id);
                 //
                 let class = class_model.update(db).await?;
-                Ok(CClass {
-                    subject_id: class.subject_id,
-                    teacher_id: class.teacher_id,
-                    group_id: class.group_id,
-                    room_id: class.room_id,
-                })
+                Ok(class.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     //
@@ -389,11 +360,7 @@ impl MutationsService {
         let assignment = Assignment::insert(assignment_model).exec(db).await?;
         Ok(assignment.last_insert_id)
     }
-    pub async fn update_assignment(
-        db: &DbConn,
-        id: Uuid,
-        data: CAssignment,
-    ) -> DyResult<CAssignment> {
+    pub async fn update_assignment(db: &DbConn, id: Uuid, data: CAssignment) -> DyResult<Uuid> {
         let assignment_model = Assignment::find_by_id(id).one(db).await?;
         match assignment_model {
             Some(assignment_model) => {
@@ -408,17 +375,9 @@ impl MutationsService {
                 assignment_model.teacher_id = Set(data.teacher_id);
                 //
                 let assignment = assignment_model.update(db).await?;
-                Ok(CAssignment {
-                    title: assignment.title,
-                    description: assignment.description,
-                    due_date: assignment.due_date,
-                    submission_type: assignment.submission_type,
-                    gradin_rubric_id: assignment.gradin_rubric_id,
-                    file: assignment.file,
-                    teacher_id: assignment.teacher_id,
-                })
+                Ok(assignment.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     pub async fn delete_assignment(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -443,7 +402,7 @@ impl MutationsService {
         let grade = Grade::insert(grade_model).exec(db).await?;
         Ok(grade.last_insert_id)
     }
-    pub async fn update_grade(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<CGrade> {
+    pub async fn update_grade(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<Uuid> {
         let grade_model = Grade::find_by_id(id).one(db).await?;
         match grade_model {
             Some(grade_model) => {
@@ -455,14 +414,9 @@ impl MutationsService {
                 grade_model.score = Set(data.score);
                 //
                 let grade = grade_model.update(db).await?;
-                Ok(CGrade {
-                    student_id: grade.student_id,
-                    feedback: grade.feedback,
-                    assignment_id: grade.assignment_id,
-                    score: grade.score,
-                })
+                Ok(grade.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -487,11 +441,7 @@ impl MutationsService {
         let disciplinary = Disciplinary::insert(disciplinary_model).exec(db).await?;
         Ok(disciplinary.last_insert_id)
     }
-    pub async fn update_disciplinary(
-        db: &DbConn,
-        id: Uuid,
-        data: CDisciAction,
-    ) -> DyResult<CDisciAction> {
+    pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: CDisciAction) -> DyResult<Uuid> {
         let disciplinary_model = Disciplinary::find_by_id(id).one(db).await?;
         match disciplinary_model {
             Some(disciplinary_model) => {
@@ -503,14 +453,9 @@ impl MutationsService {
                 disciplinary_model.consequences = Set(data.consequences);
                 //
                 let disciplinary = disciplinary_model.update(db).await?;
-                Ok(CDisciAction {
-                    student_id: disciplinary.student_id,
-                    issued_at: disciplinary.issued_at,
-                    description: disciplinary.description,
-                    consequences: disciplinary.consequences,
-                })
+                Ok(disciplinary.id)
             }
-            None => Ok(data),
+            None => Ok(id),
         }
     }
     pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -519,6 +464,45 @@ impl MutationsService {
             Some(disciplinary_model) => {
                 let disciplinary = disciplinary_model.delete(db).await?;
                 Ok(disciplinary.rows_affected)
+            }
+            None => Ok(0),
+        }
+    }
+    //
+    pub async fn create_rubric(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
+        let rubric_model = GradeActiveModel {
+            student_id: Set(data.student_id),
+            assignment_id: Set(data.assignment_id),
+            feedback: Set(data.feedback),
+            score: Set(data.score),
+            ..Default::default()
+        };
+        let rubric = Grade::insert(rubric_model).exec(db).await?;
+        Ok(rubric.last_insert_id)
+    }
+    pub async fn update_rubric(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<Uuid> {
+        let rubric_model = Grade::find_by_id(id).one(db).await?;
+        match rubric_model {
+            Some(rubric_model) => {
+                //
+                let mut rubric_model: GradeActiveModel = rubric_model.into();
+                rubric_model.student_id = Set(data.student_id);
+                rubric_model.feedback = Set(data.feedback);
+                rubric_model.assignment_id = Set(data.assignment_id);
+                rubric_model.score = Set(data.score);
+                //
+                let rubric = rubric_model.update(db).await?;
+                Ok(rubric.id)
+            }
+            None => Ok(id),
+        }
+    }
+    pub async fn delete_rubric(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let rubric_model = Grade::find_by_id(id).one(db).await?;
+        match rubric_model {
+            Some(rubric_model) => {
+                let rubric = rubric_model.delete(db).await?;
+                Ok(rubric.rows_affected)
             }
             None => Ok(0),
         }
