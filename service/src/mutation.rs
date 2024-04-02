@@ -11,13 +11,13 @@ type DyResult<T> = Result<T, DbErr>;
 impl MutationsService {
     // students entity
     pub async fn create_student(db: &DbConn, data: CStudent) -> DyResult<Uuid> {
-        let c_student = StudentActiveModel {
+        let student_a_model = StudentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             group_id: Set(data.group_id),
             ..Default::default()
         };
-        let student = Student::insert(c_student).exec(db).await?;
+        let student = Student::insert(student_a_model).exec(db).await?;
         Ok(student.last_insert_id)
     }
     pub async fn delete_student(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -49,12 +49,12 @@ impl MutationsService {
     }
     // teachers entity
     pub async fn create_teacher(db: &DbConn, data: CTeacher) -> DyResult<Uuid> {
-        let teacher_model = TeacherActiveModel {
+        let teacher_a_model = TeacherActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             ..Default::default()
         };
-        let teacher = Teacher::insert(teacher_model).exec(db).await?;
+        let teacher = Teacher::insert(teacher_a_model).exec(db).await?;
         Ok(teacher.last_insert_id)
     }
     pub async fn delete_teacher(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -85,12 +85,12 @@ impl MutationsService {
     }
     // parents entity
     pub async fn create_parent(db: &DbConn, data: CParent) -> DyResult<Uuid> {
-        let parent_model = ParentActiveModel {
+        let parent_a_model = ParentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
             ..Default::default()
         };
-        let parent = Parent::insert(parent_model).exec(db).await?;
+        let parent = Parent::insert(parent_a_model).exec(db).await?;
         Ok(parent.last_insert_id)
     }
     pub async fn delete_parent(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -120,22 +120,22 @@ impl MutationsService {
     // scans
     pub async fn create_scan(db: &DbConn, data: CScan) -> DyResult<Uuid> {
         let now = Utc::now();
-        let scan_model = ScanActiveModel {
+        let scan_a_model = ScanActiveModel {
             person_id: Set(data.person_id),
             scan_date: Set(now.naive_utc()),
             ..Default::default()
         };
-        let scan = Scans::insert(scan_model).exec(db).await?;
+        let scan = Scans::insert(scan_a_model).exec(db).await?;
         Ok(scan.last_insert_id)
     }
     //
     pub async fn create_level(db: &DbConn, data: CLevel) -> DyResult<Uuid> {
-        let level_model = LevelActiveModel {
+        let level_a_model = LevelActiveModel {
             level_name: Set(data.name),
             level_description: Set(data.description),
             ..Default::default()
         };
-        let level = Level::insert(level_model).exec(db).await?;
+        let level = Level::insert(level_a_model).exec(db).await?;
         Ok(level.last_insert_id)
     }
     pub async fn delete_level(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -165,13 +165,13 @@ impl MutationsService {
     }
     //
     pub async fn create_subject(db: &DbConn, data: CSubject) -> DyResult<Uuid> {
-        let subject_model = SubjectActiveModel {
+        let subject_a_model = SubjectActiveModel {
             subject_name: Set(data.name),
             subject_description: Set(data.description),
             level_id: Set(data.level_id),
             ..Default::default()
         };
-        let subject = Subject::insert(subject_model).exec(db).await?;
+        let subject = Subject::insert(subject_a_model).exec(db).await?;
         Ok(subject.last_insert_id)
     }
     pub async fn delete_subject(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -202,13 +202,13 @@ impl MutationsService {
     }
     //
     pub async fn create_group(db: &DbConn, data: CGroup) -> DyResult<Uuid> {
-        let group_model = GroupActiveModel {
+        let group_a_model = GroupActiveModel {
             group_name: Set(data.name),
             group_description: Set(data.description),
             level_id: Set(data.level_id),
             ..Default::default()
         };
-        let group = Group::insert(group_model).exec(db).await?;
+        let group = Group::insert(group_a_model).exec(db).await?;
         Ok(group.last_insert_id)
     }
     pub async fn delete_group(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -239,12 +239,12 @@ impl MutationsService {
     }
     //
     pub async fn create_room(db: &DbConn, data: CRoom) -> DyResult<Uuid> {
-        let room_model = RoomActiveModel {
+        let room_a_model = RoomActiveModel {
             room_name: Set(data.name),
             room_description: Set(data.description),
             ..Default::default()
         };
-        let room = Room::insert(room_model).exec(db).await?;
+        let room = Room::insert(room_a_model).exec(db).await?;
         Ok(room.last_insert_id)
     }
     pub async fn delete_room(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -274,14 +274,14 @@ impl MutationsService {
     }
     //
     pub async fn create_class(db: &DbConn, data: CClass) -> DyResult<Uuid> {
-        let class_model = ClassActiveModel {
+        let class_a_model = ClassActiveModel {
             subject_id: Set(data.subject_id),
             teacher_id: Set(data.teacher_id),
             group_id: Set(data.group_id),
             room_id: Set(data.room_id),
             ..Default::default()
         };
-        let class = Class::insert(class_model).exec(db).await?;
+        let class = Class::insert(class_a_model).exec(db).await?;
         Ok(class.last_insert_id)
     }
     pub async fn delete_class(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -324,12 +324,12 @@ impl MutationsService {
     }
     //
     pub async fn create_teacher_subject(db: &DbConn, data: (Uuid, Uuid)) -> DyResult<Uuid> {
-        let teacher_subject_model = TeacherSubjectActiveModel {
+        let teacher_subject_a_model = TeacherSubjectActiveModel {
             teacher_id: Set(Some(data.0)),
             subject_id: Set(Some(data.1)),
             ..Default::default()
         };
-        let teacher_subject = TeacherSubject::insert(teacher_subject_model)
+        let teacher_subject = TeacherSubject::insert(teacher_subject_a_model)
             .exec(db)
             .await?;
         Ok(teacher_subject.last_insert_id)
@@ -347,7 +347,7 @@ impl MutationsService {
     }
     //
     pub async fn create_assignment(db: &DbConn, data: CAssignment) -> DyResult<Uuid> {
-        let assignment_model = AssignmentActiveModel {
+        let assignment_a_model = AssignmentActiveModel {
             title: Set(data.title),
             description: Set(data.description),
             due_date: Set(data.due_date),
@@ -357,7 +357,7 @@ impl MutationsService {
             teacher_id: Set(data.teacher_id),
             ..Default::default()
         };
-        let assignment = Assignment::insert(assignment_model).exec(db).await?;
+        let assignment = Assignment::insert(assignment_a_model).exec(db).await?;
         Ok(assignment.last_insert_id)
     }
     pub async fn update_assignment(db: &DbConn, id: Uuid, data: CAssignment) -> DyResult<Uuid> {
@@ -392,14 +392,14 @@ impl MutationsService {
     }
     //
     pub async fn create_grade(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
-        let grade_model = GradeActiveModel {
+        let grade_a_model = GradeActiveModel {
             student_id: Set(data.student_id),
             assignment_id: Set(data.assignment_id),
             feedback: Set(data.feedback),
             score: Set(data.score),
             ..Default::default()
         };
-        let grade = Grade::insert(grade_model).exec(db).await?;
+        let grade = Grade::insert(grade_a_model).exec(db).await?;
         Ok(grade.last_insert_id)
     }
     pub async fn update_grade(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<Uuid> {
@@ -431,14 +431,14 @@ impl MutationsService {
     }
     //
     pub async fn create_disciplinary(db: &DbConn, data: CDisciAction) -> DyResult<Uuid> {
-        let disciplinary_model = DisciplinaryActiveModel {
+        let disciplinary_a_model = DisciplinaryActiveModel {
             student_id: Set(data.student_id),
             issued_at: Set(data.issued_at),
             description: Set(data.description),
             consequences: Set(data.consequences),
             ..Default::default()
         };
-        let disciplinary = Disciplinary::insert(disciplinary_model).exec(db).await?;
+        let disciplinary = Disciplinary::insert(disciplinary_a_model).exec(db).await?;
         Ok(disciplinary.last_insert_id)
     }
     pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: CDisciAction) -> DyResult<Uuid> {
@@ -470,14 +470,14 @@ impl MutationsService {
     }
     //
     pub async fn create_rubric(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
-        let rubric_model = GradeActiveModel {
+        let rubric_a_model = GradeActiveModel {
             student_id: Set(data.student_id),
             assignment_id: Set(data.assignment_id),
             feedback: Set(data.feedback),
             score: Set(data.score),
             ..Default::default()
         };
-        let rubric = Grade::insert(rubric_model).exec(db).await?;
+        let rubric = Grade::insert(rubric_a_model).exec(db).await?;
         Ok(rubric.last_insert_id)
     }
     pub async fn update_rubric(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<Uuid> {
