@@ -1,8 +1,8 @@
 use chrono::Utc;
 use sea_orm::{prelude::Uuid, *};
 
+use super::entities::*;
 use super::models::*;
-use crate::entities::*;
 
 pub struct MutationsService;
 
@@ -27,7 +27,7 @@ impl MutationsService {
                 let student = student_model.delete(db).await?;
                 Ok(student.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_student(db: &DbConn, id: Uuid, data: CStudent) -> DyResult<Uuid> {
@@ -44,7 +44,7 @@ impl MutationsService {
                 let student = student_model.update(db).await?;
                 Ok(student.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     // teachers entity
@@ -64,7 +64,7 @@ impl MutationsService {
                 let teacher = teacher_model.delete(db).await?;
                 Ok(teacher.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_teacher(db: &DbConn, id: Uuid, data: CTeacher) -> DyResult<Uuid> {
@@ -80,7 +80,7 @@ impl MutationsService {
                 let teacher = teacher_model.update(db).await?;
                 Ok(teacher.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     // parents entity
@@ -100,7 +100,7 @@ impl MutationsService {
                 let parent = parent_model.delete(db).await?;
                 Ok(parent.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_parent(db: &DbConn, id: Uuid, data: CParent) -> DyResult<Uuid> {
@@ -114,7 +114,7 @@ impl MutationsService {
                 let parent = parent_model.update(db).await?;
                 Ok(parent.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     // scans
@@ -145,7 +145,7 @@ impl MutationsService {
                 let level = level_model.delete(db).await?;
                 Ok(level.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_level(db: &DbConn, id: Uuid, data: CLevel) -> DyResult<Uuid> {
@@ -160,7 +160,7 @@ impl MutationsService {
                 let level = level_model.update(db).await?;
                 Ok(level.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -181,7 +181,7 @@ impl MutationsService {
                 let subject = subject_model.delete(db).await?;
                 Ok(subject.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_subject(db: &DbConn, id: Uuid, data: CSubject) -> DyResult<Uuid> {
@@ -197,7 +197,7 @@ impl MutationsService {
                 let subject = subject_model.update(db).await?;
                 Ok(subject.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -218,7 +218,7 @@ impl MutationsService {
                 let group = group_model.delete(db).await?;
                 Ok(group.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_group(db: &DbConn, id: Uuid, data: CGroup) -> DyResult<Uuid> {
@@ -234,7 +234,7 @@ impl MutationsService {
                 let group = group_model.update(db).await?;
                 Ok(group.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -254,7 +254,7 @@ impl MutationsService {
                 let room = room_model.delete(db).await?;
                 Ok(room.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_room(db: &DbConn, id: Uuid, data: CRoom) -> DyResult<Uuid> {
@@ -269,7 +269,7 @@ impl MutationsService {
                 let room = room_model.update(db).await?;
                 Ok(room.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -291,7 +291,7 @@ impl MutationsService {
                 let class = class_model.delete(db).await?;
                 Ok(class.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn update_class(db: &DbConn, id: Uuid, data: CClass) -> DyResult<Uuid> {
@@ -308,7 +308,7 @@ impl MutationsService {
                 let class = class_model.update(db).await?;
                 Ok(class.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -319,7 +319,7 @@ impl MutationsService {
                 let time_table = time_table_model.delete(db).await?;
                 Ok(time_table.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -342,7 +342,7 @@ impl MutationsService {
                 let teacher_subject = teacher_subject_model.delete(db).await?;
                 Ok(teacher_subject.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -377,7 +377,7 @@ impl MutationsService {
                 let assignment = assignment_model.update(db).await?;
                 Ok(assignment.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn delete_assignment(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -387,7 +387,7 @@ impl MutationsService {
                 let assignment = assignment_model.delete(db).await?;
                 Ok(assignment.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -416,7 +416,7 @@ impl MutationsService {
                 let grade = grade_model.update(db).await?;
                 Ok(grade.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -426,7 +426,7 @@ impl MutationsService {
                 let grade = grade_model.delete(db).await?;
                 Ok(grade.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -455,7 +455,7 @@ impl MutationsService {
                 let disciplinary = disciplinary_model.update(db).await?;
                 Ok(disciplinary.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -465,7 +465,7 @@ impl MutationsService {
                 let disciplinary = disciplinary_model.delete(db).await?;
                 Ok(disciplinary.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     //
@@ -494,7 +494,7 @@ impl MutationsService {
                 let rubric = rubric_model.update(db).await?;
                 Ok(rubric.id)
             }
-            None => Ok(id),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
     pub async fn delete_rubric(db: &DbConn, id: Uuid) -> DyResult<u64> {
@@ -504,7 +504,7 @@ impl MutationsService {
                 let rubric = rubric_model.delete(db).await?;
                 Ok(rubric.rows_affected)
             }
-            None => Ok(0),
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
 }

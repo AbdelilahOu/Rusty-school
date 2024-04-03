@@ -1,4 +1,3 @@
-use ::entity::disciplinary_actions;
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -13,7 +12,7 @@ use serde_json::Value as SerdValue;
 use std::collections::HashMap;
 
 use super::utils::filters::*;
-use crate::{
+use super::{
     entities::*,
     models::{SelectScans, SelectTimeTable},
 };

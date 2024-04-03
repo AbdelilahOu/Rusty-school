@@ -1,6 +1,6 @@
 use sea_orm::{prelude::Uuid, *};
 
-use crate::{
+use super::{
     entities::*,
     models::{CActivity, CEvent, CLecture, CParent, CStudent, CTeacher, CUser},
     utils::convert_to_enum::to_day_of_week,
