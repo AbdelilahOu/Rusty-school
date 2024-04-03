@@ -12,7 +12,7 @@ mod entities {
     };
     pub use ::entity::classes::{self, ActiveModel as ClassActiveModel, Entity as Class};
     pub use ::entity::disciplinary_actions::{
-        ActiveModel as DisciplinaryActiveModel, Entity as Disciplinary,
+        self, ActiveModel as DisciplinaryActiveModel, Entity as Disciplinary,
     };
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Event};
     pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grade};
