@@ -469,27 +469,23 @@ impl MutationsService {
         }
     }
     //
-    pub async fn create_rubric(db: &DbConn, data: CGrade) -> DyResult<Uuid> {
-        let rubric_a_model = GradeActiveModel {
-            student_id: Set(data.student_id),
-            assignment_id: Set(data.assignment_id),
-            feedback: Set(data.feedback),
-            score: Set(data.score),
+    pub async fn create_rubric(db: &DbConn, data: CRubric) -> DyResult<Uuid> {
+        let rubric_a_model = RubricActiveModel {
+            title: Set(data.title),
+            description: Set(data.description),
             ..Default::default()
         };
-        let rubric = Grade::insert(rubric_a_model).exec(db).await?;
+        let rubric = Rubric::insert(rubric_a_model).exec(db).await?;
         Ok(rubric.last_insert_id)
     }
-    pub async fn update_rubric(db: &DbConn, id: Uuid, data: CGrade) -> DyResult<Uuid> {
-        let rubric_model = Grade::find_by_id(id).one(db).await?;
+    pub async fn update_rubric(db: &DbConn, id: Uuid, data: CRubric) -> DyResult<Uuid> {
+        let rubric_model = Rubric::find_by_id(id).one(db).await?;
         match rubric_model {
             Some(rubric_model) => {
                 //
-                let mut rubric_model: GradeActiveModel = rubric_model.into();
-                rubric_model.student_id = Set(data.student_id);
-                rubric_model.feedback = Set(data.feedback);
-                rubric_model.assignment_id = Set(data.assignment_id);
-                rubric_model.score = Set(data.score);
+                let mut rubric_model: RubricActiveModel = rubric_model.into();
+                rubric_model.title = Set(data.title);
+                rubric_model.description = Set(data.description);
                 //
                 let rubric = rubric_model.update(db).await?;
                 Ok(rubric.id)
@@ -498,7 +494,7 @@ impl MutationsService {
         }
     }
     pub async fn delete_rubric(db: &DbConn, id: Uuid) -> DyResult<u64> {
-        let rubric_model = Grade::find_by_id(id).one(db).await?;
+        let rubric_model = Rubric::find_by_id(id).one(db).await?;
         match rubric_model {
             Some(rubric_model) => {
                 let rubric = rubric_model.delete(db).await?;
