@@ -1,3 +1,4 @@
+use sea_orm::{sea_query::extension::postgres::Type, EnumIter, Iterable};
 use sea_orm_migration::prelude::*;
 
 use super::{
@@ -12,6 +13,15 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
+            .create_type(
+                Type::create()
+                    .as_enum(PersonType::Table)
+                    .values(PersonType::iter().skip(1))
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .create_table(
                 Table::create()
                     .table(Person::Table)
@@ -23,7 +33,11 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Person::PersonType).string().not_null())
+                    .col(
+                        ColumnDef::new(Person::PersonType)
+                            .enumeration(PersonType::Table, PersonType::iter().skip(1))
+                            .not_null(),
+                    )
                     .to_owned(),
             )
             .await?;
@@ -176,8 +190,21 @@ impl MigrationTrait for Migration {
             .drop_table(Table::drop().table(Person::Table).to_owned())
             .await?;
 
+        manager
+            .drop_type(Type::drop().if_exists().name(PersonType::Table).to_owned())
+            .await?;
+
         Ok(())
     }
+}
+
+#[derive(Iden, EnumIter)]
+enum PersonType {
+    #[iden = "person_type"]
+    Table,
+    Teacher,
+    Parent,
+    Student,
 }
 
 #[derive(DeriveIden)]
