@@ -15,8 +15,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(PersonType::Table)
-                    .values(PersonType::iter().skip(1))
+                    .as_enum(PersonTypeEnum::Table)
+                    .values(PersonTypeEnum::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(Person::PersonType)
-                            .enumeration(PersonType::Table, PersonType::iter().skip(1))
+                            .enumeration(PersonTypeEnum::Table, PersonTypeEnum::iter().skip(1))
                             .not_null(),
                     )
                     .to_owned(),
@@ -191,7 +191,12 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-            .drop_type(Type::drop().if_exists().name(PersonType::Table).to_owned())
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(PersonTypeEnum::Table)
+                    .to_owned(),
+            )
             .await?;
 
         Ok(())
@@ -199,8 +204,8 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(Iden, EnumIter)]
-enum PersonType {
-    #[iden = "person_type"]
+enum PersonTypeEnum {
+    #[iden = "person_type_enum"]
     Table,
     Teacher,
     Parent,
