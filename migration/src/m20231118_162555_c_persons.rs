@@ -210,6 +210,7 @@ enum PersonTypeEnum {
     Teacher,
     Parent,
     Student,
+    NotDefined,
 }
 
 #[derive(DeriveIden)]

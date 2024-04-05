@@ -67,6 +67,8 @@ pub enum PerformanceLevelType {
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "person_type_enum")]
 pub enum PersonTypeEnum {
+    #[sea_orm(string_value = "not_defined")]
+    NotDefined,
     #[sea_orm(string_value = "parent")]
     Parent,
     #[sea_orm(string_value = "student")]

@@ -103,7 +103,7 @@ impl TransactionsService {
                 }
                 // create details first
                 let c_person = PersonActiveModel {
-                    person_type: Set("NOT DEFINED".to_owned()),
+                    person_type: Set(PersonTypeEnum::NotDefined),
                     ..Default::default()
                 }
                 .insert(txn)
