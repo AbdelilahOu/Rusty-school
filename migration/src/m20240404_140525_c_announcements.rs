@@ -47,10 +47,10 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Announcement::Attachements).timestamp())
                     .col(ColumnDef::new(Announcement::Important).boolean())
-                    .col(
-                        ColumnDef::new(Announcement::Audience)
-                            .enumeration(AudienceEnum::Table, AudienceEnum::iter().skip(1)),
-                    )
+                    // .col(
+                    //     ColumnDef::new(Announcement::Audience)
+                    //         .enumeration(AudienceEnum::Table, AudienceEnum::iter().skip(1)),
+                    // )
                     .col(ColumnDef::new(Announcement::Alert).timestamp())
                     .to_owned(),
             )
@@ -71,14 +71,14 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_type(
-                Type::drop()
-                    .if_exists()
-                    .name(AudienceEnum::Table)
-                    .to_owned(),
-            )
-            .await?;
+        // manager
+        //     .drop_type(
+        //         Type::drop()
+        //             .if_exists()
+        //             .name(AudienceEnum::Table)
+        //             .to_owned(),
+        //     )
+        //     .await?;
 
         Ok(())
     }
@@ -88,19 +88,19 @@ impl MigrationTrait for Migration {
 enum AnnouncementCategoryEnum {
     #[iden = "announcement_category_enum"]
     Table,
-    Teacher,
-    Parent,
-    Student,
+    Event,
+    General,
+    Academic,
 }
 
-#[derive(Iden, EnumIter)]
-enum AudienceEnum {
-    #[iden = "announcement_category_enum"]
-    Table,
-    Teacher,
-    Parent,
-    Student,
-}
+// #[derive(Iden, EnumIter)]
+// enum AudienceEnum {
+//     #[iden = "audience_enum"]
+//     Table,
+//     Teacher,
+//     Parent,
+//     Student,
+// }
 
 #[derive(DeriveIden)]
 enum Announcement {
@@ -115,6 +115,6 @@ enum Announcement {
     Description,
     Attachements,
     Important,
-    Audience,
+    // Audience,
     Alert,
 }
