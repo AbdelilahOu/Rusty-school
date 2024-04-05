@@ -16,7 +16,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set("student".to_owned()),
+                    person_type: Set(PersonTypeEnum::Student),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -42,7 +42,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set("parent".to_owned()),
+                    person_type: Set(PersonTypeEnum::Teacher),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -67,7 +67,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set("parent".to_owned()),
+                    person_type: Set(PersonTypeEnum::Parent),
                     ..Default::default()
                 }
                 .insert(txn)

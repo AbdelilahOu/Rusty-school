@@ -17,6 +17,18 @@ pub enum AnnouncementCategoryEnum {
     General,
 }
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "audience_enum")]
+pub enum AudienceEnum {
+    #[sea_orm(string_value = "groups")]
+    Groups,
+    #[sea_orm(string_value = "parents")]
+    Parents,
+    #[sea_orm(string_value = "students")]
+    Students,
+    #[sea_orm(string_value = "teachers")]
+    Teachers,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "day_of_week_enum")]
 pub enum DayOfWeekEnum {
     #[sea_orm(string_value = "friday")]
@@ -51,6 +63,16 @@ pub enum PerformanceLevelType {
     NeedsImprovement,
     #[sea_orm(string_value = "not_yet_meeting_expectations")]
     NotYetMeetingExpectations,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "person_type_enum")]
+pub enum PersonTypeEnum {
+    #[sea_orm(string_value = "parent")]
+    Parent,
+    #[sea_orm(string_value = "student")]
+    Student,
+    #[sea_orm(string_value = "teacher")]
+    Teacher,
 }
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(
