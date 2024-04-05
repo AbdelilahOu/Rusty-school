@@ -3,6 +3,20 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
+    enum_name = "announcement_category_enum"
+)]
+pub enum AnnouncementCategoryEnum {
+    #[sea_orm(string_value = "academic")]
+    Academic,
+    #[sea_orm(string_value = "event")]
+    Event,
+    #[sea_orm(string_value = "general")]
+    General,
+}
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "day_of_week_enum")]
 pub enum DayOfWeekEnum {
     #[sea_orm(string_value = "friday")]

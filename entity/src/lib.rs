@@ -3,6 +3,7 @@
 pub mod prelude;
 
 pub mod activities;
+pub mod announcements;
 pub mod assignments;
 pub mod class_assignments;
 pub mod classes;
