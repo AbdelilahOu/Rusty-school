@@ -17,6 +17,15 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
+            .create_type(
+                Type::create()
+                    .as_enum(AudienceEnum::Table)
+                    .values(AudienceEnum::iter().skip(1))
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
             .create_table(
                 Table::create()
                     .table(Announcement::Table)
@@ -45,12 +54,13 @@ impl MigrationTrait for Migration {
                             )
                             .not_null(),
                     )
+                    .col(ColumnDef::new(Announcement::Targets).uuid().string())
                     .col(ColumnDef::new(Announcement::Attachements).timestamp())
                     .col(ColumnDef::new(Announcement::Important).boolean())
-                    // .col(
-                    //     ColumnDef::new(Announcement::Audience)
-                    //         .enumeration(AudienceEnum::Table, AudienceEnum::iter().skip(1)),
-                    // )
+                    .col(
+                        ColumnDef::new(Announcement::Audience)
+                            .enumeration(AudienceEnum::Table, AudienceEnum::iter().skip(1)),
+                    )
                     .col(ColumnDef::new(Announcement::Alert).timestamp())
                     .to_owned(),
             )
@@ -71,14 +81,14 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        // manager
-        //     .drop_type(
-        //         Type::drop()
-        //             .if_exists()
-        //             .name(AudienceEnum::Table)
-        //             .to_owned(),
-        //     )
-        //     .await?;
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(AudienceEnum::Table)
+                    .to_owned(),
+            )
+            .await?;
 
         Ok(())
     }
@@ -93,14 +103,15 @@ enum AnnouncementCategoryEnum {
     Academic,
 }
 
-// #[derive(Iden, EnumIter)]
-// enum AudienceEnum {
-//     #[iden = "audience_enum"]
-//     Table,
-//     Teacher,
-//     Parent,
-//     Student,
-// }
+#[derive(Iden, EnumIter)]
+enum AudienceEnum {
+    #[iden = "audience_enum"]
+    Table,
+    Teachers,
+    Parents,
+    Students,
+    Groups,
+}
 
 #[derive(DeriveIden)]
 enum Announcement {
@@ -115,6 +126,7 @@ enum Announcement {
     Description,
     Attachements,
     Important,
-    // Audience,
+    Audience,
+    Targets,
     Alert,
 }
