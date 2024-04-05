@@ -21,7 +21,7 @@ impl TransactionsService {
                 }
                 .insert(txn)
                 .await?;
-                // create student
+                //
                 let _student = StudentActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
@@ -47,7 +47,7 @@ impl TransactionsService {
                 }
                 .insert(txn)
                 .await?;
-                // create student
+                //
                 let _teacher = TeacherActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
@@ -72,7 +72,7 @@ impl TransactionsService {
                 }
                 .insert(txn)
                 .await?;
-                // create student
+                //
                 let _parent = ParentActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
