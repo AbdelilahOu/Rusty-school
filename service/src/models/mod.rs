@@ -1,3 +1,4 @@
+mod announcements;
 mod assignments;
 mod classes;
 mod disciplinary_actions;
@@ -14,6 +15,7 @@ mod teachers;
 mod timetable;
 mod users;
 
+pub use announcements::*;
 pub use assignments::*;
 pub use classes::*;
 pub use disciplinary_actions::*;
