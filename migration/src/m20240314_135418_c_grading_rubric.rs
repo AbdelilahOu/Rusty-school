@@ -58,8 +58,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(PerformanceLevelType::Table)
-                    .values(PerformanceLevelType::iter().skip(1))
+                    .as_enum(PerformanceLevelTypeEnum::Table)
+                    .values(PerformanceLevelTypeEnum::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -79,8 +79,8 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(PerformanceLevel::LevelName)
                             .enumeration(
-                                PerformanceLevelType::Table,
-                                PerformanceLevelType::iter().skip(1),
+                                PerformanceLevelTypeEnum::Table,
+                                PerformanceLevelTypeEnum::iter().skip(1),
                             )
                             .not_null(),
                     )
@@ -131,7 +131,7 @@ impl MigrationTrait for Migration {
             .drop_type(
                 Type::drop()
                     .if_exists()
-                    .name(PerformanceLevelType::Table)
+                    .name(PerformanceLevelTypeEnum::Table)
                     .to_owned(),
             )
             .await?;
@@ -171,7 +171,8 @@ enum PerformanceLevel {
 }
 
 #[derive(Iden, EnumIter)]
-enum PerformanceLevelType {
+enum PerformanceLevelTypeEnum {
+    #[sea_orm(iden = "performance_level_type_enum")]
     Table,
     ExceedsExpectations,
     MeetsExpectations,

@@ -37,10 +37,10 @@ async fn main() -> std::io::Result<()> {
                 config: loaded_config.clone(),
             }))
             .route("/", web::get().to(handlers::health_check::healthy))
+            .service(auth::load_auth_routes())
             .service(people::load_students_routes())
             .service(people::load_teachers_routes())
             .service(people::load_parents_routes())
-            .service(auth::load_auth_routes())
             .service(academic::load_levels_routes())
             .service(academic::load_scans_routes())
             .service(academic::load_subjects_routes())

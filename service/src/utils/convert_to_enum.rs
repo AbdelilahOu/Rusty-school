@@ -1,4 +1,4 @@
-use entity::sea_orm_active_enums::DayOfWeekEnum;
+use crate::entities::DayOfWeekEnum;
 
 pub fn to_day_of_week(i: u32) -> Option<DayOfWeekEnum> {
     match i {

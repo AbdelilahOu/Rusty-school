@@ -23,8 +23,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(TimeTableItemType::Table)
-                    .values(TimeTableItemType::iter().skip(1))
+                    .as_enum(TimeTableItemTypeEnum::Table)
+                    .values(TimeTableItemTypeEnum::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -45,8 +45,8 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(TimeTable::Type)
                             .enumeration(
-                                TimeTableItemType::Table,
-                                TimeTableItemType::iter().skip(1),
+                                TimeTableItemTypeEnum::Table,
+                                TimeTableItemTypeEnum::iter().skip(1),
                             )
                             .not_null(),
                     )
@@ -209,7 +209,7 @@ impl MigrationTrait for Migration {
             .drop_type(
                 Type::drop()
                     .if_exists()
-                    .name(TimeTableItemType::Table)
+                    .name(TimeTableItemTypeEnum::Table)
                     .to_owned(),
             )
             .await?;
@@ -232,7 +232,8 @@ enum DayOfWeekEnum {
 }
 
 #[derive(Iden, EnumIter)]
-enum TimeTableItemType {
+enum TimeTableItemTypeEnum {
+    #[sea_orm(iden = "time_table_item_type_enum")]
     Table,
     Activity,
     Lecture,
