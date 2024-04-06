@@ -10,7 +10,7 @@ mod models;
 mod routes;
 mod utils;
 
-use crate::routes::{academic, auth, people};
+use crate::routes::{academic, auth, communication, people};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -53,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             .service(academic::load_grades_routes())
             .service(academic::load_grading_rubric_routes())
             .service(academic::load_disciplinary_actions_routes())
+            .service(communication::load_announcements_routes())
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
     .bind(("0.0.0.0", 8080))?
