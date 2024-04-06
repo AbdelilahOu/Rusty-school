@@ -233,7 +233,7 @@ enum DayOfWeekEnum {
 
 #[derive(Iden, EnumIter)]
 enum TimeTableItemTypeEnum {
-    #[sea_orm(iden = "time_table_item_type_enum")]
+    #[iden = "time_table_item_type_enum"]
     Table,
     Activity,
     Lecture,

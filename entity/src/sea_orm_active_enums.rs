@@ -50,9 +50,9 @@ pub enum DayOfWeekEnum {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "performance_level_type"
+    enum_name = "performance_level_type_enum"
 )]
-pub enum PerformanceLevelType {
+pub enum PerformanceLevelTypeEnum {
     #[sea_orm(string_value = "below_expectations")]
     BelowExpectations,
     #[sea_orm(string_value = "exceeds_expectations")]
@@ -80,9 +80,9 @@ pub enum PersonTypeEnum {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "time_table_item_type"
+    enum_name = "time_table_item_type_enum"
 )]
-pub enum TimeTableItemType {
+pub enum TimeTableItemTypeEnum {
     #[sea_orm(string_value = "activity")]
     Activity,
     #[sea_orm(string_value = "event")]

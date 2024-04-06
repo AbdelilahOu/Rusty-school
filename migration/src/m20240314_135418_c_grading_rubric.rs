@@ -172,7 +172,7 @@ enum PerformanceLevel {
 
 #[derive(Iden, EnumIter)]
 enum PerformanceLevelTypeEnum {
-    #[sea_orm(iden = "performance_level_type_enum")]
+    #[iden = "performance_level_type_enum"]
     Table,
     ExceedsExpectations,
     MeetsExpectations,
