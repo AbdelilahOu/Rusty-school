@@ -8,7 +8,7 @@ pub mod utils;
 mod entities {
     pub use ::entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activity};
     pub use ::entity::announcements::{
-        ActiveModel as AnnouncementActiveModel, Entity as Announcement,
+        self, ActiveModel as AnnouncementActiveModel, Entity as Announcement,
     };
     pub use ::entity::assignments::{
         self, ActiveModel as AssignmentActiveModel, Entity as Assignment,

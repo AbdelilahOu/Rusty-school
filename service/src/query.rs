@@ -1,21 +1,20 @@
-use ::entity::announcements;
 use chrono::NaiveDateTime;
 use sea_orm::{
-    prelude::Uuid,
+    prelude::*,
     sea_query::{
         extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
         SubQueryStatement,
     },
-    *,
+    DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect, Statement,
 };
 use serde::Deserialize;
 use serde_json::Value as SerdValue;
 use std::collections::HashMap;
 
-use super::utils::filters::*;
 use super::{
     entities::*,
     models::{SelectScans, SelectTimeTable},
+    utils::filters::*,
 };
 
 #[derive(Deserialize)]

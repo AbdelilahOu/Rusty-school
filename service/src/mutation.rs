@@ -1,11 +1,11 @@
 use chrono::Utc;
-use sea_orm::{prelude::Uuid, *};
+use sea_orm::{prelude::*, Set};
 
-use crate::utils::convert_to_enum::to_announcement_category;
-use crate::utils::convert_to_enum::to_audience;
-
-use super::entities::*;
-use super::models::*;
+use super::{
+    entities::*,
+    models::*,
+    utils::convert_to_enum::{to_announcement_category, to_audience},
+};
 
 pub struct MutationsService;
 
