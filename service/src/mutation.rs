@@ -503,4 +503,55 @@ impl MutationsService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
+    //
+    pub async fn create_announcement(db: &DbConn, data: CAnnouncement) -> DyResult<Uuid> {
+        let announcement_a_model = AnnouncementActiveModel {
+            title: Set(data.title),
+            description: Set(data.description),
+            start_date: Set(data.start_date),
+            end_date: Set(data.end_date),
+            category: Set(data.category),
+            targets: Set(data.targets),
+            attachements: Set(data.attachements),
+            important: Set(data.important),
+            audience: Set(data.audience),
+            alert: Set(data.alert),
+            ..Default::default()
+        };
+        let announcement = Announcement::insert(announcement_a_model).exec(db).await?;
+        Ok(announcement.last_insert_id)
+    }
+    pub async fn update_announcement(db: &DbConn, id: Uuid, data: CAnnouncement) -> DyResult<Uuid> {
+        let announcement_model = Announcement::find_by_id(id).one(db).await?;
+        match announcement_model {
+            Some(announcement_model) => {
+                //
+                let mut announcement_model: AnnouncementActiveModel = announcement_model.into();
+                announcement_model.title = Set(data.title);
+                announcement_model.description = Set(data.description);
+                announcement_model.start_date = Set(data.start_date);
+                announcement_model.end_date = Set(data.end_date);
+                announcement_model.category = Set(data.category);
+                announcement_model.targets = Set(data.targets);
+                announcement_model.attachements = Set(data.attachements);
+                announcement_model.important = Set(data.important);
+                announcement_model.audience = Set(data.audience);
+                announcement_model.alert = Set(data.alert);
+                //
+                let announcement = announcement_model.update(db).await?;
+                Ok(announcement.id)
+            }
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
+        }
+    }
+    pub async fn delete_announcement(db: &DbConn, id: Uuid) -> DyResult<u64> {
+        let announcement_model = Announcement::find_by_id(id).one(db).await?;
+        match announcement_model {
+            Some(announcement_model) => {
+                let announcement = announcement_model.delete(db).await?;
+                Ok(announcement.rows_affected)
+            }
+            None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
+        }
+    }
 }
