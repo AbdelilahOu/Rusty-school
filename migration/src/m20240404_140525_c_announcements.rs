@@ -54,14 +54,13 @@ impl MigrationTrait for Migration {
                             )
                             .not_null(),
                     )
-                    .col(ColumnDef::new(Announcement::Targets).uuid().string())
+                    .col(ColumnDef::new(Announcement::Targets).array(ColumnType::Uuid))
                     .col(ColumnDef::new(Announcement::Attachements).timestamp())
                     .col(ColumnDef::new(Announcement::Important).boolean())
                     .col(
                         ColumnDef::new(Announcement::Audience)
                             .enumeration(AudienceEnum::Table, AudienceEnum::iter().skip(1)),
                     )
-                    .col(ColumnDef::new(Announcement::Alert).timestamp())
                     .to_owned(),
             )
             .await
@@ -128,5 +127,4 @@ enum Announcement {
     Important,
     Audience,
     Targets,
-    Alert,
 }

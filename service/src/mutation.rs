@@ -1,6 +1,9 @@
 use chrono::Utc;
 use sea_orm::{prelude::Uuid, *};
 
+use crate::utils::convert_to_enum::to_announcement_category;
+use crate::utils::convert_to_enum::to_audience;
+
 use super::entities::*;
 use super::models::*;
 
@@ -510,12 +513,11 @@ impl MutationsService {
             description: Set(data.description),
             start_date: Set(data.start_date),
             end_date: Set(data.end_date),
-            category: Set(data.category),
+            category: Set(to_announcement_category(data.category)),
             targets: Set(data.targets),
             attachements: Set(data.attachements),
             important: Set(data.important),
-            audience: Set(data.audience),
-            alert: Set(data.alert),
+            audience: Set(to_audience(data.audience)),
             ..Default::default()
         };
         let announcement = Announcement::insert(announcement_a_model).exec(db).await?;
@@ -531,12 +533,11 @@ impl MutationsService {
                 announcement_model.description = Set(data.description);
                 announcement_model.start_date = Set(data.start_date);
                 announcement_model.end_date = Set(data.end_date);
-                announcement_model.category = Set(data.category);
+                announcement_model.category = Set(to_announcement_category(data.category));
                 announcement_model.targets = Set(data.targets);
                 announcement_model.attachements = Set(data.attachements);
                 announcement_model.important = Set(data.important);
-                announcement_model.audience = Set(data.audience);
-                announcement_model.alert = Set(data.alert);
+                announcement_model.audience = Set(to_audience(data.audience));
                 //
                 let announcement = announcement_model.update(db).await?;
                 Ok(announcement.id)

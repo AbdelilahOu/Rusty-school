@@ -130,7 +130,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemType::Lecture),
+                    item_type: Set(TimeTableItemTypeEnum::Lecture),
                     full_date: Set(Some(data.full_date)),
                     start_time: Set(Some(data.start_time)),
                     ..Default::default()
@@ -156,7 +156,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemType::Activity),
+                    item_type: Set(TimeTableItemTypeEnum::Activity),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
                     day_of_week: Set(to_day_of_week(data.day_of_week)),
@@ -183,7 +183,7 @@ impl TransactionsService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemType::Lecture),
+                    item_type: Set(TimeTableItemTypeEnum::Lecture),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
                     day_of_week: Set(to_day_of_week(data.day_of_week)),

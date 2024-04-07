@@ -16,11 +16,10 @@ pub struct Model {
     pub start_date: Option<DateTime>,
     pub end_date: Option<DateTime>,
     pub category: AnnouncementCategoryEnum,
-    pub targets: Option<String>,
+    pub targets: Option<Vec<Uuid>>,
     pub attachements: Option<DateTime>,
     pub important: Option<bool>,
     pub audience: Option<AudienceEnum>,
-    pub alert: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

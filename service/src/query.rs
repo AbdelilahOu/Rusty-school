@@ -1,3 +1,4 @@
+use ::entity::announcements;
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::Uuid,
@@ -610,7 +611,7 @@ impl QueriesService {
             .expr_as(Expr::col((TimeTable,time_table::Column::ItemType)).cast_as(Alias::new("TEXT")),Alias::new("item_type"))
             .expr_as(
                 Expr::case(
-                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemType::Event),
+                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemTypeEnum::Event),
                     SimpleExpr::SubQuery(
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
@@ -626,7 +627,7 @@ impl QueriesService {
                     ),
                 )
                 .case(
-                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemType::Activity),
+                    Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemTypeEnum::Activity),
                     SimpleExpr::SubQuery(
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
@@ -727,6 +728,23 @@ impl QueriesService {
         let disciplinaries = Disciplinary::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
+            .column(students::Column::FullName)
+            .join(
+                JoinType::Join,
+                disciplinary_actions::Relation::Students.def(),
+            )
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+        Ok(disciplinaries)
+    }
+    //
+    pub async fn list_announcements(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let disciplinaries = Announcement::find()
+            .select_only()
+            .columns(announcements::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
