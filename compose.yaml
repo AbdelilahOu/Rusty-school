@@ -17,18 +17,18 @@ services:
     container_name: school-api-prod
     image: school-api-prod:0.1.0
     env_file:
-      - dev.env
+      - .env
     build:
       context: .
       network: host
     # NEEDED ENV VARS
-    # environment:
-    #   - DATABASE_URL="postgres://root:mysecretpassword@school-db-prod/school"
-    #   - OAUTH_CLIENT_ID=""
-    #   - OAUTH_SECRET=""
-    #   - REDIRECT_URL=""
-    #   - RANDOM_KEY=""
-    #   - JWT_MAX_AGE=48
+    environment:
+      - DATABASE_URL="postgres://root:mysecretpassword@school-db-prod/school"
+      # - OAUTH_CLIENT_ID=""
+      # - OAUTH_SECRET=""
+      # - REDIRECT_URL=""
+      # - RANDOM_KEY=""
+      # - JWT_MAX_AGE=48
     networks:
       - school-backend-prod
     ports:
