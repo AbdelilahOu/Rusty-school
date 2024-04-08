@@ -741,7 +741,7 @@ impl QueriesService {
     }
     //
     pub async fn list_announcements(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let disciplinaries = Announcement::find()
+        let announcements = Announcement::find()
             .select_only()
             .columns(announcements::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -749,6 +749,6 @@ impl QueriesService {
             .into_json()
             .all(db)
             .await?;
-        Ok(disciplinaries)
+        Ok(announcements)
     }
 }

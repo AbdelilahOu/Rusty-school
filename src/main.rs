@@ -1,6 +1,6 @@
+use ::service::sea_orm::DatabaseConnection;
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use models::commen::ConfigObj;
-use service::sea_orm::DatabaseConnection;
 
 mod config;
 mod database;
