@@ -19,6 +19,7 @@ mod entities {
     };
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Event};
     pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grade};
+    pub use ::entity::grading_criteria::{ActiveModel as CriteriaActiveModel, Entity as Criteria};
     pub use ::entity::grading_rubrics::{ActiveModel as RubricActiveModel, Entity as Rubric};
     pub use ::entity::groups::{self, ActiveModel as GroupActiveModel, Entity as Group};
     pub use ::entity::lectures::{self, ActiveModel as LectureActiveModel, Entity as Lecture};

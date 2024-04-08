@@ -1,7 +1,7 @@
 use chrono::Utc;
 use sea_orm::{prelude::*, Set};
 
-use super::{
+use crate::{
     entities::*,
     models::*,
     utils::convert_to_enum::{to_announcement_category, to_audience},

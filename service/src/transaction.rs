@@ -1,8 +1,8 @@
 use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
-use super::{
+use crate::{
     entities::*,
-    models::{CActivity, CEvent, CLecture, CParent, CStudent, CTeacher, CUser},
+    models::{CActivity, CEvent, CLecture, CParent, CRubric, CStudent, CTeacher, CUser},
     utils::convert_to_enum::to_day_of_week,
 };
 
@@ -205,4 +205,33 @@ impl TransactionsService {
         .await
     }
     //
+    pub async fn create_rubric(db: &DbConn, data: CRubric) -> TxnRes<Uuid> {
+        db.transaction::<_, Uuid, DbErr>(|txn| {
+            Box::pin(async move {
+                // create grading rubric
+                let rubric_modal = RubricActiveModel {
+                    title: Set(data.title),
+                    description: Set(data.description),
+                    ..Default::default()
+                }
+                .insert(txn)
+                .await?;
+                // create create criterias
+                if let Some(grading_criterias) = data.grading_criterias {
+                    let mut criterias = Vec::<CriteriaActiveModel>::new();
+                    for critera in grading_criterias {
+                        criterias.push(CriteriaActiveModel {
+                            grading_rubric_id: Set(rubric_modal.id),
+                            description: Set(critera.description),
+                            // points: Set(critera.points),
+                            ..Default::default()
+                        })
+                    }
+                    Criteria::insert_many(criterias).exec(txn).await?;
+                };
+                Ok(rubric_modal.id)
+            })
+        })
+        .await
+    }
 }

@@ -11,7 +11,7 @@ use serde::Deserialize;
 use serde_json::Value as SerdValue;
 use std::collections::HashMap;
 
-use super::{
+use crate::{
     entities::*,
     models::{SelectScans, SelectTimeTable},
     utils::filters::*,

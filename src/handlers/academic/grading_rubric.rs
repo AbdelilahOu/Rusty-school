@@ -4,9 +4,9 @@ use actix_web::{
     web::Json as ActJson,
     HttpResponse as HttpRes,
 };
-use service::{models::CGrade, mutation::*, query::*};
+use service::{models::CRubric, mutation::*, query::*, transaction::TransactionsService};
 //
-type Body = ActJson<CGrade>;
+type Body = ActJson<CRubric>;
 
 pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
     let gradees = QueriesService::list_grades(
@@ -37,7 +37,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
 }
 
 pub async fn create(body: Body, state: State) -> HttpRes {
-    let res = MutationsService::create_grade(&state.db_conn, body.into_inner()).await;
+    let res = TransactionsService::create_rubric(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpRes::Ok()
             .status(StatusCode::CREATED)
