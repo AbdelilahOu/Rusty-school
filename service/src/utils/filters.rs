@@ -1,7 +1,7 @@
+use crate::entities::{
+    parents::Column as ParentCol, students::Column as StudentCol, teachers::Column as TeacherCol,
+};
 use crate::query::Filters;
-use entity::parents::Column as ParentCol;
-use entity::students::Column as StudentCol;
-use entity::teachers::Column as TeacherCol;
 use sea_orm::{ColumnTrait, Condition};
 
 pub fn generate_student_filters(filters: Vec<Filters>) -> Condition {

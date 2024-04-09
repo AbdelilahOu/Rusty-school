@@ -1,6 +1,6 @@
-use entity::sea_orm_active_enums::PerformanceLevelEnum;
-
-use crate::entities::{AnnouncementCategoryEnum, AudienceEnum, DayOfWeekEnum};
+use crate::entities::{
+    AnnouncementCategoryEnum, AudienceEnum, DayOfWeekEnum, PerformanceLevelEnum,
+};
 
 pub fn to_day_of_week(i: u32) -> Option<DayOfWeekEnum> {
     match i {
