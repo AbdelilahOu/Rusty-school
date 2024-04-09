@@ -22,7 +22,7 @@ impl TransactionsService {
                 .insert(txn)
                 .await?;
                 //
-                let _student = StudentActiveModel {
+                StudentActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
                     group_id: Set(data.group_id),
@@ -48,7 +48,7 @@ impl TransactionsService {
                 .insert(txn)
                 .await?;
                 //
-                let _teacher = TeacherActiveModel {
+                TeacherActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
                     person_id: Set(Some(person.id)),
@@ -73,7 +73,7 @@ impl TransactionsService {
                 .insert(txn)
                 .await?;
                 //
-                let _parent = ParentActiveModel {
+                ParentActiveModel {
                     first_name: Set(data.first_name),
                     last_name: Set(data.last_name),
                     person_id: Set(Some(person.id)),
