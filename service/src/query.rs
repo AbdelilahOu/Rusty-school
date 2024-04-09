@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use entity::grading_rubrics;
 use sea_orm::{
     prelude::*,
     sea_query::{
@@ -750,5 +751,17 @@ impl QueriesService {
             .all(db)
             .await?;
         Ok(announcements)
+    }
+    //
+    pub async fn list_rubrics(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+        let rubrics = Rubric::find()
+            .select_only()
+            .columns(grading_rubrics::Column::iter())
+            .offset((qf.queries.page - 1) * qf.queries.limit)
+            .limit(qf.queries.limit)
+            .into_json()
+            .all(db)
+            .await?;
+        Ok(rubrics)
     }
 }

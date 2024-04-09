@@ -472,15 +472,6 @@ impl MutationsService {
         }
     }
     //
-    pub async fn create_rubric(db: &DbConn, data: CRubric) -> DyResult<Uuid> {
-        let rubric_a_model = RubricActiveModel {
-            title: Set(data.title),
-            description: Set(data.description),
-            ..Default::default()
-        };
-        let rubric = Rubric::insert(rubric_a_model).exec(db).await?;
-        Ok(rubric.last_insert_id)
-    }
     pub async fn update_rubric(db: &DbConn, id: Uuid, data: CRubric) -> DyResult<Uuid> {
         let rubric_model = Rubric::find_by_id(id).one(db).await?;
         match rubric_model {
@@ -555,4 +546,5 @@ impl MutationsService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
+    //
 }
