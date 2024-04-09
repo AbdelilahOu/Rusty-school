@@ -14,7 +14,6 @@ pub use super::groups::Entity as Groups;
 pub use super::lectures::Entity as Lectures;
 pub use super::levels::Entity as Levels;
 pub use super::parents::Entity as Parents;
-pub use super::performance_level::Entity as PerformanceLevel;
 pub use super::persons::Entity as Persons;
 pub use super::pickups::Entity as Pickups;
 pub use super::rooms::Entity as Rooms;

@@ -16,7 +16,6 @@ pub mod groups;
 pub mod lectures;
 pub mod levels;
 pub mod parents;
-pub mod performance_level;
 pub mod persons;
 pub mod pickups;
 pub mod rooms;

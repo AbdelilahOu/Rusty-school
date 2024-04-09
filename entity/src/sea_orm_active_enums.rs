@@ -50,9 +50,9 @@ pub enum DayOfWeekEnum {
 #[sea_orm(
     rs_type = "String",
     db_type = "Enum",
-    enum_name = "performance_level_type_enum"
+    enum_name = "performance_level_enum"
 )]
-pub enum PerformanceLevelTypeEnum {
+pub enum PerformanceLevelEnum {
     #[sea_orm(string_value = "below_expectations")]
     BelowExpectations,
     #[sea_orm(string_value = "exceeds_expectations")]

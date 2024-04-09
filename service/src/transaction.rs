@@ -3,7 +3,7 @@ use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 use crate::{
     entities::*,
     models::{CActivity, CEvent, CLecture, CParent, CRubric, CStudent, CTeacher, CUser},
-    utils::convert_to_enum::to_day_of_week,
+    utils::convert_to_enum::{to_day_of_week, to_performance},
 };
 
 pub struct TransactionsService;
@@ -223,7 +223,7 @@ impl TransactionsService {
                         criterias.push(CriteriaActiveModel {
                             grading_rubric_id: Set(rubric_modal.id),
                             description: Set(critera.description),
-                            points: Set(critera.points),
+                            performance: Set(to_performance(critera.performance)),
                             ..Default::default()
                         })
                     }

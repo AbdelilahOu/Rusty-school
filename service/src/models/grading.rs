@@ -15,6 +15,6 @@ pub struct CRubric {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CCriteria {
-    pub points: f32,
+    pub performance: String,
     pub description: Option<String>,
 }

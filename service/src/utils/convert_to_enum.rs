@@ -1,3 +1,5 @@
+use entity::sea_orm_active_enums::PerformanceLevelEnum;
+
 use crate::entities::{AnnouncementCategoryEnum, AudienceEnum, DayOfWeekEnum};
 
 pub fn to_day_of_week(i: u32) -> Option<DayOfWeekEnum> {
@@ -31,5 +33,15 @@ pub fn to_audience(audience: Option<String>) -> Option<AudienceEnum> {
             _ => None,
         },
         None => None,
+    }
+}
+
+pub fn to_performance(performance: String) -> PerformanceLevelEnum {
+    match performance.as_str() {
+        "exceeds_expectations" => PerformanceLevelEnum::ExceedsExpectations,
+        "meets_expectations" => PerformanceLevelEnum::MeetsExpectations,
+        "below_expectations" => PerformanceLevelEnum::BelowExpectations,
+        "needs_improvement" => PerformanceLevelEnum::NeedsImprovement,
+        _ => PerformanceLevelEnum::NotYetMeetingExpectations,
     }
 }
