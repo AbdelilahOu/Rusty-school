@@ -50,7 +50,7 @@ impl MigrationTrait for Migration {
                             .on_delete(ForeignKeyAction::Cascade),
                     )
                     .col(ColumnDef::new(GradingCriteria::Description).string())
-                    .col(ColumnDef::new(GradingCriteria::Points).decimal_len(4, 2))
+                    .col(ColumnDef::new(GradingCriteria::Points).float().not_null())
                     .to_owned(),
             )
             .await?;

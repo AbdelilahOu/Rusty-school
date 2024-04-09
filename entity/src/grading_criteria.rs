@@ -2,15 +2,15 @@
 
 use sea_orm::entity::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "grading_criteria")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub grading_rubric_id: Uuid,
     pub description: Option<String>,
-    #[sea_orm(column_type = "Decimal(Some((4, 2)))", nullable)]
-    pub points: Option<Decimal>,
+    #[sea_orm(column_type = "Float")]
+    pub points: f32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

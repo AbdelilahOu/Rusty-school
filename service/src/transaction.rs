@@ -223,7 +223,7 @@ impl TransactionsService {
                         criterias.push(CriteriaActiveModel {
                             grading_rubric_id: Set(rubric_modal.id),
                             description: Set(critera.description),
-                            // points: Set(critera.points),
+                            points: Set(critera.points),
                             ..Default::default()
                         })
                     }

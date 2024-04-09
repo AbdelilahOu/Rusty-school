@@ -23,7 +23,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Grades selected successfully".to_string()),
+                message: Some("grading rubrics selected successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpRes::InternalServerError()
@@ -44,7 +44,7 @@ pub async fn create(body: Body, state: State) -> HttpRes {
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Grade created successfully".to_string()),
+                message: Some("grading rubric created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
         Err(e) => HttpRes::InternalServerError()
@@ -65,7 +65,7 @@ pub async fn delete(id: IdParam, state: State) -> HttpRes {
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Grade deleted successfully".to_string()),
+                message: Some("grading rubric deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
         Err(e) => HttpRes::InternalServerError()
@@ -86,7 +86,7 @@ pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
-                message: Some("Grade updated successfully".to_string()),
+                message: Some("grading rubric updated successfully".to_string()),
                 data: Some(i),
             }),
         Err(e) => HttpRes::InternalServerError()
