@@ -1,5 +1,4 @@
 use chrono::NaiveDateTime;
-use entity::grading_rubrics;
 use sea_orm::{
     prelude::*,
     sea_query::{
