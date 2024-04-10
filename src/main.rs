@@ -36,7 +36,6 @@ async fn main() -> std::io::Result<()> {
                 db_conn: conn.clone(),
                 config: loaded_config.clone(),
             }))
-            .route("/", web::get().to(handlers::health_check::healthy))
             .service(auth::load_auth_routes())
             .service(people::load_students_routes())
             .service(people::load_teachers_routes())
