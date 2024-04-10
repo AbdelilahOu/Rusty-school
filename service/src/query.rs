@@ -35,8 +35,8 @@ pub struct Filters {
     pub value: String,
 }
 
-type JsonV = SerdValue;
-type Values = Vec<JsonV>;
+type _JsonV = SerdValue;
+type Values = Vec<SerdValue>;
 
 pub struct QueriesService;
 
