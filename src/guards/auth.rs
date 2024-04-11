@@ -15,7 +15,7 @@ pub fn check_token(headers: &HeaderMap, secret: String) -> Option<Claims> {
                 return None;
             }
             // get token
-            let [token, authorization_type] = header.split(" ").collect::<Vec<&str>>()[..] else {
+            let [authorization_type, token] = header.split(" ").collect::<Vec<&str>>()[..] else {
                 println!("header is not valid");
                 return None;
             };
