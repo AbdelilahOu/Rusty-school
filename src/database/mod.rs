@@ -1,4 +1,4 @@
-use service::sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
+use ::service::sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
 use std::time::Duration;
 
 pub async fn establish_connection(db_url: String) -> Result<DbConn, DbErr> {
@@ -9,16 +9,7 @@ pub async fn establish_connection(db_url: String) -> Result<DbConn, DbErr> {
         .min_connections(1)
         .connect_timeout(Duration::from_secs(10));
     // get db connection
-    let db_res = Database::connect(options).await;
-    // check for errors
-    match db_res {
-        Ok(db_conn) => {
-            println!("Database connection established.");
-            Ok(db_conn)
-        }
-        Err(db_err) => {
-            println!("Database connection error: {:?}", db_err.to_string());
-            Err(db_err)
-        }
-    }
+    let db_conn = Database::connect(options).await?;
+    println!("Database connection established.");
+    Ok(db_conn)
 }
