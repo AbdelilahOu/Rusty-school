@@ -5,12 +5,11 @@ use crate::{
         token::generate_tokens,
     },
 };
+use ::service::{models::CUser, transaction::TransactionsService};
 use actix_web::{
-    cookie::{time::Duration, Cookie},
     http::{header::ContentType, StatusCode},
     HttpResponse,
 };
-use service::{models::CUser, transaction::TransactionsService};
 
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(
@@ -50,15 +49,8 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                                 state.config.jwt_secret.clone(),
                                 state.config.jwt_max_age.clone(),
                             );
-                            // create cookie
-                            let cookie = Cookie::build("token", token.clone())
-                                .path("/")
-                                .max_age(Duration::hours(state.config.jwt_max_age.clone()))
-                                .http_only(true)
-                                .finish();
                             let mut response = HttpResponse::Found();
                             response.append_header(("Location", "/"));
-                            response.cookie(cookie);
                             response.json(ResponseData::<String> {
                                 error: None,
                                 message: Some("user logged in successfully".to_string()),

@@ -1,10 +1,10 @@
 use crate::{guards::auth::check_token, models::commen::*};
+use ::service::{models::CStudent, mutation::*, query::*};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpRequest as HttpReq, HttpResponse as HttpRes,
 };
-use service::{models::CStudent, mutation::*, query::*};
 //
 type Body = ActJson<CStudent>;
 

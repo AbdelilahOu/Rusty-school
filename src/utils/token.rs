@@ -1,8 +1,8 @@
 use super::auth::Res;
 use crate::models::commen::Claims;
+use ::service::chrono::{Duration, Utc};
+use ::service::uuid::Uuid;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
-use service::chrono::{Duration, Utc};
-use service::uuid::Uuid;
 
 pub fn generate_tokens(user_uuid: Uuid, secret: String, age: i64) -> String {
     // time

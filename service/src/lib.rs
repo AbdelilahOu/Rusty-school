@@ -6,7 +6,6 @@ pub mod utils;
 
 // group imports from entity
 mod entities {
-    pub use ::entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activity};
     pub use ::entity::announcements::{
         self, ActiveModel as AnnouncementActiveModel, Entity as Announcement,
     };
@@ -40,6 +39,7 @@ mod entities {
         self, ActiveModel as TimeTableActiveModel, Entity as TimeTable,
     };
     pub use ::entity::users::{self, ActiveModel as UserActiveModel, Entity as User};
+    pub use entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activity};
 }
 
 pub use chrono;
