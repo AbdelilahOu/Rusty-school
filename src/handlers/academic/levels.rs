@@ -1,10 +1,10 @@
 use crate::models::commen::*;
-use ::service::{models::CLevel, mutation::*, query::*};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpResponse,
 };
+use service::{models::CLevel, mutation::*, query::*};
 
 // i like my functions to stay inline
 type Body = ActJson<CLevel>;

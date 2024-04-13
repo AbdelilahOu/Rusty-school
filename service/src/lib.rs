@@ -29,6 +29,7 @@ mod entities {
     pub use ::entity::rooms::{ActiveModel as RoomActiveModel, Entity as Room};
     pub use ::entity::scans::{self, ActiveModel as ScanActiveModel, Entity as Scans};
     pub use ::entity::sea_orm_active_enums::*;
+    pub use ::entity::sessions::{self, ActiveModel as SessionActiveModel, Entity as Sessions};
     pub use ::entity::students::{self, ActiveModel as StudentActiveModel, Entity as Student};
     pub use ::entity::subjects::{self, ActiveModel as SubjectActiveModel, Entity as Subject};
     pub use ::entity::teacher_subjects::{

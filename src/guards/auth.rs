@@ -1,4 +1,4 @@
-use crate::{models::commen::Claims, utils};
+use crate::{models::auth::Claims, utils};
 use actix_web::http::header::HeaderMap;
 
 pub fn check_token(headers: &HeaderMap, secret: String) -> Option<Claims> {
@@ -8,7 +8,7 @@ pub fn check_token(headers: &HeaderMap, secret: String) -> Option<Claims> {
     match auth_header {
         Some(header) => {
             //get header as str value
-            let header = header.to_str().unwrap();
+            let header = header.to_str().unwrap_or("");
             // check header is valid
             if header.is_empty() {
                 println!("header is empty");

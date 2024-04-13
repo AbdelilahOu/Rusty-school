@@ -21,6 +21,7 @@ pub mod pickups;
 pub mod rooms;
 pub mod scans;
 pub mod sea_orm_active_enums;
+pub mod sessions;
 pub mod students;
 pub mod subjects;
 pub mod teacher_subjects;

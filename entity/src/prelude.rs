@@ -18,6 +18,7 @@ pub use super::persons::Entity as Persons;
 pub use super::pickups::Entity as Pickups;
 pub use super::rooms::Entity as Rooms;
 pub use super::scans::Entity as Scans;
+pub use super::sessions::Entity as Sessions;
 pub use super::students::Entity as Students;
 pub use super::subjects::Entity as Subjects;
 pub use super::teacher_subjects::Entity as TeacherSubjects;

@@ -1,10 +1,10 @@
 use crate::models::commen::*;
-use ::service::{models::CGrade, mutation::*, query::*};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpResponse as HttpRes,
 };
+use service::{models::CGrade, mutation::*, query::*};
 //
 type Body = ActJson<CGrade>;
 

@@ -1,10 +1,10 @@
 use crate::models::commen::*;
-use ::service::{models::CRubric, mutation::*, query::*, transaction::*};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
     HttpResponse as HttpRes,
 };
+use service::{models::CRubric, mutation::*, query::*, transaction::*};
 //
 type Body = ActJson<CRubric>;
 

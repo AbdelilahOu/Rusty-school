@@ -1,4 +1,4 @@
-use ::service::sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
+use service::sea_orm::{ConnectOptions, Database, DatabaseConnection as DbConn, DbErr};
 use std::time::Duration;
 
 pub async fn establish_connection(db_url: String) -> Result<DbConn, DbErr> {

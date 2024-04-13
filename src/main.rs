@@ -1,6 +1,6 @@
-use ::service::sea_orm::DatabaseConnection;
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
 use models::commen::ConfigObj;
+use service::sea_orm::DatabaseConnection;
 
 mod config;
 mod database;
@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
                 db_conn: conn.clone(),
                 config: loaded_config.clone(),
             }))
-            .wrap(middleware::auth::Auth)
+            // .wrap(middleware::auth::Auth)
             .service(auth::load_auth_routes())
             .service(people::load_students_routes())
             .service(people::load_teachers_routes())

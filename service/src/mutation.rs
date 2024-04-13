@@ -547,4 +547,17 @@ impl MutationsService {
         }
     }
     //
+    pub async fn create_session(db: &DbConn, data: CSession) -> DyResult<Uuid> {
+        let session_a_model = SessionActiveModel {
+            user_id: Set(data.user_id),
+            user_agent: Set(data.user_agent),
+            client_ip: Set(data.client_ip),
+            is_blocked: Set(data.is_blocked),
+            refresh_token: Set(data.refresh_token),
+            expires_at: Set(data.expires_at),
+            ..Default::default()
+        };
+        let session = Sessions::insert(session_a_model).exec(db).await?;
+        Ok(session.last_insert_id)
+    }
 }

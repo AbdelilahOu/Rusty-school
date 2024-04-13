@@ -1,4 +1,7 @@
-use crate::models::commen::{ConfigObj, GoogleUser, TokenResponse};
+use crate::models::{
+    auth::{GoogleUser, TokenResponse},
+    commen::ConfigObj,
+};
 use reqwest::{
     self,
     header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE},

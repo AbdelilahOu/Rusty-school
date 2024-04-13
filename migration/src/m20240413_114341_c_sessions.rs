@@ -36,6 +36,7 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .default(false),
                     )
+                    .col(ColumnDef::new(Session::RefreshToken).string().not_null())
                     .col(ColumnDef::new(Session::ExpiresAt).timestamp().not_null())
                     .col(
                         ColumnDef::new(Session::CreatedAt)
@@ -73,6 +74,7 @@ enum Session {
     ClientIp,
     UserAgent,
     IsBlocked,
+    RefreshToken,
     ExpiresAt,
     CreatedAt,
 }

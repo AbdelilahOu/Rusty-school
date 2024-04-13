@@ -1,10 +1,14 @@
 use super::auth::Res;
-use crate::models::commen::Claims;
-use ::service::chrono::{Duration, Utc};
-use ::service::uuid::Uuid;
+use crate::models::auth::Claims;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use service::chrono::{Duration, NaiveDateTime, Utc};
+use service::uuid::Uuid;
 
-pub fn generate_tokens(user_uuid: Uuid, secret: String, duration: Duration) -> String {
+pub fn generate_tokens(
+    user_uuid: Uuid,
+    secret: String,
+    duration: Duration,
+) -> (String, NaiveDateTime) {
     // time
     let current_time = Utc::now();
     let expiration_time = current_time + duration;
@@ -20,7 +24,7 @@ pub fn generate_tokens(user_uuid: Uuid, secret: String, duration: Duration) -> S
         &EncodingKey::from_secret(secret.as_ref()),
     )
     .expect("Failed to generate token");
-    token
+    (token, expiration_time.naive_utc())
 }
 
 pub fn verify_token(token: &str, secret: String) -> Res<Claims> {

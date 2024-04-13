@@ -35,7 +35,7 @@ pub struct Filters {
     pub value: String,
 }
 
-type _JsonV = SerdValue;
+type JsonV = SerdValue;
 type Values = Vec<SerdValue>;
 
 pub struct QueriesService;
@@ -762,5 +762,15 @@ impl QueriesService {
             .all(db)
             .await?;
         Ok(rubrics)
+    }
+    //
+    pub async fn get_session(db: &DbConn, id: Uuid) -> Result<Option<JsonV>, DbErr> {
+        let session = Rubric::find_by_id(id)
+            .select_only()
+            .columns(sessions::Column::iter())
+            .into_json()
+            .one(db)
+            .await?;
+        Ok(session)
     }
 }
