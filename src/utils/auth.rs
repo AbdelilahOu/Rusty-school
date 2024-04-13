@@ -1,6 +1,6 @@
 use crate::models::{
     auth::{GoogleUser, TokenResponse},
-    commen::ConfigObj,
+    commen::Config,
 };
 use reqwest::{
     self,
@@ -24,15 +24,15 @@ pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url
     url.to_owned()
 }
 // #2
-pub async fn request_tokens(code: String, secrets: ConfigObj) -> Res<TokenResponse> {
+pub async fn request_tokens(code: String, conf: Config) -> Res<TokenResponse> {
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
     // define params
     let params = [
         ("code", code.as_str()),
-        ("client_id", secrets.client_id.as_str()),
-        ("client_secret", secrets.client_secret.as_str()),
-        ("redirect_uri", secrets.redirect_uri.as_str()),
+        ("client_id", conf.client_id.as_str()),
+        ("client_secret", conf.client_secret.as_str()),
+        ("redirect_uri", conf.redirect_uri.as_str()),
         ("grant_type", "authorization_code"),
     ];
     let url = url.query_pairs_mut().extend_pairs(&params).finish();

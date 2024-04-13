@@ -47,7 +47,6 @@ pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
 
 pub async fn delete(id: IdParam, state: State) -> HttpRes {
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
-
     match delete_res {
         Ok(i) => HttpRes::Created()
             .content_type(ContentType::json())

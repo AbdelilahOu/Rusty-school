@@ -1,7 +1,7 @@
-use crate::models::commen::ConfigObj;
+use crate::models::commen::Config;
 use std::env;
 
-pub fn load_config() -> ConfigObj {
+pub fn load_config() -> Config {
     // load vars
     dotenv::dotenv().ok();
     // set logging env
@@ -13,7 +13,7 @@ pub fn load_config() -> ConfigObj {
     let redirect_uri = env::var("REDIRECT_URL").expect("REDIRECT_URL must be set");
     let jwt_secret = env::var("RANDOM_KEY").expect("RANDOM_KEY must be set");
     //
-    return ConfigObj {
+    return Config {
         client_id,
         client_secret,
         redirect_uri,

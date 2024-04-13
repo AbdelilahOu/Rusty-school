@@ -1,5 +1,5 @@
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
-use models::commen::ConfigObj;
+use models::commen::Config;
 use service::sea_orm::DatabaseConnection;
 
 mod config;
@@ -14,7 +14,7 @@ use crate::routes::{academic, auth, communication, people};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
-    config: ConfigObj,
+    config: Config,
 }
 
 #[actix_web::main]
