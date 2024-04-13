@@ -33,7 +33,8 @@ mod m20240314_135418_c_grading_rubric;
 mod m20240315_134424_c_assignments;
 mod m20240318_222105_c_grades;
 mod m20240319_144529_c_disciplinary_actions;
-mod m20240404_140525_c_announcements;
+mod m20240404_140525_c_announcements;mod m20240413_114341_c_sessions;
+
 
 //
 mod utils;
