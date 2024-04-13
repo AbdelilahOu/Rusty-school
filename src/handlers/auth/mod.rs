@@ -5,7 +5,7 @@ use crate::{
         token::generate_tokens,
     },
 };
-use ::service::{models::CUser, transaction::TransactionsService};
+use ::service::{chrono::Duration, models::CUser, transaction::TransactionsService};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     HttpResponse,
@@ -47,7 +47,7 @@ pub async fn google_auth_handler(q: AuthQuery, state: State) -> HttpResponse {
                             let token = generate_tokens(
                                 user_uuid,
                                 state.config.jwt_secret.clone(),
-                                state.config.jwt_max_age.clone(),
+                                Duration::minutes(5),
                             );
                             let mut response = HttpResponse::Found();
                             response.append_header(("Location", "/"));

@@ -12,17 +12,12 @@ pub fn load_config() -> ConfigObj {
     let client_secret = env::var("OAUTH_SECRET").expect("OAUTH_SECRET must be set");
     let redirect_uri = env::var("REDIRECT_URL").expect("REDIRECT_URL must be set");
     let jwt_secret = env::var("RANDOM_KEY").expect("RANDOM_KEY must be set");
-    let jwt_max_age = env::var("JWT_MAX_AGE")
-        .expect("JWT_MAX_AGE must be set")
-        .parse::<i64>()
-        .expect("Failed to parse JWT_MAX_AGE");
     //
     return ConfigObj {
         client_id,
         client_secret,
         redirect_uri,
         jwt_secret,
-        jwt_max_age,
         db_url,
     };
 }

@@ -4,10 +4,10 @@ use ::service::chrono::{Duration, Utc};
 use ::service::uuid::Uuid;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 
-pub fn generate_tokens(user_uuid: Uuid, secret: String, age: i64) -> String {
+pub fn generate_tokens(user_uuid: Uuid, secret: String, duration: Duration) -> String {
     // time
     let current_time = Utc::now();
-    let expiration_time = current_time + Duration::hours(age);
+    let expiration_time = current_time + duration;
     //
     let header = Header::default();
     let token = encode(
