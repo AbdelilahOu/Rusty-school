@@ -6,7 +6,6 @@ mod config;
 mod database;
 mod guards;
 mod handlers;
-mod middleware;
 mod models;
 mod routes;
 mod utils;
@@ -37,7 +36,6 @@ async fn main() -> std::io::Result<()> {
                 db_conn: conn.clone(),
                 config: loaded_config.clone(),
             }))
-            // .wrap(middleware::auth::Auth)
             .service(auth::load_auth_routes())
             .service(people::load_students_routes())
             .service(people::load_teachers_routes())
