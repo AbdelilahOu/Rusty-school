@@ -4,6 +4,7 @@ use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CSession {
+    pub id: Uuid,
     pub user_id: Uuid,
     pub user_agent: String,
     pub client_ip: String,

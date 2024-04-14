@@ -34,6 +34,18 @@ pub async fn login(state: State) -> HttpResponse {
         .finish()
 }
 
+pub async fn renew_access_token(state: State) -> HttpResponse {
+    let url = get_google_auth_url(
+        state.config.client_id.clone(),
+        state.config.redirect_uri.clone(),
+    )
+    .await;
+    HttpResponse::Found()
+        .append_header(("Location", url.as_str()))
+        .status(StatusCode::FOUND)
+        .finish()
+}
+
 pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -> HttpResponse {
     let res = request_tokens(q.code.clone(), state.config.clone()).await;
     match res {
@@ -54,12 +66,12 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                     match user_res {
                         Ok(user_uuid) => {
                             // create access token
-                            let (access_token, access_expires_at) = generate_tokens(
+                            let (access_token, access_expires_at, _) = generate_tokens(
                                 user_uuid,
                                 state.config.jwt_secret.clone(),
                                 Duration::minutes(5),
                             );
-                            let (refresh_token, refresh_expires_at) = generate_tokens(
+                            let (refresh_token, refresh_expires_at, session_id) = generate_tokens(
                                 user_uuid,
                                 state.config.jwt_secret.clone(),
                                 Duration::hours(48),
@@ -76,6 +88,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                             let create_session_res = MutationsService::create_session(
                                 &state.db_conn,
                                 CSession {
+                                    id: session_id,
                                     user_id: user_uuid,
                                     user_agent,
                                     client_ip,

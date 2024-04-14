@@ -5,26 +5,28 @@ use service::chrono::{Duration, NaiveDateTime, Utc};
 use service::uuid::Uuid;
 
 pub fn generate_tokens(
-    user_uuid: Uuid,
+    user_id: Uuid,
     secret: String,
     duration: Duration,
-) -> (String, NaiveDateTime) {
+) -> (String, NaiveDateTime, Uuid) {
     // time
     let current_time = Utc::now();
     let expiration_time = current_time + duration;
     //
     let header = Header::default();
+    let session_id = Uuid::new_v4();
+
     let token = encode(
         &header,
         &Claims {
-            user_uuid,
+            session_id: session_id.clone(),
+            user_id,
             exp: expiration_time.timestamp() as usize,
-            sub: "user".to_string(),
         },
         &EncodingKey::from_secret(secret.as_ref()),
     )
     .expect("Failed to generate token");
-    (token, expiration_time.naive_utc())
+    (token, expiration_time.naive_utc(), session_id)
 }
 
 pub fn verify_token(token: &str, secret: String) -> Res<Claims> {

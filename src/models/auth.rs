@@ -32,9 +32,9 @@ pub struct GoogleUser {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub user_uuid: Uuid,
+    pub session_id: Uuid,
+    pub user_id: Uuid,
     pub exp: usize,
-    pub sub: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
