@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use service::chrono::NaiveDateTime;
 use service::uuid::Uuid;
 
+use super::commen::Body;
+
 #[derive(Deserialize, Clone, Debug)]
 pub struct TokenResponse {
     pub id_token: String,
@@ -48,4 +50,16 @@ pub struct LogInResponse {
     pub refresh_token_expires_at: NaiveDateTime,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RefreshAccessResponse {
+    pub access_token: String,
+    pub access_token_expires_at: NaiveDateTime,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RenewAccess {
+    pub refresh_token: String,
+}
+
+pub type RefreshBody = Body<RenewAccess>;
 pub type AuthQuery = ActQuery<AuthQueryParams>;

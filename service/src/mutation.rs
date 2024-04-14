@@ -549,6 +549,7 @@ impl MutationsService {
     //
     pub async fn create_session(db: &DbConn, data: CSession) -> DyResult<Uuid> {
         let session_a_model = SessionActiveModel {
+            id: Set(data.id),
             user_id: Set(data.user_id),
             user_agent: Set(data.user_agent),
             client_ip: Set(data.client_ip),

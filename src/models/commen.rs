@@ -26,7 +26,8 @@ pub struct Config {
     pub db_url: String,
 }
 
-pub type TFiltersBody = ActJson<FiltersBody>;
+pub type Body<T> = ActJson<T>;
+pub type TFiltersBody = Body<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;
 pub type IdParam = ActPath<Uuid>;
