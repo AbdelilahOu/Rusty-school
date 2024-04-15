@@ -1,9 +1,14 @@
 use crate::{guards::auth_guard, types::shared::*};
 use actix_web::{
-    web::{Json, Path},
+    web::{Json, Path, Query},
     HttpRequest, HttpResponse,
 };
-use service::{models::Student, mutation::*, query::*, uuid::Uuid};
+use service::{
+    models::{Student, StudentQueries},
+    mutation::*,
+    query::*,
+    uuid::Uuid,
+};
 //
 type Body = Json<Student>;
 pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse {
@@ -63,7 +68,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
     }
 }
 
-pub async fn list(q: TQueries, body: TFiltersBody, state: State, req: HttpRequest) -> HttpResponse {
+pub async fn list(q: Query<StudentQueries>, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -76,14 +81,7 @@ pub async fn list(q: TQueries, body: TFiltersBody, state: State, req: HttpReques
             data: None,
         });
     }
-    let students = QueriesService::list_students(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
+    let students = QueriesService::list_students(&state.db_conn, q.into_inner()).await;
 
     match students {
         Ok(i) => HttpResponse::Created().json(ResponseData {

@@ -5,7 +5,8 @@ use sea_orm::{
         extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
         SubQueryStatement,
     },
-    DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect, Statement,
+    Condition, DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect,
+    Statement,
 };
 use serde::Deserialize;
 use serde_json::Value as SerdValue;
@@ -13,7 +14,7 @@ use std::collections::HashMap;
 
 use crate::{
     entities::*,
-    models::{SelectScans, SelectTimeTable},
+    models::{SelectScans, SelectTimeTable, StudentQueries},
     utils::filters::*,
 };
 
@@ -41,7 +42,11 @@ pub struct QueriesService;
 
 impl QueriesService {
     // students entity
-    pub async fn list_students(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
+    pub async fn list_students(db: &DbConn, q: StudentQueries) -> Result<Values, DbErr> {
+        let mut conditions = Condition::all();
+        if let Some(name) = q.fullname {
+            conditions = conditions.add(Expr::col(students::Column::FullName).ilike(name));
+        }
         let students = Students::find()
             .select_only()
             .columns([
@@ -52,10 +57,10 @@ impl QueriesService {
             ])
             .expr(Expr::col(groups::Column::GroupName))
             .join(JoinType::LeftJoin, students::Relation::Groups.def())
-            .filter(generate_student_filters(qf.filters))
+            .filter(conditions)
             .order_by_desc(students::Column::CreatedAt)
-            .offset((qf.queries.page - 1) * qf.queries.limit)
-            .limit(qf.queries.limit)
+            .offset((q.page - 1) * q.limit)
+            .limit(q.limit)
             .into_json()
             .all(db)
             .await?;

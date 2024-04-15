@@ -7,3 +7,10 @@ pub struct Student {
     pub last_name: String,
     pub group_id: Option<Uuid>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct StudentQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub fullname: Option<String>,
+}
