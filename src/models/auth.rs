@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
-use service::chrono::NaiveDateTime;
-use service::uuid::Uuid;
+use service::{chrono::NaiveDateTime, uuid::Uuid};
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct TokenResponse {
