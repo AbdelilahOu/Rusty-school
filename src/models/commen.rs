@@ -1,7 +1,6 @@
-use actix_web::web::{Data as ActData, Json as ActJson, Path as ActPath, Query as ActQuery};
+use actix_web::web::{Data as ActData, Json as ActJson, Query as ActQuery};
 use serde::{Deserialize, Serialize};
 use service::query::{Filters, ListQuery};
-use service::uuid::Uuid;
 
 use crate::AppState;
 
@@ -26,9 +25,6 @@ pub struct Config {
     pub db_url: String,
 }
 
-pub type Body<T> = ActJson<T>;
-pub type TFiltersBody = Body<FiltersBody>;
+pub type TFiltersBody = ActJson<FiltersBody>;
 pub type TQueries = ActQuery<ListQuery>;
 pub type State = ActData<AppState>;
-pub type IdParam = ActPath<Uuid>;
-pub type Params<T> = ActPath<T>;

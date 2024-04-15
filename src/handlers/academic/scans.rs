@@ -1,10 +1,9 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
+use actix_web::{web::Json, HttpResponse};
 use service::{models::CScan, mutation::*, query::*};
 
-type ScBody = ActJson<CScan>;
-
-pub async fn create(body: ScBody, state: State) -> HttpResponse {
+type Body = Json<CScan>;
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_scan(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {

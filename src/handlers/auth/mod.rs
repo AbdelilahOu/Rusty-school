@@ -1,6 +1,6 @@
 use crate::{
     models::{
-        auth::{AuthQuery, LogInResponse, RefreshAccessResponse, RefreshBody},
+        auth::{AuthQueryParams, LogInResponse, RefreshAccessResponse, RenewAccess},
         commen::{ResponseData, State},
     },
     utils::{
@@ -8,7 +8,11 @@ use crate::{
         token::{generate_tokens, verify_token},
     },
 };
-use actix_web::{http::header, HttpRequest, HttpResponse};
+use actix_web::{
+    http::header,
+    web::{Json, Query},
+    HttpRequest, HttpResponse,
+};
 use service::{
     chrono::{Duration, NaiveDateTime, Utc},
     models::{CSession, CUser},
@@ -16,6 +20,9 @@ use service::{
     query::QueriesService,
     transaction::TransactionsService,
 };
+
+type RefreshBody = Json<RenewAccess>;
+type AuthQuery = Query<AuthQueryParams>;
 
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(

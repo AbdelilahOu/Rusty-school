@@ -1,10 +1,12 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
+use actix_web::{
+    web::{Json, Path},
+    HttpResponse,
+};
 use service::{models::CTeacher, mutation::*, query::*, uuid::Uuid};
-// i like my functions to stay inline
-type TeBody = ActJson<CTeacher>;
 
-pub async fn create(body: TeBody, state: State) -> HttpResponse {
+type Body = Json<CTeacher>;
+pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_teacher(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok().json(ResponseData {
@@ -20,7 +22,7 @@ pub async fn create(body: TeBody, state: State) -> HttpResponse {
     }
 }
 
-pub async fn add_subject(params: Params<(Uuid, Uuid)>, state: State) -> HttpResponse {
+pub async fn add_subject(params: Path<(Uuid, Uuid)>, state: State) -> HttpResponse {
     let res = MutationsService::create_teacher_subject(&state.db_conn, params.into_inner()).await;
     match res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
@@ -36,7 +38,7 @@ pub async fn add_subject(params: Params<(Uuid, Uuid)>, state: State) -> HttpResp
     }
 }
 
-pub async fn delete_subject(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete_subject(id: Path<Uuid>, state: State) -> HttpResponse {
     let res = MutationsService::delete_teacher_subject(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
@@ -52,7 +54,7 @@ pub async fn delete_subject(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_teacher(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -93,7 +95,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: IdParam, body: TeBody, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_teacher(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

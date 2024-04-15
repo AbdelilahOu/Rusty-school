@@ -1,9 +1,6 @@
-use actix_web::web::Query as ActQuery;
 use serde::{Deserialize, Serialize};
 use service::chrono::NaiveDateTime;
 use service::uuid::Uuid;
-
-use super::commen::Body;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct TokenResponse {
@@ -60,6 +57,3 @@ pub struct RefreshAccessResponse {
 pub struct RenewAccess {
     pub refresh_token: String,
 }
-
-pub type RefreshBody = Body<RenewAccess>;
-pub type AuthQuery = ActQuery<AuthQueryParams>;

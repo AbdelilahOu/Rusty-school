@@ -1,9 +1,11 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
-use service::{models::CRubric, mutation::*, query::*, transaction::*};
+use actix_web::{
+    web::{Json, Path},
+    HttpResponse,
+};
+use service::{models::CRubric, mutation::*, query::*, transaction::*, uuid::Uuid};
 //
-type Body = ActJson<CRubric>;
-
+type Body = Json<CRubric>;
 pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let gradees = QueriesService::list_rubrics(
         &state.db_conn,
@@ -44,7 +46,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_rubric(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
@@ -60,7 +62,7 @@ pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_rubric(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

@@ -1,14 +1,18 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
+use actix_web::{
+    web::{Json, Path},
+    HttpResponse,
+};
 use service::{
     models::{CActivity, CEvent, CLecture},
     mutation::*,
     query::*,
     transaction::*,
+    uuid::Uuid,
 };
 
-type CEventBody = ActJson<CEvent>;
-pub async fn create_event(body: CEventBody, state: State) -> HttpResponse {
+type EventBody = Json<CEvent>;
+pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -24,8 +28,8 @@ pub async fn create_event(body: CEventBody, state: State) -> HttpResponse {
     }
 }
 
-type CActivityBody = ActJson<CActivity>;
-pub async fn create_activity(body: CActivityBody, state: State) -> HttpResponse {
+type ActivityBody = Json<CActivity>;
+pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -41,8 +45,8 @@ pub async fn create_activity(body: CActivityBody, state: State) -> HttpResponse 
     }
 }
 
-type CLectureBody = ActJson<CLecture>;
-pub async fn create_lecture(body: CLectureBody, state: State) -> HttpResponse {
+type LectureBody = Json<CLecture>;
+pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -75,7 +79,7 @@ pub async fn list(state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete_timetable_item(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete_timetable_item(id: Path<Uuid>, state: State) -> HttpResponse {
     let res = MutationsService::delete_time_table(&state.db_conn, id.into_inner()).await;
 
     match res {

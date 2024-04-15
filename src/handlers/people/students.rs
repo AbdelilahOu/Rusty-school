@@ -1,9 +1,11 @@
 use crate::{guards::auth_guard, models::commen::*};
-use actix_web::{web::Json as ActJson, HttpRequest, HttpResponse};
-use service::{models::CStudent, mutation::*, query::*};
+use actix_web::{
+    web::{Json, Path},
+    HttpRequest, HttpResponse,
+};
+use service::{models::CStudent, mutation::*, query::*, uuid::Uuid};
 //
-type Body = ActJson<CStudent>;
-
+type Body = Json<CStudent>;
 pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
@@ -32,7 +34,7 @@ pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse 
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
@@ -72,7 +74,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {

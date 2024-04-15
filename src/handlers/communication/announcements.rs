@@ -1,10 +1,12 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
-use service::{models::CAnnouncement, mutation::*, query::*};
+use actix_web::{
+    web::{Json, Path},
+    HttpResponse,
+};
+use service::{models::CAnnouncement, mutation::*, query::*, uuid::Uuid};
 
 // i like my functions to stay inline
-type Body = ActJson<CAnnouncement>;
-
+type Body = Json<CAnnouncement>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_announcement(&state.db_conn, body.into_inner()).await;
     match res {
@@ -21,7 +23,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_announcement(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -62,7 +64,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_announcement(&state.db_conn, id.into_inner(), body.into_inner())
             .await;

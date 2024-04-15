@@ -1,8 +1,11 @@
 use crate::models::commen::*;
-use actix_web::{web::Json as ActJson, HttpResponse};
-use service::{models::CRoom, mutation::*, query::*};
+use actix_web::{
+    web::{Json, Path},
+    HttpResponse,
+};
+use service::{models::CRoom, mutation::*, query::*, uuid::Uuid};
 //
-type Body = ActJson<CRoom>;
+type Body = Json<CRoom>;
 
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_room(&state.db_conn, body.into_inner()).await;
@@ -20,7 +23,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_room(&state.db_conn, id.into_inner()).await;
 
     match delete_res {
@@ -61,7 +64,7 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_room(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
