@@ -1,5 +1,5 @@
 use super::auth::Res;
-use crate::models::auth::Claims;
+use crate::types::token::Claims;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use service::chrono::{Duration, NaiveDateTime, Utc};
 use service::uuid::Uuid;

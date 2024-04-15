@@ -1,4 +1,4 @@
-use crate::{models::auth::Claims, utils};
+use crate::{types::token::Claims, utils};
 use actix_web::http::header::HeaderMap;
 
 pub fn auth_guard(headers: &HeaderMap, secret: String) -> Option<Claims> {

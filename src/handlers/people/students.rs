@@ -1,4 +1,4 @@
-use crate::{guards::auth_guard, models::commen::*};
+use crate::{guards::auth_guard, types::shared::*};
 use actix_web::{
     web::{Json, Path},
     HttpRequest, HttpResponse,

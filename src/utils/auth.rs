@@ -1,11 +1,9 @@
-use crate::models::{
-    auth::{GoogleUser, TokenResponse},
-    commen::Config,
-};
+use crate::types::config::Config;
 use reqwest::{
     self,
     header::{AUTHORIZATION, CONTENT_LENGTH, CONTENT_TYPE},
 };
+use serde::Deserialize;
 use url::Url;
 
 pub type Res<T> = Result<T, String>;
@@ -24,6 +22,15 @@ pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url
     url.to_owned()
 }
 // #2
+#[derive(Deserialize, Clone, Debug)]
+pub struct TokenResponse {
+    pub id_token: String,
+    pub access_token: String,
+    pub token_type: String,
+    pub expires_in: i32,
+    pub refresh_token: String,
+    pub scope: String,
+}
 pub async fn request_tokens(code: String, conf: Config) -> Res<TokenResponse> {
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
@@ -57,6 +64,17 @@ pub async fn request_tokens(code: String, conf: Config) -> Res<TokenResponse> {
     }
 }
 // #3
+#[derive(Deserialize, Debug)]
+pub struct GoogleUser {
+    pub id: String,
+    pub email: String,
+    pub verified_email: bool,
+    pub name: String,
+    pub given_name: String,
+    pub family_name: String,
+    pub picture: String,
+    pub locale: String,
+}
 pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
     let params = [("alt", "json"), ("access_token", acc_token.as_str())];

@@ -1,4 +1,4 @@
-use crate::models::commen::Config;
+use crate::types::config::Config;
 use std::env;
 
 pub fn load_config() -> Config {

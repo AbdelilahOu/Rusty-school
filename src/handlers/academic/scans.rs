@@ -1,4 +1,4 @@
-use crate::models::commen::*;
+use crate::types::shared::*;
 use actix_web::{web::Json, HttpResponse};
 use service::{models::CScan, mutation::*, query::*};
 

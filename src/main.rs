@@ -1,13 +1,13 @@
 use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
-use models::commen::Config;
 use service::sea_orm::DatabaseConnection;
+use types::config::Config;
 
 mod config;
 mod database;
 mod guards;
 mod handlers;
-mod models;
 mod routes;
+mod types;
 mod utils;
 
 use crate::routes::{academic, auth, communication, people};

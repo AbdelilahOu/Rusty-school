@@ -1,8 +1,5 @@
 use crate::{
-    models::{
-        auth::{AuthQueryParams, LogInResponse, RefreshAccessResponse, RenewAccess},
-        commen::{ResponseData, State},
-    },
+    types::shared::{ResponseData, State},
     utils::{
         auth::{get_google_auth_url, get_google_user, request_tokens},
         token::{generate_tokens, verify_token},
@@ -13,16 +10,15 @@ use actix_web::{
     web::{Json, Query},
     HttpRequest, HttpResponse,
 };
+use serde::{Deserialize, Serialize};
 use service::{
     chrono::{Duration, NaiveDateTime, Utc},
     models::{CSession, CUser},
     mutation::MutationsService,
     query::QueriesService,
     transaction::TransactionsService,
+    uuid::Uuid,
 };
-
-type RefreshBody = Json<RenewAccess>;
-type AuthQuery = Query<AuthQueryParams>;
 
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(
@@ -34,6 +30,19 @@ pub async fn login(state: State) -> HttpResponse {
         .append_header(("Location", url.as_str()))
         .finish()
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+struct RefreshAccessResponse {
+    pub access_token: String,
+    pub access_token_expires_at: NaiveDateTime,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RenewAccess {
+    pub refresh_token: String,
+}
+
+type RefreshBody = Json<RenewAccess>;
 
 pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse {
     match verify_token(&body.refresh_token, state.config.jwt_secret.clone()) {
@@ -109,6 +118,23 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
         }),
     }
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+struct LogInResponse {
+    pub session_id: Uuid,
+    pub email: String,
+    pub fullname: String,
+    pub access_token: String,
+    pub refresh_token: String,
+    pub access_token_expires_at: NaiveDateTime,
+    pub refresh_token_expires_at: NaiveDateTime,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct AuthQueryParams {
+    pub code: String,
+}
+type AuthQuery = Query<AuthQueryParams>;
 
 pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -> HttpResponse {
     let res = request_tokens(q.code.clone(), state.config.clone()).await;
