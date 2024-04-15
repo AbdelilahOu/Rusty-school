@@ -34,7 +34,20 @@ pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse 
     }
 }
 
-pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpResponse {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if authorized.is_none() {
+        return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
+            error: Some("Unauthorized".to_string()),
+            message: None,
+            data: None,
+        });
+    }
+
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
@@ -50,11 +63,23 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State, req: HttpRequest) -> HttpResponse {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if authorized.is_none() {
+        return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
+            error: Some("Unauthorized".to_string()),
+            message: None,
+            data: None,
+        });
+    }
     let students = QueriesService::list_students(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )
@@ -74,7 +99,20 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) -> HttpResponse {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if authorized.is_none() {
+        return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
+            error: Some("Unauthorized".to_string()),
+            message: None,
+            data: None,
+        });
+    }
+
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
