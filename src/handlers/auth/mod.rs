@@ -8,13 +8,7 @@ use crate::{
         token::{generate_tokens, verify_token},
     },
 };
-use actix_web::{
-    http::{
-        header::{self, ContentType},
-        StatusCode,
-    },
-    HttpRequest, HttpResponse,
-};
+use actix_web::{http::header, HttpRequest, HttpResponse};
 use service::{
     chrono::{Duration, NaiveDateTime, Utc},
     models::{CSession, CUser},
@@ -31,7 +25,6 @@ pub async fn login(state: State) -> HttpResponse {
     .await;
     HttpResponse::Found()
         .append_header(("Location", url.as_str()))
-        .status(StatusCode::FOUND)
         .finish()
 }
 
@@ -41,50 +34,38 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
             Ok(session_op) => match session_op {
                 Some(session) => {
                     if session.is_blocked {
-                        return HttpResponse::Unauthorized()
-                            .status(StatusCode::UNAUTHORIZED)
-                            .content_type(ContentType::json())
-                            .json(ResponseData::<String> {
-                                error: None,
-                                message: Some("this user is blocked".to_string()),
-                                data: None,
-                            });
+                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                            error: None,
+                            message: Some("this user is blocked".to_string()),
+                            data: None,
+                        });
                     };
 
                     if !session.user_id.eq(&claims.user_id) {
-                        return HttpResponse::Unauthorized()
-                            .status(StatusCode::UNAUTHORIZED)
-                            .content_type(ContentType::json())
-                            .json(ResponseData::<String> {
-                                error: None,
-                                message: Some("user doesnt match".to_string()),
-                                data: None,
-                            });
+                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                            error: None,
+                            message: Some("user doesnt match".to_string()),
+                            data: None,
+                        });
                     };
 
                     if !session.refresh_token.eq(&body.refresh_token) {
-                        return HttpResponse::Unauthorized()
-                            .status(StatusCode::UNAUTHORIZED)
-                            .content_type(ContentType::json())
-                            .json(ResponseData::<String> {
-                                error: None,
-                                message: Some("refersh token doesnt match".to_string()),
-                                data: None,
-                            });
+                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                            error: None,
+                            message: Some("refersh token doesnt match".to_string()),
+                            data: None,
+                        });
                     };
                     let now = Utc::now();
                     if session
                         .expires_at
                         .lt(&NaiveDateTime::new(now.date_naive(), now.time()))
                     {
-                        return HttpResponse::Unauthorized()
-                            .status(StatusCode::UNAUTHORIZED)
-                            .content_type(ContentType::json())
-                            .json(ResponseData::<String> {
-                                error: None,
-                                message: Some("refresh token expired".to_string()),
-                                data: None,
-                            });
+                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                            error: None,
+                            message: Some("refresh token expired".to_string()),
+                            data: None,
+                        });
                     };
 
                     let (access_token, access_expires_at, _) = generate_tokens(
@@ -93,44 +74,32 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
                         Duration::minutes(5),
                     );
 
-                    HttpResponse::Ok()
-                        .status(StatusCode::OK)
-                        .content_type(ContentType::json())
-                        .json(ResponseData::<RefreshAccessResponse> {
-                            error: None,
-                            message: Some("access token refreshed".to_string()),
-                            data: Some(RefreshAccessResponse {
-                                access_token,
-                                access_token_expires_at: access_expires_at,
-                            }),
-                        })
-                }
-                None => HttpResponse::Unauthorized()
-                    .status(StatusCode::UNAUTHORIZED)
-                    .content_type(ContentType::json())
-                    .json(ResponseData::<String> {
+                    HttpResponse::Ok().json(ResponseData::<RefreshAccessResponse> {
                         error: None,
-                        message: Some("no session found".to_string()),
-                        data: None,
-                    }),
-            },
-            Err(e) => HttpResponse::Unauthorized()
-                .status(StatusCode::UNAUTHORIZED)
-                .content_type(ContentType::json())
-                .json(ResponseData::<String> {
+                        message: Some("access token refreshed".to_string()),
+                        data: Some(RefreshAccessResponse {
+                            access_token,
+                            access_token_expires_at: access_expires_at,
+                        }),
+                    })
+                }
+                None => HttpResponse::Unauthorized().json(ResponseData::<String> {
                     error: None,
-                    message: Some(e.to_string()),
+                    message: Some("no session found".to_string()),
                     data: None,
                 }),
-        },
-        Err(e) => HttpResponse::Unauthorized()
-            .status(StatusCode::UNAUTHORIZED)
-            .content_type(ContentType::json())
-            .json(ResponseData::<String> {
+            },
+            Err(e) => HttpResponse::Unauthorized().json(ResponseData::<String> {
                 error: None,
                 message: Some(e.to_string()),
                 data: None,
             }),
+        },
+        Err(e) => HttpResponse::Unauthorized().json(ResponseData::<String> {
+            error: None,
+            message: Some(e.to_string()),
+            data: None,
+        }),
     }
 }
 
@@ -187,10 +156,8 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                             )
                             .await;
                             match create_session_res {
-                                Ok(session_id) => HttpResponse::Ok()
-                                    .status(StatusCode::OK)
-                                    .content_type(ContentType::json())
-                                    .json(ResponseData::<LogInResponse> {
+                                Ok(session_id) => {
+                                    HttpResponse::Ok().json(ResponseData::<LogInResponse> {
                                         error: None,
                                         message: Some("user logged in successfully".to_string()),
                                         data: Some(LogInResponse {
@@ -202,44 +169,39 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                                             access_token_expires_at: access_expires_at,
                                             refresh_token_expires_at: refresh_expires_at,
                                         }),
-                                    }),
-                                Err(e) => HttpResponse::InternalServerError()
-                                    .status(StatusCode::INTERNAL_SERVER_ERROR)
-                                    .content_type(ContentType::json())
-                                    .json(ResponseData::<Option<String>> {
-                                        error: Some(e.to_string()),
-                                        message: Some("coudnt create session".to_string()),
-                                        data: None,
-                                    }),
+                                    })
+                                }
+                                Err(e) => HttpResponse::InternalServerError().json(ResponseData::<
+                                    Option<String>,
+                                > {
+                                    error: Some(e.to_string()),
+                                    message: Some("coudnt create session".to_string()),
+                                    data: None,
+                                }),
                             }
                         }
-                        Err(e) => HttpResponse::InternalServerError()
-                            .status(StatusCode::INTERNAL_SERVER_ERROR)
-                            .content_type(ContentType::json())
-                            .json(ResponseData::<Option<String>> {
-                                error: Some(e.to_string()),
-                                message: Some("coudnt insert user into db".to_string()),
-                                data: None,
-                            }),
+                        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<
+                            Option<String>,
+                        > {
+                            error: Some(e.to_string()),
+                            message: Some("coudnt insert user into db".to_string()),
+                            data: None,
+                        }),
                     }
                 }
-                Err(e) => HttpResponse::InternalServerError()
-                    .status(StatusCode::INTERNAL_SERVER_ERROR)
-                    .content_type(ContentType::json())
-                    .json(ResponseData::<Option<String>> {
+                Err(e) => {
+                    HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
                         error: Some(e.to_string()),
                         message: Some("coudnt get user profile from google".to_string()),
                         data: None,
-                    }),
+                    })
+                }
             }
         }
-        Err(e) => HttpResponse::InternalServerError()
-            .status(StatusCode::INTERNAL_SERVER_ERROR)
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: Some("coudnt get access token from google".to_string()),
-                data: None,
-            }),
+        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+            error: Some(e.to_string()),
+            message: Some("coudnt get access token from google".to_string()),
+            data: None,
+        }),
     }
 }

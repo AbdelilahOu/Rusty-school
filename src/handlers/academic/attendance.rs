@@ -1,5 +1,5 @@
 use crate::models::commen::*;
-use actix_web::{http::header::ContentType, HttpResponse};
+use actix_web::HttpResponse;
 use service::query::*;
 //
 pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
@@ -13,19 +13,15 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     .await;
 
     match attendances {
-        Ok(i) => HttpResponse::Ok()
-            .content_type(ContentType::json())
-            .json(ResponseData {
-                error: None,
-                message: Some("Attendance selected successfully".to_string()),
-                data: Some(i),
-            }),
-        Err(e) => HttpResponse::InternalServerError()
-            .content_type(ContentType::json())
-            .json(ResponseData::<Option<String>> {
-                error: Some(e.to_string()),
-                message: None,
-                data: None,
-            }),
+        Ok(i) => HttpResponse::Ok().json(ResponseData {
+            error: None,
+            message: Some("Attendance selected successfully".to_string()),
+            data: Some(i),
+        }),
+        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+            error: Some(e.to_string()),
+            message: None,
+            data: None,
+        }),
     }
 }
