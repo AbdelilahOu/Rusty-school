@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CDisciAction, mutation::*, query::*, uuid::Uuid};
+use service::{models::DisciAction, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CDisciAction>;
+type Body = Json<DisciAction>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_disciplinary(&state.db_conn, body.into_inner()).await;
     match res {

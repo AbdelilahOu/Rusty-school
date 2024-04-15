@@ -15,7 +15,7 @@ pub struct SelectTimeTable {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CEvent {
+pub struct Event {
     pub start_time: NaiveTime,
     pub full_date: NaiveDate,
     pub event_title: String,
@@ -23,7 +23,7 @@ pub struct CEvent {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CActivity {
+pub struct Activity {
     pub start_time: NaiveTime,
     pub end_time: NaiveTime,
     pub day_of_week: u32,
@@ -32,7 +32,7 @@ pub struct CActivity {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CLecture {
+pub struct Lecture {
     pub start_time: NaiveTime,
     pub end_time: NaiveTime,
     pub day_of_week: u32,

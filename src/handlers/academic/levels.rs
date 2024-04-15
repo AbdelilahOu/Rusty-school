@@ -3,10 +3,10 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CLevel, mutation::*, query::*, uuid::Uuid};
+use service::{models::Level, mutation::*, query::*, uuid::Uuid};
 
 // i like my functions to stay inline
-type Body = Json<CLevel>;
+type Body = Json<Level>;
 
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_level(&state.db_conn, body.into_inner()).await;

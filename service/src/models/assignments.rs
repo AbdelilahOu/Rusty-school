@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CAssignment {
+pub struct Assignment {
     pub title: String,
     pub description: String,
     pub due_date: NaiveDateTime,

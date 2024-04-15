@@ -42,7 +42,7 @@ pub struct QueriesService;
 impl QueriesService {
     // students entity
     pub async fn list_students(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let students = Student::find()
+        let students = Students::find()
             .select_only()
             .columns([
                 students::Column::Id,
@@ -64,7 +64,7 @@ impl QueriesService {
     }
     //
     pub async fn list_teachers(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let teachers = Teacher::find()
+        let teachers = Teachers::find()
             .select_only()
             .columns([teachers::Column::Id, teachers::Column::FullName])
             .expr(Expr::col(levels::Column::LevelName))
@@ -82,7 +82,7 @@ impl QueriesService {
     //
     pub async fn list_parents(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let pickup_alias = "pickups_count";
-        let parents = Parent::find()
+        let parents = Parents::find()
             .select_only()
             .columns([parents::Column::Id, parents::Column::FullName])
             .column_as(pickups::Column::Id.count(), pickup_alias)
@@ -121,10 +121,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Student)
+                                .from(Students)
                                 .column(students::Column::FullName)
                                 .cond_where(
-                                    Expr::col((Student, students::Column::PersonId))
+                                    Expr::col((Students, students::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -137,10 +137,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Parent)
+                                .from(Parents)
                                 .column(parents::Column::FullName)
                                 .cond_where(
-                                    Expr::col((Parent, parents::Column::PersonId))
+                                    Expr::col((Parents, parents::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -153,10 +153,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Teacher)
+                                .from(Teachers)
                                 .column(teachers::Column::FullName)
                                 .cond_where(
-                                    Expr::col((Teacher, teachers::Column::PersonId))
+                                    Expr::col((Teachers, teachers::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -173,10 +173,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Student)
+                                .from(Students)
                                 .column(students::Column::Id)
                                 .cond_where(
-                                    Expr::col((Student, students::Column::PersonId))
+                                    Expr::col((Students, students::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -189,10 +189,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Parent)
+                                .from(Parents)
                                 .column(parents::Column::Id)
                                 .cond_where(
-                                    Expr::col((Parent, parents::Column::PersonId))
+                                    Expr::col((Parents, parents::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -205,10 +205,10 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Teacher)
+                                .from(Teachers)
                                 .column(teachers::Column::Id)
                                 .cond_where(
-                                    Expr::col((Teacher, teachers::Column::PersonId))
+                                    Expr::col((Teachers, teachers::Column::PersonId))
                                         .equals((Scans, scans::Column::PersonId)),
                                 )
                                 .to_owned(),
@@ -235,10 +235,10 @@ impl QueriesService {
                                 None,
                                 Box::new(SubQueryStatement::SelectStatement(
                                     Query::select()
-                                        .from(Student)
+                                        .from(Students)
                                         .column(students::Column::FullName)
                                         .cond_where(
-                                            Expr::col((Student, students::Column::PersonId))
+                                            Expr::col((Students, students::Column::PersonId))
                                                 .equals((Scans, scans::Column::PersonId)),
                                         )
                                         .to_owned(),
@@ -252,10 +252,10 @@ impl QueriesService {
                                 None,
                                 Box::new(SubQueryStatement::SelectStatement(
                                     Query::select()
-                                        .from(Parent)
+                                        .from(Parents)
                                         .column(parents::Column::FullName)
                                         .cond_where(
-                                            Expr::col((Parent, parents::Column::PersonId))
+                                            Expr::col((Parents, parents::Column::PersonId))
                                                 .equals((Scans, scans::Column::PersonId)),
                                         )
                                         .to_owned(),
@@ -269,10 +269,10 @@ impl QueriesService {
                                 None,
                                 Box::new(SubQueryStatement::SelectStatement(
                                     Query::select()
-                                        .from(Teacher)
+                                        .from(Teachers)
                                         .column(teachers::Column::FullName)
                                         .cond_where(
-                                            Expr::col((Teacher, teachers::Column::PersonId))
+                                            Expr::col((Teachers, teachers::Column::PersonId))
                                                 .equals((Scans, scans::Column::PersonId)),
                                         )
                                         .to_owned(),
@@ -374,33 +374,34 @@ impl QueriesService {
                 Expr::col((Scans, scans::Column::Id)),
                 Expr::col((Scans, scans::Column::PersonId)),
                 Expr::col((Scans, scans::Column::ScanDate)),
-                Expr::col((Student, students::Column::FullName)),
-                Expr::col((Group, groups::Column::GroupName)),
-                Expr::col((Level, levels::Column::LevelName)),
+                Expr::col((Students, students::Column::FullName)),
+                Expr::col((Groups, groups::Column::GroupName)),
+                Expr::col((Levels, levels::Column::LevelName)),
             ])
             // GET _id
             .expr_as(
-                Expr::col((Student, students::Column::Id)),
+                Expr::col((Students, students::Column::Id)),
                 Alias::new("_id"),
             )
             //
             .join(
                 JoinType::Join,
-                Student,
-                Expr::col((Student, students::Column::PersonId))
+                Students,
+                Expr::col((Students, students::Column::PersonId))
                     .equals((Scans, scans::Column::PersonId)),
             )
             //
             .join(
                 JoinType::Join,
-                Group,
-                Expr::col((Group, groups::Column::Id)).equals((Student, students::Column::GroupId)),
+                Groups,
+                Expr::col((Groups, groups::Column::Id))
+                    .equals((Students, students::Column::GroupId)),
             )
             //
             .join(
                 JoinType::Join,
-                Level,
-                Expr::col((Level, levels::Column::Id)).equals((Group, groups::Column::LevelId)),
+                Levels,
+                Expr::col((Levels, levels::Column::Id)).equals((Groups, groups::Column::LevelId)),
             )
             // FULL_NAME filter
             .conditions(
@@ -468,7 +469,7 @@ impl QueriesService {
                 |x| {
                     let group_id = Uuid::parse_str(filters.get("group_id").unwrap().value.as_str());
                     if let Ok(id) = group_id {
-                        x.and_where(Expr::col((Student, students::Column::GroupId)).eq(id));
+                        x.and_where(Expr::col((Students, students::Column::GroupId)).eq(id));
                     } else {
                         println!("error parsing group_id : {:?}", group_id.err());
                     }
@@ -495,7 +496,7 @@ impl QueriesService {
     }
     //
     pub async fn list_levels(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let levels = Level::find()
+        let levels = Levels::find()
             .select_only()
             .columns([
                 levels::Column::Id,
@@ -514,7 +515,7 @@ impl QueriesService {
     //
     pub async fn list_subjects(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
         let level_alias = "level_name";
-        let subjects = Subject::find()
+        let subjects = Subjects::find()
             .select_only()
             .columns([
                 subjects::Column::Id,
@@ -535,7 +536,7 @@ impl QueriesService {
     }
     //
     pub async fn list_level_subjects(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
-        let level_subjects = Subject::find()
+        let level_subjects = Subjects::find()
             .filter(subjects::Column::LevelId.eq(level_id.clone()))
             .into_json()
             .all(db)
@@ -545,7 +546,7 @@ impl QueriesService {
     }
     //
     pub async fn list_groups(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let groups = Group::find()
+        let groups = Groups::find()
             .select_only()
             .columns([
                 groups::Column::Id,
@@ -568,7 +569,7 @@ impl QueriesService {
     }
     //
     pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
-        let level_groups = Group::find()
+        let level_groups = Groups::find()
             .filter(groups::Column::LevelId.eq(level_id.clone()))
             .into_json()
             .all(db)
@@ -578,7 +579,7 @@ impl QueriesService {
     }
     //
     pub async fn list_rooms(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let rooms = Room::find()
+        let rooms = Rooms::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
@@ -588,7 +589,7 @@ impl QueriesService {
     }
     //
     pub async fn list_classes(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let classes = Class::find()
+        let classes = Classes::find()
             .offset((qf.queries.page - 1) * qf.queries.limit)
             .limit(qf.queries.limit)
             .into_json()
@@ -599,14 +600,14 @@ impl QueriesService {
     //
     pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
         let (sql, values) = Query::select()
-            .from(TimeTable)
+            .from(TimeTables)
             .columns(time_table::Column::iter().filter(|f| match f {
                 time_table::Column::DayOfWeek => false,
                 time_table::Column::ItemType => false,
                 _ => true
             }))
-            .expr_as(Expr::col((TimeTable,time_table::Column::DayOfWeek)).cast_as(Alias::new("TEXT")),Alias::new("day_of_week"))
-            .expr_as(Expr::col((TimeTable,time_table::Column::ItemType)).cast_as(Alias::new("TEXT")),Alias::new("item_type"))
+            .expr_as(Expr::col((TimeTables,time_table::Column::DayOfWeek)).cast_as(Alias::new("TEXT")),Alias::new("day_of_week"))
+            .expr_as(Expr::col((TimeTables,time_table::Column::ItemType)).cast_as(Alias::new("TEXT")),Alias::new("item_type"))
             .expr_as(
                 Expr::case(
                     Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemTypeEnum::Event),
@@ -614,11 +615,11 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Event)
+                                .from(Events)
                                 .column(events::Column::EventTitle)
                                 .cond_where(
-                                    Expr::col((Event, events::Column::TimeTableId))
-                                        .equals((TimeTable, time_table::Column::Id)),
+                                    Expr::col((Events, events::Column::TimeTableId))
+                                        .equals((TimeTables, time_table::Column::Id)),
                                 )
                                 .to_owned(),
                         )),
@@ -630,11 +631,11 @@ impl QueriesService {
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Activity)
+                                .from(Activities)
                                 .column(activities::Column::ActivityTitle)
                                 .cond_where(
-                                    Expr::col((Activity, activities::Column::TimeTableId))
-                                        .equals((TimeTable, time_table::Column::Id)),
+                                    Expr::col((Activities, activities::Column::TimeTableId))
+                                        .equals((TimeTables, time_table::Column::Id)),
                                 )
                                 .to_owned(),
                         )),
@@ -644,35 +645,35 @@ impl QueriesService {
                     None,
                     Box::new(SubQueryStatement::SelectStatement(
                         Query::select()
-                            .from(Lecture)
+                            .from(Lectures)
                             .expr(Expr::cust("FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)"))
                             .join(
                                 JoinType::Join,
-                                Class,
-                                Expr::col((Class, classes::Column::Id))
-                                    .equals((Lecture, lectures::Column::ClassId)),
+                                Classes,
+                                Expr::col((Classes, classes::Column::Id))
+                                    .equals((Lectures, lectures::Column::ClassId)),
                             )
                             .join(
                                 JoinType::Join,
-                                Teacher,
-                                Expr::col((Teacher, classes::Column::Id))
-                                    .equals((Class, classes::Column::TeacherId)),
+                                Teachers,
+                                Expr::col((Teachers, classes::Column::Id))
+                                    .equals((Classes, classes::Column::TeacherId)),
                             )
                             .join(
                                 JoinType::Join,
-                                Group,
-                                Expr::col((Group, classes::Column::Id))
-                                    .equals((Class, classes::Column::GroupId)),
+                                Groups,
+                                Expr::col((Groups, classes::Column::Id))
+                                    .equals((Classes, classes::Column::GroupId)),
                             )
                             .join(
                                 JoinType::Join,
-                                Subject,
-                                Expr::col((Subject, classes::Column::Id))
-                                    .equals((Class, classes::Column::SubjectId)),
+                                Subjects,
+                                Expr::col((Subjects, classes::Column::Id))
+                                    .equals((Classes, classes::Column::SubjectId)),
                             )
                             .cond_where(
-                                Expr::col((Lecture, lectures::Column::TimeTableId))
-                                    .equals((TimeTable, time_table::Column::Id)),
+                                Expr::col((Lectures, lectures::Column::TimeTableId))
+                                    .equals((TimeTables, time_table::Column::Id)),
                             )
                             .to_owned(),
                     )),
@@ -695,7 +696,7 @@ impl QueriesService {
     }
     //
     pub async fn list_assignments(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let assignments = Assignment::find()
+        let assignments = Assignments::find()
             .select_only()
             .columns(assignments::Column::iter().filter(|f| match f {
                 assignments::Column::GradinRubricId => false,
@@ -711,7 +712,7 @@ impl QueriesService {
     }
     //
     pub async fn list_grades(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let grades = Grade::find()
+        let grades = Grades::find()
             .select_only()
             .columns(grades::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -723,7 +724,7 @@ impl QueriesService {
     }
     //
     pub async fn list_disciplinaries(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let disciplinaries = Disciplinary::find()
+        let disciplinaries = Disciplinaries::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
             .column(students::Column::FullName)
@@ -740,7 +741,7 @@ impl QueriesService {
     }
     //
     pub async fn list_announcements(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let announcements = Announcement::find()
+        let announcements = Announcements::find()
             .select_only()
             .columns(announcements::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)
@@ -752,7 +753,7 @@ impl QueriesService {
     }
     //
     pub async fn list_rubrics(db: &DbConn, qf: QueriesFilters) -> Result<Values, DbErr> {
-        let rubrics = Rubric::find()
+        let rubrics = Rubrics::find()
             .select_only()
             .columns(grading_rubrics::Column::iter())
             .offset((qf.queries.page - 1) * qf.queries.limit)

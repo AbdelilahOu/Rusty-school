@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CGroup, mutation::*, query::*, uuid::Uuid};
+use service::{models::Group, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CGroup>;
+type Body = Json<Group>;
 
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_group(&state.db_conn, body.into_inner()).await;

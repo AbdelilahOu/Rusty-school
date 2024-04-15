@@ -2,7 +2,7 @@ use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
 use crate::{
     entities::*,
-    models::{CActivity, CEvent, CLecture, CParent, CRubric, CStudent, CTeacher, CUser},
+    models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
     utils::convert_to_enum::{to_day_of_week, to_performance},
 };
 
@@ -11,7 +11,7 @@ pub struct TransactionsService;
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
 
 impl TransactionsService {
-    pub async fn create_student(db: DbConn, data: CStudent) -> TxnRes<()> {
+    pub async fn create_student(db: DbConn, data: Student) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -37,7 +37,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_teacher(db: DbConn, data: CTeacher) -> TxnRes<()> {
+    pub async fn create_teacher(db: DbConn, data: Teacher) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -62,7 +62,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_parent(db: DbConn, data: CParent) -> TxnRes<()> {
+    pub async fn create_parent(db: DbConn, data: Parent) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create person
@@ -87,11 +87,11 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn upsert_user(db: &DbConn, data: CUser) -> TxnRes<Uuid> {
+    pub async fn upsert_user(db: &DbConn, data: User) -> TxnRes<Uuid> {
         db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
-                let user = User::find()
+                let user = Users::find()
                     .filter(users::Column::Email.eq(&data.email))
                     .one(txn)
                     .await?;
@@ -125,7 +125,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_event(db: &DbConn, data: CEvent) -> TxnRes<()> {
+    pub async fn create_event(db: &DbConn, data: Event) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
@@ -151,7 +151,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_activity(db: &DbConn, data: CActivity) -> TxnRes<()> {
+    pub async fn create_activity(db: &DbConn, data: Activity) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
@@ -178,7 +178,7 @@ impl TransactionsService {
         })
         .await
     }
-    pub async fn create_lecture(db: &DbConn, data: CLecture) -> TxnRes<()> {
+    pub async fn create_lecture(db: &DbConn, data: Lecture) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
                 // create time table
@@ -205,7 +205,7 @@ impl TransactionsService {
         .await
     }
     //
-    pub async fn create_rubric(db: &DbConn, data: CRubric) -> TxnRes<Uuid> {
+    pub async fn create_rubric(db: &DbConn, data: Rubric) -> TxnRes<Uuid> {
         db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {
                 // create grading rubric
@@ -227,7 +227,7 @@ impl TransactionsService {
                             ..Default::default()
                         })
                     }
-                    Criteria::insert_many(criterias).exec(txn).await?;
+                    Criterias::insert_many(criterias).exec(txn).await?;
                 };
                 Ok(rubric_modal.id)
             })

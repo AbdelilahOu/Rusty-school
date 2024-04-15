@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpRequest, HttpResponse,
 };
-use service::{models::CStudent, mutation::*, query::*, uuid::Uuid};
+use service::{models::Student, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CStudent>;
+type Body = Json<Student>;
 pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();

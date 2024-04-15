@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CRoom, mutation::*, query::*, uuid::Uuid};
+use service::{models::Room, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CRoom>;
+type Body = Json<Room>;
 
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_room(&state.db_conn, body.into_inner()).await;

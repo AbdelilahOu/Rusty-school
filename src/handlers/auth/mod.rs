@@ -13,7 +13,7 @@ use actix_web::{
 use serde::{Deserialize, Serialize};
 use service::{
     chrono::{Duration, NaiveDateTime, Utc},
-    models::{CSession, CUser},
+    models::{Session, User},
     mutation::MutationsService,
     query::QueriesService,
     transaction::TransactionsService,
@@ -145,7 +145,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                 Ok(user) => {
                     let user_res = TransactionsService::upsert_user(
                         &state.db_conn,
-                        CUser {
+                        User {
                             first_name: user.name.clone(),
                             last_name: "".to_string(),
                             email: user.email.clone(),
@@ -177,7 +177,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                                 };
                             let create_session_res = MutationsService::create_session(
                                 &state.db_conn,
-                                CSession {
+                                Session {
                                     id: session_id,
                                     user_id: user_uuid,
                                     user_agent,

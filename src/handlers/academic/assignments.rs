@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CAssignment, mutation::*, query::*, uuid::Uuid};
+use service::{models::Assignment, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CAssignment>;
+type Body = Json<Assignment>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_assignment(&state.db_conn, body.into_inner()).await;
     match res {

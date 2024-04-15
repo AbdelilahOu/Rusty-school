@@ -3,10 +3,10 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CAnnouncement, mutation::*, query::*, uuid::Uuid};
+use service::{models::Announcement, mutation::*, query::*, uuid::Uuid};
 
 // i like my functions to stay inline
-type Body = Json<CAnnouncement>;
+type Body = Json<Announcement>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_announcement(&state.db_conn, body.into_inner()).await;
     match res {

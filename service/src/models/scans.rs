@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CScan {
+pub struct Scan {
     pub person_id: Uuid,
 }
 

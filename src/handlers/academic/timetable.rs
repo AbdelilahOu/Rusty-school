@@ -4,14 +4,14 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{CActivity, CEvent, CLecture},
+    models::{Activity, Event, Lecture},
     mutation::*,
     query::*,
     transaction::*,
     uuid::Uuid,
 };
 
-type EventBody = Json<CEvent>;
+type EventBody = Json<Event>;
 pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
@@ -28,7 +28,7 @@ pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
     }
 }
 
-type ActivityBody = Json<CActivity>;
+type ActivityBody = Json<Activity>;
 pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
@@ -45,7 +45,7 @@ pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
     }
 }
 
-type LectureBody = Json<CLecture>;
+type LectureBody = Json<Lecture>;
 pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
     let res = TransactionsService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {

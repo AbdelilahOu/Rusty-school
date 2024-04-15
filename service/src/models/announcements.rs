@@ -3,10 +3,9 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CAnnouncement {
+pub struct Announcement {
     pub title: String,
     pub description: Option<String>,
-    pub created_at: Option<NaiveDateTime>,
     pub start_date: Option<NaiveDateTime>,
     pub end_date: Option<NaiveDateTime>,
     pub category: String,

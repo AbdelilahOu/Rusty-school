@@ -3,9 +3,9 @@ use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
-use service::{models::CGrade, mutation::*, query::*, uuid::Uuid};
+use service::{models::Grade, mutation::*, query::*, uuid::Uuid};
 //
-type Body = Json<CGrade>;
+type Body = Json<Grade>;
 pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let gradees = QueriesService::list_grades(
         &state.db_conn,

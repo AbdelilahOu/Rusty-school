@@ -1,8 +1,8 @@
 use crate::types::shared::*;
 use actix_web::{web::Json, HttpResponse};
-use service::{models::CScan, mutation::*, query::*};
+use service::{models::Scan, mutation::*, query::*};
 
-type Body = Json<CScan>;
+type Body = Json<Scan>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_scan(&state.db_conn, body.into_inner()).await;
     match res {

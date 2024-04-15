@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct CSession {
+pub struct Session {
     pub id: Uuid,
     pub user_id: Uuid,
     pub user_agent: String,
