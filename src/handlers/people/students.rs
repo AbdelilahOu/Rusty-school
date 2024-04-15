@@ -2,20 +2,20 @@ use crate::{guards::auth::check_token, models::commen::*};
 use actix_web::{
     http::{header::ContentType, StatusCode},
     web::Json as ActJson,
-    HttpRequest as HttpReq, HttpResponse as HttpRes,
+    HttpRequest, HttpResponse,
 };
 use service::{models::CStudent, mutation::*, query::*};
 //
 type Body = ActJson<CStudent>;
 
-pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
+pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
     let authorized = check_token(headers, state.config.jwt_secret.clone());
     // unauth
     if authorized.is_none() {
-        return HttpRes::Unauthorized()
+        return HttpResponse::Unauthorized()
             .status(StatusCode::UNAUTHORIZED)
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
@@ -26,7 +26,7 @@ pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
     }
     let res = MutationsService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpRes::Ok()
+        Ok(id) => HttpResponse::Ok()
             .status(StatusCode::CREATED)
             .content_type(ContentType::json())
             .json(ResponseData {
@@ -34,7 +34,7 @@ pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
                 message: Some("Student created successfully".to_string()),
                 data: Some(id.to_string()),
             }),
-        Err(e) => HttpRes::InternalServerError()
+        Err(e) => HttpResponse::InternalServerError()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
@@ -45,17 +45,17 @@ pub async fn create(body: Body, state: State, req: HttpReq) -> HttpRes {
     }
 }
 
-pub async fn delete(id: IdParam, state: State) -> HttpRes {
+pub async fn delete(id: IdParam, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
     match delete_res {
-        Ok(i) => HttpRes::Created()
+        Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("Student deleted successfully".to_string()),
                 data: Some(i.to_string()),
             }),
-        Err(e) => HttpRes::InternalServerError()
+        Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
@@ -65,7 +65,7 @@ pub async fn delete(id: IdParam, state: State) -> HttpRes {
     }
 }
 
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRes {
+pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let students = QueriesService::list_students(
         &state.db_conn,
         QueriesFilters {
@@ -76,14 +76,14 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     .await;
 
     match students {
-        Ok(i) => HttpRes::Created()
+        Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("Students selected successfully".to_string()),
                 data: Some(i),
             }),
-        Err(e) => HttpRes::InternalServerError()
+        Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
@@ -93,18 +93,18 @@ pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpRe
     }
 }
 
-pub async fn update(id: IdParam, body: Body, state: State) -> HttpRes {
+pub async fn update(id: IdParam, body: Body, state: State) -> HttpResponse {
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
-        Ok(i) => HttpRes::Created()
+        Ok(i) => HttpResponse::Created()
             .content_type(ContentType::json())
             .json(ResponseData {
                 error: None,
                 message: Some("Student updated successfully".to_string()),
                 data: Some(i),
             }),
-        Err(e) => HttpRes::InternalServerError()
+        Err(e) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
             .json(ResponseData::<Option<String>> {
                 error: Some(e.to_string()),
