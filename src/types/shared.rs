@@ -1,4 +1,4 @@
-use actix_web::web::{Data as ActData, Json as ActJson, Query as ActQuery};
+use actix_web::web::{Data, Json, Query};
 use serde::{Deserialize, Serialize};
 use service::query::{Filters, ListQuery};
 
@@ -16,6 +16,6 @@ pub struct FiltersBody {
     pub filters: Vec<Filters>,
 }
 
-pub type TFiltersBody = ActJson<FiltersBody>;
-pub type TQueries = ActQuery<ListQuery>;
-pub type State = ActData<AppState>;
+pub type TFiltersBody = Json<FiltersBody>;
+pub type TQueries = Query<ListQuery>;
+pub type State = Data<AppState>;
