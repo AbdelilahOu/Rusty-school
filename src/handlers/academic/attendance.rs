@@ -2,11 +2,11 @@ use crate::types::shared::*;
 use actix_web::HttpResponse;
 use service::query::*;
 //
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let attendances = QueriesService::list_attendance(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )

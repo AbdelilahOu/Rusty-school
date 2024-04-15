@@ -57,11 +57,11 @@ pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let groups = QueriesService::list_groups(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )

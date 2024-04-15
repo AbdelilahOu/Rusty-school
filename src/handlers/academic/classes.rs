@@ -39,11 +39,11 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let classes = QueriesService::list_classes(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )

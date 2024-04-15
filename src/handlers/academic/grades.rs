@@ -6,11 +6,11 @@ use actix_web::{
 use service::{models::Grade, mutation::*, query::*, uuid::Uuid};
 //
 type Body = Json<Grade>;
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let gradees = QueriesService::list_grades(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )

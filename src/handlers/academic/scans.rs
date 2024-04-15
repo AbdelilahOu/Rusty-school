@@ -19,11 +19,11 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(queries: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
+pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
     let scans = QueriesService::list_scans(
         &state.db_conn,
         QueriesFilters {
-            queries: queries.into_inner(),
+            queries: q.into_inner(),
             filters: body.clone().filters,
         },
     )
