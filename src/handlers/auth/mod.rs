@@ -20,6 +20,36 @@ use service::{
     uuid::Uuid,
 };
 
+#[derive(Debug, Serialize, Deserialize)]
+struct RefreshAccessResponse {
+    pub access_token: String,
+    pub access_token_expires_at: NaiveDateTime,
+}
+//
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RenewAccess {
+    pub refresh_token: String,
+}
+//
+#[derive(Debug, Serialize, Deserialize)]
+struct LogInResponse {
+    pub session_id: Uuid,
+    pub email: String,
+    pub fullname: String,
+    pub access_token: String,
+    pub refresh_token: String,
+    pub access_token_expires_at: NaiveDateTime,
+    pub refresh_token_expires_at: NaiveDateTime,
+}
+//
+#[derive(Deserialize, Debug)]
+pub struct AuthQueryParams {
+    pub code: String,
+}
+//
+type AuthQuery = Query<AuthQueryParams>;
+type RefreshBody = Json<RenewAccess>;
+
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(
         state.config.client_id.clone(),
@@ -30,19 +60,6 @@ pub async fn login(state: State) -> HttpResponse {
         .append_header(("Location", url.as_str()))
         .finish()
 }
-
-#[derive(Debug, Serialize, Deserialize)]
-struct RefreshAccessResponse {
-    pub access_token: String,
-    pub access_token_expires_at: NaiveDateTime,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RenewAccess {
-    pub refresh_token: String,
-}
-
-type RefreshBody = Json<RenewAccess>;
 
 pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse {
     match verify_token(&body.refresh_token, state.config.jwt_secret.clone()) {
@@ -118,23 +135,6 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
         }),
     }
 }
-
-#[derive(Debug, Serialize, Deserialize)]
-struct LogInResponse {
-    pub session_id: Uuid,
-    pub email: String,
-    pub fullname: String,
-    pub access_token: String,
-    pub refresh_token: String,
-    pub access_token_expires_at: NaiveDateTime,
-    pub refresh_token_expires_at: NaiveDateTime,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct AuthQueryParams {
-    pub code: String,
-}
-type AuthQuery = Query<AuthQueryParams>;
 
 pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -> HttpResponse {
     let res = request_tokens(q.code.clone(), state.config.clone()).await;
