@@ -15,3 +15,13 @@ pub struct Announcement {
     pub audience: Option<String>,
     pub alert: Option<NaiveDateTime>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct AnnouncementQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub title: Option<String>,
+    pub start_date: Option<NaiveDateTime>,
+    pub end_date: Option<NaiveDateTime>,
+    pub category: Option<String>,
+}

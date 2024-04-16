@@ -8,3 +8,10 @@ pub struct Grade {
     pub score: f32,
     pub feedback: Option<String>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct GradeQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub student_id: Option<Uuid>,
+}

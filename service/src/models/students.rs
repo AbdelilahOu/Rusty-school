@@ -12,5 +12,5 @@ pub struct Student {
 pub struct StudentQueries {
     pub page: u64,
     pub limit: u64,
-    pub fullname: Option<String>,
+    pub full_name: Option<String>,
 }

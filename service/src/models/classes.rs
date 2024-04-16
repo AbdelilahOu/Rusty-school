@@ -8,3 +8,12 @@ pub struct Class {
     pub group_id: Option<Uuid>,
     pub room_id: Option<Uuid>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ClassQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub subject_id: Option<Uuid>,
+    pub teacher_id: Option<Uuid>,
+    pub group_id: Option<Uuid>,
+}

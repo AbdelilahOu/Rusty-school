@@ -1,6 +1,13 @@
 use crate::types::shared::*;
-use actix_web::{web::Json, HttpResponse};
-use service::{models::Scan, mutation::*, query::*};
+use actix_web::{
+    web::{Json, Query},
+    HttpResponse,
+};
+use service::{
+    models::{Scan, ScansQueries},
+    mutation::*,
+    query::*,
+};
 
 type Body = Json<Scan>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
@@ -19,16 +26,8 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let scans = QueriesService::list_scans(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<ScansQueries>, state: State) -> HttpResponse {
+    let scans = QueriesService::list_scans(&state.db_conn, q.into_inner()).await;
     match scans {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

@@ -82,7 +82,6 @@ pub async fn list(q: Query<StudentQueries>, state: State, req: HttpRequest) -> H
         });
     }
     let students = QueriesService::list_students(&state.db_conn, q.into_inner()).await;
-
     match students {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,

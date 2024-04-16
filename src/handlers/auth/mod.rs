@@ -16,6 +16,7 @@ use service::{
     models::{Session, User},
     mutation::MutationsService,
     query::QueriesService,
+    sea_orm::prelude::DateTimeUtc,
     transaction::TransactionsService,
     uuid::Uuid,
 };
@@ -101,7 +102,7 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
                         });
                     };
 
-                    let (access_token, access_expires_at, _) = generate_tokens(
+                    let (access_token, claims) = generate_tokens(
                         session.user_id,
                         state.config.jwt_secret.clone(),
                         Duration::minutes(5),
@@ -112,7 +113,9 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
                         message: Some("access token refreshed".to_string()),
                         data: Some(RefreshAccessResponse {
                             access_token,
-                            access_token_expires_at: access_expires_at,
+                            access_token_expires_at: DateTimeUtc::from_timestamp(claims.exp, 0)
+                                .unwrap()
+                                .naive_utc(),
                         }),
                     })
                 }
@@ -156,12 +159,12 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                     match user_res {
                         Ok(user_uuid) => {
                             // create access token
-                            let (access_token, access_expires_at, _) = generate_tokens(
+                            let (access_token, access_claims) = generate_tokens(
                                 user_uuid,
                                 state.config.jwt_secret.clone(),
                                 Duration::minutes(5),
                             );
-                            let (refresh_token, refresh_expires_at, session_id) = generate_tokens(
+                            let (refresh_token, refresh_claims) = generate_tokens(
                                 user_uuid,
                                 state.config.jwt_secret.clone(),
                                 Duration::hours(48),
@@ -175,21 +178,32 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                                     ),
                                     _ => ("".to_string(), "".to_string()),
                                 };
+                            let expires_at = DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
+                                .unwrap()
+                                .naive_utc();
                             let create_session_res = MutationsService::create_session(
                                 &state.db_conn,
                                 Session {
-                                    id: session_id,
+                                    id: refresh_claims.session_id,
                                     user_id: user_uuid,
                                     user_agent,
                                     client_ip,
                                     is_blocked: false,
                                     refresh_token: refresh_token.clone(),
-                                    expires_at: refresh_expires_at,
+                                    expires_at,
                                 },
                             )
                             .await;
                             match create_session_res {
                                 Ok(session_id) => {
+                                    let access_token_expires_at =
+                                        DateTimeUtc::from_timestamp(access_claims.exp, 0)
+                                            .unwrap()
+                                            .naive_utc();
+                                    let refresh_token_expires_at =
+                                        DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
+                                            .unwrap()
+                                            .naive_utc();
                                     HttpResponse::Ok().json(ResponseData::<LogInResponse> {
                                         error: None,
                                         message: Some("user logged in successfully".to_string()),
@@ -199,8 +213,8 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                                             fullname: user.name,
                                             access_token,
                                             refresh_token,
-                                            access_token_expires_at: access_expires_at,
-                                            refresh_token_expires_at: refresh_expires_at,
+                                            access_token_expires_at,
+                                            refresh_token_expires_at,
                                         }),
                                     })
                                 }

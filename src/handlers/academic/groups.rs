@@ -1,9 +1,14 @@
 use crate::types::shared::*;
 use actix_web::{
-    web::{Json, Path},
+    web::{Json, Path, Query},
     HttpResponse,
 };
-use service::{models::Group, mutation::*, query::*, uuid::Uuid};
+use service::{
+    models::{Group, GroupQueries},
+    mutation::*,
+    query::*,
+    uuid::Uuid,
+};
 //
 type Body = Json<Group>;
 
@@ -25,7 +30,6 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_group(&state.db_conn, id.into_inner()).await;
-
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -42,7 +46,6 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
 
 pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     let selected_group = QueriesService::list_level_groups(&state.db_conn, id.into_inner()).await;
-
     match selected_group {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -57,16 +60,8 @@ pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let groups = QueriesService::list_groups(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<GroupQueries>, state: State) -> HttpResponse {
+    let groups = QueriesService::list_groups(&state.db_conn, q.into_inner()).await;
     match groups {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

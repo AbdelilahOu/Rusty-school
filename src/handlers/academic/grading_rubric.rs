@@ -1,21 +1,19 @@
 use crate::types::shared::*;
 use actix_web::{
-    web::{Json, Path},
+    web::{Json, Path, Query},
     HttpResponse,
 };
-use service::{models::Rubric, mutation::*, query::*, transaction::*, uuid::Uuid};
+use service::{
+    models::{Rubric, RubricQueries},
+    mutation::*,
+    query::*,
+    transaction::*,
+    uuid::Uuid,
+};
 //
 type Body = Json<Rubric>;
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let gradees = QueriesService::list_rubrics(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
+    let gradees = QueriesService::list_rubrics(&state.db_conn, q.into_inner()).await;
     match gradees {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,

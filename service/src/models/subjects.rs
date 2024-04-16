@@ -7,3 +7,10 @@ pub struct Subject {
     pub description: Option<String>,
     pub level_id: Option<Uuid>,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct SubjectQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub name: Option<String>,
+}

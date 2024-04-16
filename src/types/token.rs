@@ -5,5 +5,5 @@ use service::uuid::Uuid;
 pub struct Claims {
     pub session_id: Uuid,
     pub user_id: Uuid,
-    pub exp: usize,
+    pub exp: i64,
 }

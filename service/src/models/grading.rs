@@ -8,6 +8,13 @@ pub struct Rubric {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
+pub struct RubricQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub title: Option<String>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Criteria {
     pub performance: String,
     pub description: Option<String>,

@@ -9,3 +9,11 @@ pub struct DisciAction {
     pub description: String,
     pub consequences: String,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct DisciActionQueries {
+    pub page: u64,
+    pub limit: u64,
+    pub student_id: Option<Uuid>,
+    pub issued_at: Option<NaiveDateTime>,
+}

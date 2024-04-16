@@ -1,17 +1,9 @@
 use crate::types::shared::*;
-use actix_web::HttpResponse;
-use service::query::*;
+use actix_web::{web::Query, HttpResponse};
+use service::{models::AttendanceQueries, query::*};
 //
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let attendances = QueriesService::list_attendance(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<AttendanceQueries>, state: State) -> HttpResponse {
+    let attendances = QueriesService::list_attendance(&state.db_conn, q.into_inner()).await;
     match attendances {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

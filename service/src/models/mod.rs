@@ -1,5 +1,6 @@
 mod announcements;
 mod assignments;
+mod attendance;
 mod classes;
 mod disciplinary_actions;
 mod grades;
@@ -18,6 +19,7 @@ mod users;
 
 pub use announcements::*;
 pub use assignments::*;
+pub use attendance::*;
 pub use classes::*;
 pub use disciplinary_actions::*;
 pub use grades::*;

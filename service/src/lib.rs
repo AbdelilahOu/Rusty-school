@@ -28,7 +28,7 @@ mod entities {
     pub use ::entity::parents::{self, ActiveModel as ParentActiveModel, Entity as Parents};
     pub use ::entity::persons::{self, ActiveModel as PersonActiveModel, Entity as Persons};
     pub use ::entity::pickups;
-    pub use ::entity::rooms::{ActiveModel as RoomActiveModel, Entity as Rooms};
+    pub use ::entity::rooms::{self, ActiveModel as RoomActiveModel, Entity as Rooms};
     pub use ::entity::scans::{self, ActiveModel as ScanActiveModel, Entity as Scans};
     pub use ::entity::sea_orm_active_enums::*;
     pub use ::entity::sessions::{self, ActiveModel as SessionActiveModel, Entity as Sessions};

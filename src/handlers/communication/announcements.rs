@@ -1,9 +1,14 @@
 use crate::types::shared::*;
 use actix_web::{
-    web::{Json, Path},
+    web::{Json, Path, Query},
     HttpResponse,
 };
-use service::{models::Announcement, mutation::*, query::*, uuid::Uuid};
+use service::{
+    models::{Announcement, AnnouncementQueries},
+    mutation::*,
+    query::*,
+    uuid::Uuid,
+};
 
 // i like my functions to stay inline
 type Body = Json<Announcement>;
@@ -25,7 +30,6 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_announcement(&state.db_conn, id.into_inner()).await;
-
     match delete_res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -40,16 +44,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let announcements = QueriesService::list_announcements(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<AnnouncementQueries>, state: State) -> HttpResponse {
+    let announcements = QueriesService::list_announcements(&state.db_conn, q.into_inner()).await;
     match announcements {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,

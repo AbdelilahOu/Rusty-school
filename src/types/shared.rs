@@ -1,8 +1,6 @@
-use actix_web::web::{Data, Json, Query};
-use serde::{Deserialize, Serialize};
-use service::query::{Filters, ListQuery};
-
 use crate::AppState;
+use actix_web::web::Data;
+use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct ResponseData<T> {
@@ -10,12 +8,4 @@ pub struct ResponseData<T> {
     pub message: Option<String>,
     pub data: Option<T>,
 }
-
-#[derive(Deserialize, Clone)]
-pub struct FiltersBody {
-    pub filters: Vec<Filters>,
-}
-
-pub type TFiltersBody = Json<FiltersBody>;
-pub type TQueries = Query<ListQuery>;
 pub type State = Data<AppState>;

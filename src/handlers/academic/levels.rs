@@ -1,13 +1,17 @@
 use crate::types::shared::*;
 use actix_web::{
-    web::{Json, Path},
+    web::{Json, Path, Query},
     HttpResponse,
 };
-use service::{models::Level, mutation::*, query::*, uuid::Uuid};
+use service::{
+    models::{Level, LevelQueries},
+    mutation::*,
+    query::*,
+    uuid::Uuid,
+};
 
 // i like my functions to stay inline
 type Body = Json<Level>;
-
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_level(&state.db_conn, body.into_inner()).await;
     match res {
@@ -26,7 +30,6 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     let delete_res = MutationsService::delete_level(&state.db_conn, id.into_inner()).await;
-
     match delete_res {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -41,16 +44,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: TQueries, body: TFiltersBody, state: State) -> HttpResponse {
-    let levels = QueriesService::list_levels(
-        &state.db_conn,
-        QueriesFilters {
-            queries: q.into_inner(),
-            filters: body.clone().filters,
-        },
-    )
-    .await;
-
+pub async fn list(q: Query<LevelQueries>, state: State) -> HttpResponse {
+    let levels = QueriesService::list_levels(&state.db_conn, q.into_inner()).await;
     match levels {
         Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,
