@@ -5,8 +5,8 @@ use actix_web::{
 };
 use service::{
     models::{Student, StudentQueries},
-    mutation::*,
-    query::*,
+    mutation::MutationsService,
+    query::QueriesService,
     uuid::Uuid,
 };
 //

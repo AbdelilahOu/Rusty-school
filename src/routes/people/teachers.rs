@@ -1,7 +1,5 @@
 use crate::handlers::people::teachers;
-
 use actix_web::{web, Scope};
-
 pub fn load_teachers_routes() -> Scope {
     web::scope("/teachers")
         .route("/", web::get().to(teachers::list))

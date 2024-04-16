@@ -1,6 +1,5 @@
-use actix_web::{web, Scope};
-
 use crate::handlers::academic::disciplinary_actions;
+use actix_web::{web, Scope};
 
 pub fn load_disciplinary_actions_routes() -> Scope {
     web::scope("/disciplinary_actions")

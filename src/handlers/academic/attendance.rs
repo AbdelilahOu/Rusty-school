@@ -1,6 +1,6 @@
-use crate::types::shared::*;
+use crate::types::shared::{ResponseData, State};
 use actix_web::{web::Query, HttpResponse};
-use service::{models::AttendanceQueries, query::*};
+use service::{models::AttendanceQueries, query::QueriesService};
 //
 pub async fn list(q: Query<AttendanceQueries>, state: State) -> HttpResponse {
     let attendances = QueriesService::list_attendance(&state.db_conn, q.into_inner()).await;

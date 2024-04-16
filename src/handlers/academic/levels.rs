@@ -1,12 +1,12 @@
-use crate::types::shared::*;
+use crate::types::shared::{ResponseData, State};
 use actix_web::{
     web::{Json, Path, Query},
     HttpResponse,
 };
 use service::{
     models::{Level, LevelQueries},
-    mutation::*,
-    query::*,
+    mutation::MutationsService,
+    query::QueriesService,
     uuid::Uuid,
 };
 

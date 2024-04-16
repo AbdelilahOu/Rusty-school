@@ -1,6 +1,5 @@
-use actix_web::{web, Scope};
-
 use crate::handlers::academic::assignments;
+use actix_web::{web, Scope};
 
 pub fn load_assignments_routes() -> Scope {
     web::scope("/assignments")

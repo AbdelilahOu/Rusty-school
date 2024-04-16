@@ -1,12 +1,12 @@
-use crate::types::shared::*;
+use crate::types::shared::{ResponseData, State};
 use actix_web::{
     web::{Json, Query},
     HttpResponse,
 };
 use service::{
     models::{Scan, ScansQueries},
-    mutation::*,
-    query::*,
+    mutation::MutationsService,
+    query::QueriesService,
 };
 
 type Body = Json<Scan>;

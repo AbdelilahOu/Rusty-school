@@ -1,6 +1,5 @@
-use actix_web::{web, Scope};
-
 use crate::handlers::academic::levels;
+use actix_web::{web, Scope};
 
 pub fn load_levels_routes() -> Scope {
     web::scope("/levels")

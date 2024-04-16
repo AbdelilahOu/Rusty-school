@@ -1,6 +1,5 @@
-use actix_web::{web, Scope};
-
 use crate::handlers::academic::rooms;
+use actix_web::{web, Scope};
 
 pub fn load_rooms_routes() -> Scope {
     web::scope("/rooms")

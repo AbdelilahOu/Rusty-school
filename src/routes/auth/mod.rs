@@ -1,8 +1,6 @@
 // use crate::handlers::auth;
-use actix_web::{web, Scope};
-
 use crate::handlers::auth;
-
+use actix_web::{web, Scope};
 pub fn load_auth_routes() -> Scope {
     web::scope("/auth")
         .route("/login", web::get().to(auth::login))

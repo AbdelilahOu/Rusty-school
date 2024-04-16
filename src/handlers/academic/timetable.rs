@@ -1,13 +1,13 @@
-use crate::types::shared::*;
+use crate::types::shared::{ResponseData, State};
 use actix_web::{
     web::{Json, Path},
     HttpResponse,
 };
 use service::{
     models::{Activity, Event, Lecture},
-    mutation::*,
-    query::*,
-    transaction::*,
+    mutation::MutationsService,
+    query::QueriesService,
+    transaction::TransactionsService,
     uuid::Uuid,
 };
 
