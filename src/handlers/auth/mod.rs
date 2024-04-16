@@ -36,7 +36,7 @@ pub struct RenewAccess {
 struct LogInResponse {
     pub session_id: Uuid,
     pub email: String,
-    pub fullname: String,
+    pub full_name: String,
     pub access_token: String,
     pub refresh_token: String,
     pub access_token_expires_at: NaiveDateTime,
@@ -210,7 +210,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                                         data: Some(LogInResponse {
                                             session_id,
                                             email: user.email,
-                                            fullname: user.name,
+                                            full_name: user.name,
                                             access_token,
                                             refresh_token,
                                             access_token_expires_at,
