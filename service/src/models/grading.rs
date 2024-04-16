@@ -8,7 +8,7 @@ pub struct Rubric {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct RubricQueries {
+pub struct RubricQuery {
     pub page: u64,
     pub limit: u64,
     pub title: Option<String>,

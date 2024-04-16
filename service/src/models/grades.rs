@@ -10,7 +10,7 @@ pub struct Grade {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct GradeQueries {
+pub struct GradeQuery {
     pub page: u64,
     pub limit: u64,
     pub student_id: Option<Uuid>,

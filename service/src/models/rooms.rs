@@ -7,7 +7,7 @@ pub struct Room {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct RoomQueries {
+pub struct RoomQuery {
     pub page: u64,
     pub limit: u64,
     pub name: Option<String>,

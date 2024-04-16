@@ -4,16 +4,16 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Parent, ParentQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Parent, ParentQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 
 // i like my functions to stay inline
 type Body = Json<Parent>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_parent(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -29,7 +29,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_parent(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_parent(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -44,8 +44,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<ParentQueries>, state: State) -> HttpResponse {
-    let parents = QueriesService::list_parents(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<ParentQuery>, state: State) -> HttpResponse {
+    let parents = QueryService::list_parents(&state.db_conn, q.into_inner()).await;
     match parents {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -62,7 +62,7 @@ pub async fn list(q: Query<ParentQueries>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

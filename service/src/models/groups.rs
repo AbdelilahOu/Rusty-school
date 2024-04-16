@@ -9,7 +9,7 @@ pub struct Group {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct GroupQueries {
+pub struct GroupQuery {
     pub page: u64,
     pub limit: u64,
     pub name: Option<String>,

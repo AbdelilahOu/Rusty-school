@@ -1,10 +1,10 @@
 use crate::{
     entities::*,
     models::{
-        AnnouncementQueries, AssignmentQueries, AttendanceQueries, ClassQueries,
-        DisciActionQueries, GradeQueries, GroupQueries, LevelQueries, ParentQueries, RoomQueries,
-        RubricQueries, ScansQueries, SelectAttendance, SelectScans, SelectTimeTable,
-        StudentQueries, SubjectQueries, TeacherQueries,
+        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery,
+        DisciActionQuery, GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery,
+        RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable,
+        StudentQuery, SubjectQuery, TeacherQuery,
     },
 };
 use chrono::NaiveDateTime;
@@ -21,11 +21,11 @@ use serde_json::Value as SerdValue;
 
 type Values = Vec<SerdValue>;
 
-pub struct QueriesService;
+pub struct QueryService;
 
-impl QueriesService {
+impl QueryService {
     // students entity
-    pub async fn list_students(db: &DbConn, q: StudentQueries) -> Result<Values, DbErr> {
+    pub async fn list_students(db: &DbConn, q: StudentQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(name) = q.full_name {
             conditions = conditions.add(Expr::col(students::Column::FullName).ilike(name));
@@ -51,7 +51,7 @@ impl QueriesService {
         Ok(students)
     }
     //
-    pub async fn list_teachers(db: &DbConn, q: TeacherQueries) -> Result<Values, DbErr> {
+    pub async fn list_teachers(db: &DbConn, q: TeacherQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(name) = q.full_name {
             conditions = conditions.add(Expr::col(teachers::Column::FullName).ilike(name));
@@ -72,7 +72,7 @@ impl QueriesService {
         Ok(teachers)
     }
     //
-    pub async fn list_parents(db: &DbConn, q: ParentQueries) -> Result<Values, DbErr> {
+    pub async fn list_parents(db: &DbConn, q: ParentQuery) -> Result<Values, DbErr> {
         let pickup_alias = "pickups_count";
         let mut conditions = Condition::all();
         if let Some(name) = q.full_name {
@@ -95,7 +95,7 @@ impl QueriesService {
         Ok(parents)
     }
     //
-    pub async fn list_scans(db: &DbConn, q: ScansQueries) -> Result<Values, DbErr> {
+    pub async fn list_scans(db: &DbConn, q: ScansQuery) -> Result<Values, DbErr> {
         //
         let (sql, values) = Query::select()
             .from(Scans)
@@ -343,7 +343,7 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_attendance(db: &DbConn, q: AttendanceQueries) -> Result<Values, DbErr> {
+    pub async fn list_attendance(db: &DbConn, q: AttendanceQuery) -> Result<Values, DbErr> {
         //
         let (sql, values) = Query::select()
             .from(Scans)
@@ -453,7 +453,7 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_levels(db: &DbConn, q: LevelQueries) -> Result<Values, DbErr> {
+    pub async fn list_levels(db: &DbConn, q: LevelQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(name) = q.name {
             conditions = conditions.add(Expr::col(levels::Column::LevelName).ilike(name));
@@ -476,7 +476,7 @@ impl QueriesService {
         Ok(levels)
     }
     //
-    pub async fn list_subjects(db: &DbConn, q: SubjectQueries) -> Result<Values, DbErr> {
+    pub async fn list_subjects(db: &DbConn, q: SubjectQuery) -> Result<Values, DbErr> {
         let level_alias = "level_name";
         let mut conditions = Condition::all();
         if let Some(name) = q.name {
@@ -513,7 +513,7 @@ impl QueriesService {
         Ok(level_subjects)
     }
     //
-    pub async fn list_groups(db: &DbConn, q: GroupQueries) -> Result<Values, DbErr> {
+    pub async fn list_groups(db: &DbConn, q: GroupQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(name) = q.name {
             conditions = conditions.add(Expr::col(groups::Column::GroupName).ilike(name));
@@ -551,7 +551,7 @@ impl QueriesService {
         Ok(level_groups)
     }
     //
-    pub async fn list_rooms(db: &DbConn, q: RoomQueries) -> Result<Values, DbErr> {
+    pub async fn list_rooms(db: &DbConn, q: RoomQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(name) = q.name {
             conditions = conditions.add(Expr::col(rooms::Column::RoomName).ilike(name));
@@ -566,7 +566,7 @@ impl QueriesService {
         Ok(rooms)
     }
     //
-    pub async fn list_classes(db: &DbConn, q: ClassQueries) -> Result<Values, DbErr> {
+    pub async fn list_classes(db: &DbConn, q: ClassQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(teacher_id) = q.teacher_id {
             conditions = conditions.add(Expr::col(classes::Column::TeacherId).eq(teacher_id));
@@ -684,7 +684,7 @@ impl QueriesService {
         Ok(result)
     }
     //
-    pub async fn list_assignments(db: &DbConn, q: AssignmentQueries) -> Result<Values, DbErr> {
+    pub async fn list_assignments(db: &DbConn, q: AssignmentQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(teacher_id) = q.teacher_id {
             conditions = conditions.add(Expr::col(assignments::Column::TeacherId).eq(teacher_id));
@@ -711,7 +711,7 @@ impl QueriesService {
         Ok(assignments)
     }
     //
-    pub async fn list_grades(db: &DbConn, q: GradeQueries) -> Result<Values, DbErr> {
+    pub async fn list_grades(db: &DbConn, q: GradeQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(student_id) = q.student_id {
             conditions = conditions.add(Expr::col(grades::Column::StudentId).eq(student_id));
@@ -728,7 +728,7 @@ impl QueriesService {
         Ok(grades)
     }
     //
-    pub async fn list_disciplinaries(db: &DbConn, q: DisciActionQueries) -> Result<Values, DbErr> {
+    pub async fn list_disciplinaries(db: &DbConn, q: DisciActionQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(student_id) = q.student_id {
             conditions =
@@ -756,7 +756,7 @@ impl QueriesService {
         Ok(disciplinaries)
     }
     //
-    pub async fn list_announcements(db: &DbConn, q: AnnouncementQueries) -> Result<Values, DbErr> {
+    pub async fn list_announcements(db: &DbConn, q: AnnouncementQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(title) = q.title {
             conditions = conditions.add(Expr::col(announcements::Column::Title).eq(title));
@@ -783,7 +783,7 @@ impl QueriesService {
         Ok(announcements)
     }
     //
-    pub async fn list_rubrics(db: &DbConn, q: RubricQueries) -> Result<Values, DbErr> {
+    pub async fn list_rubrics(db: &DbConn, q: RubricQuery) -> Result<Values, DbErr> {
         let mut conditions = Condition::all();
         if let Some(title) = q.title {
             conditions = conditions.add(Expr::col(grading_rubrics::Column::Title).eq(title));

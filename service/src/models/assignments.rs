@@ -14,7 +14,7 @@ pub struct Assignment {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct AssignmentQueries {
+pub struct AssignmentQuery {
     pub page: u64,
     pub limit: u64,
     pub title: Option<String>,

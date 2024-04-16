@@ -19,7 +19,7 @@ pub struct SelectScans {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct ScansQueries {
+pub struct ScansQuery {
     pub page: u64,
     pub limit: u64,
     pub scan_time_end: Option<String>,

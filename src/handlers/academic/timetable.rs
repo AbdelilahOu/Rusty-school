@@ -5,8 +5,8 @@ use actix_web::{
 };
 use service::{
     models::{Activity, Event, Lecture},
-    mutation::MutationsService,
-    query::QueriesService,
+    mutation::MutationService,
+    query::QueryService,
     transaction::TransactionsService,
     uuid::Uuid,
 };
@@ -63,7 +63,7 @@ pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
 }
 
 pub async fn list(state: State) -> HttpResponse {
-    let timetable = QueriesService::list_time_table(&state.db_conn).await;
+    let timetable = QueryService::list_time_table(&state.db_conn).await;
     match timetable {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -79,7 +79,7 @@ pub async fn list(state: State) -> HttpResponse {
 }
 
 pub async fn delete_timetable_item(id: Path<Uuid>, state: State) -> HttpResponse {
-    let res = MutationsService::delete_time_table(&state.db_conn, id.into_inner()).await;
+    let res = MutationService::delete_time_table(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

@@ -7,9 +7,9 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 use service::{
-    models::{Student, StudentQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Student, StudentQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 //
@@ -27,7 +27,7 @@ pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse 
             data: None,
         });
     }
-    let res = MutationsService::create_student(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -56,7 +56,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
         });
     }
 
-    let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_student(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -71,7 +71,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
     }
 }
 
-pub async fn list(q: Query<StudentQueries>, state: State, req: HttpRequest) -> HttpResponse {
+pub async fn list(q: Query<StudentQuery>, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -84,7 +84,7 @@ pub async fn list(q: Query<StudentQueries>, state: State, req: HttpRequest) -> H
             data: None,
         });
     }
-    let students = QueriesService::list_students(&state.db_conn, q.into_inner()).await;
+    let students = QueryService::list_students(&state.db_conn, q.into_inner()).await;
     match students {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -114,7 +114,7 @@ pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) 
     }
 
     let update_res =
-        MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

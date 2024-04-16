@@ -9,7 +9,7 @@ pub struct Student {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct StudentQueries {
+pub struct StudentQuery {
     pub page: u64,
     pub limit: u64,
     pub full_name: Option<String>,

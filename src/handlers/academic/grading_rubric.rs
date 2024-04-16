@@ -4,9 +4,9 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Rubric, RubricQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Rubric, RubricQuery},
+    mutation::MutationService,
+    query::QueryService,
     transaction::TransactionsService,
     uuid::Uuid,
 };
@@ -28,8 +28,8 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
-    let gradees = QueriesService::list_rubrics(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<RubricQuery>, state: State) -> HttpResponse {
+    let gradees = QueryService::list_rubrics(&state.db_conn, q.into_inner()).await;
     match gradees {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -45,7 +45,7 @@ pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_rubric(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_rubric(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -62,7 +62,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_rubric(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationService::update_rubric(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

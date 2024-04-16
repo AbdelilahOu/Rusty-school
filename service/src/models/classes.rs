@@ -10,7 +10,7 @@ pub struct Class {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct ClassQueries {
+pub struct ClassQuery {
     pub page: u64,
     pub limit: u64,
     pub subject_id: Option<Uuid>,

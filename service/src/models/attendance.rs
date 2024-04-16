@@ -14,7 +14,7 @@ pub struct SelectAttendance {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct AttendanceQueries {
+pub struct AttendanceQuery {
     pub page: u64,
     pub limit: u64,
     pub scan_time_end: Option<String>,

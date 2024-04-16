@@ -4,15 +4,15 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Teacher, TeacherQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Teacher, TeacherQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 
 type Body = Json<Teacher>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_teacher(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_teacher(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -28,7 +28,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn add_subject(params: Path<(Uuid, Uuid)>, state: State) -> HttpResponse {
-    let res = MutationsService::create_teacher_subject(&state.db_conn, params.into_inner()).await;
+    let res = MutationService::create_teacher_subject(&state.db_conn, params.into_inner()).await;
     match res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -44,7 +44,7 @@ pub async fn add_subject(params: Path<(Uuid, Uuid)>, state: State) -> HttpRespon
 }
 
 pub async fn delete_subject(id: Path<Uuid>, state: State) -> HttpResponse {
-    let res = MutationsService::delete_teacher_subject(&state.db_conn, id.into_inner()).await;
+    let res = MutationService::delete_teacher_subject(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -60,7 +60,7 @@ pub async fn delete_subject(id: Path<Uuid>, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_teacher(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_teacher(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -75,8 +75,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<TeacherQueries>, state: State) -> HttpResponse {
-    let teachers = QueriesService::list_teachers(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<TeacherQuery>, state: State) -> HttpResponse {
+    let teachers = QueryService::list_teachers(&state.db_conn, q.into_inner()).await;
     match teachers {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -93,7 +93,7 @@ pub async fn list(q: Query<TeacherQueries>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_teacher(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationService::update_teacher(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

@@ -4,14 +4,14 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Scan, ScansQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Scan, ScansQuery},
+    mutation::MutationService,
+    query::QueryService,
 };
 
 type Body = Json<Scan>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_scan(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_scan(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -26,8 +26,8 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<ScansQueries>, state: State) -> HttpResponse {
-    let scans = QueriesService::list_scans(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<ScansQuery>, state: State) -> HttpResponse {
+    let scans = QueryService::list_scans(&state.db_conn, q.into_inner()).await;
     match scans {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

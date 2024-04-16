@@ -7,11 +7,11 @@ use crate::{
     utils::convert_to_enum::{to_announcement_category, to_audience},
 };
 
-pub struct MutationsService;
+pub struct MutationService;
 
 type DyResult<T> = Result<T, DbErr>;
 
-impl MutationsService {
+impl MutationService {
     // students entity
     pub async fn create_student(db: &DbConn, data: Student) -> DyResult<Uuid> {
         let student_a_model = StudentActiveModel {

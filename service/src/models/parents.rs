@@ -7,7 +7,7 @@ pub struct Parent {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct ParentQueries {
+pub struct ParentQuery {
     pub page: u64,
     pub limit: u64,
     pub full_name: Option<String>,

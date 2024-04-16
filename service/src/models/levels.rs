@@ -7,7 +7,7 @@ pub struct Level {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct LevelQueries {
+pub struct LevelQuery {
     pub page: u64,
     pub limit: u64,
     pub name: Option<String>,

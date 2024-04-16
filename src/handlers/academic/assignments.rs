@@ -4,15 +4,15 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Assignment, AssignmentQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Assignment, AssignmentQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 //
 type Body = Json<Assignment>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_assignment(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_assignment(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -28,7 +28,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_assignment(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_assignment(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -43,8 +43,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<AssignmentQueries>, state: State) -> HttpResponse {
-    let assignmentes = QueriesService::list_assignments(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<AssignmentQuery>, state: State) -> HttpResponse {
+    let assignmentes = QueryService::list_assignments(&state.db_conn, q.into_inner()).await;
     match assignmentes {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -61,7 +61,7 @@ pub async fn list(q: Query<AssignmentQueries>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner())
+        MutationService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner())
             .await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {

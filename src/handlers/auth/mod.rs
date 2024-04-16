@@ -14,8 +14,8 @@ use serde::{Deserialize, Serialize};
 use service::{
     chrono::{Duration, NaiveDateTime, Utc},
     models::{Session, User},
-    mutation::MutationsService,
-    query::QueriesService,
+    mutation::MutationService,
+    query::QueryService,
     sea_orm::prelude::DateTimeUtc,
     transaction::TransactionsService,
     uuid::Uuid,
@@ -64,7 +64,7 @@ pub async fn login(state: State) -> HttpResponse {
 
 pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse {
     match verify_token(&body.refresh_token, state.config.jwt_secret.clone()) {
-        Ok(claims) => match QueriesService::get_session(&state.db_conn, claims.session_id).await {
+        Ok(claims) => match QueryService::get_session(&state.db_conn, claims.session_id).await {
             Ok(session_op) => match session_op {
                 Some(session) => {
                     if session.is_blocked {
@@ -181,7 +181,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
                             let expires_at = DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
                                 .unwrap()
                                 .naive_utc();
-                            let create_session_res = MutationsService::create_session(
+                            let create_session_res = MutationService::create_session(
                                 &state.db_conn,
                                 Session {
                                     id: refresh_claims.session_id,

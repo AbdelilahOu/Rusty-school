@@ -11,7 +11,7 @@ pub struct DisciAction {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct DisciActionQueries {
+pub struct DisciActionQuery {
     pub page: u64,
     pub limit: u64,
     pub student_id: Option<Uuid>,

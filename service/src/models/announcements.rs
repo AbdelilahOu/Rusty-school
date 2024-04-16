@@ -17,7 +17,7 @@ pub struct Announcement {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct AnnouncementQueries {
+pub struct AnnouncementQuery {
     pub page: u64,
     pub limit: u64,
     pub title: Option<String>,

@@ -4,16 +4,16 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Subject, SubjectQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Subject, SubjectQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 
 //
 type Body = Json<Subject>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_subject(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -29,7 +29,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_subject(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_subject(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -46,7 +46,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
 
 pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     let selected_subject =
-        QueriesService::list_level_subjects(&state.db_conn, id.into_inner()).await;
+        QueryService::list_level_subjects(&state.db_conn, id.into_inner()).await;
     match selected_subject {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -61,8 +61,8 @@ pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<SubjectQueries>, state: State) -> HttpResponse {
-    let subjects = QueriesService::list_subjects(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<SubjectQuery>, state: State) -> HttpResponse {
+    let subjects = QueryService::list_subjects(&state.db_conn, q.into_inner()).await;
     match subjects {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -79,7 +79,7 @@ pub async fn list(q: Query<SubjectQueries>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
+        MutationService::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,

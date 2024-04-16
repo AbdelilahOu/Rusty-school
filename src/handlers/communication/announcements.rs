@@ -4,16 +4,16 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{Announcement, AnnouncementQueries},
-    mutation::MutationsService,
-    query::QueriesService,
+    models::{Announcement, AnnouncementQuery},
+    mutation::MutationService,
+    query::QueryService,
     uuid::Uuid,
 };
 
 // i like my functions to stay inline
 type Body = Json<Announcement>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_announcement(&state.db_conn, body.into_inner()).await;
+    let res = MutationService::create_announcement(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -29,7 +29,7 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationsService::delete_announcement(&state.db_conn, id.into_inner()).await;
+    let delete_res = MutationService::delete_announcement(&state.db_conn, id.into_inner()).await;
     match delete_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -44,8 +44,8 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<AnnouncementQueries>, state: State) -> HttpResponse {
-    let announcements = QueriesService::list_announcements(&state.db_conn, q.into_inner()).await;
+pub async fn list(q: Query<AnnouncementQuery>, state: State) -> HttpResponse {
+    let announcements = QueryService::list_announcements(&state.db_conn, q.into_inner()).await;
     match announcements {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
@@ -62,7 +62,7 @@ pub async fn list(q: Query<AnnouncementQueries>, state: State) -> HttpResponse {
 
 pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
     let update_res =
-        MutationsService::update_announcement(&state.db_conn, id.into_inner(), body.into_inner())
+        MutationService::update_announcement(&state.db_conn, id.into_inner(), body.into_inner())
             .await;
     match update_res {
         Ok(i) => HttpResponse::Ok().json(ResponseData {
