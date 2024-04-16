@@ -11,7 +11,6 @@ use service::{
 };
 //
 type Body = Json<Room>;
-
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_room(&state.db_conn, body.into_inner()).await;
     match res {

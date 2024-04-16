@@ -12,13 +12,13 @@ use service::{
 };
 //
 type Body = Json<Rubric>;
-pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
-    let gradees = QueriesService::list_rubrics(&state.db_conn, q.into_inner()).await;
-    match gradees {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+pub async fn create(body: Body, state: State) -> HttpResponse {
+    let res = TransactionsService::create_rubric(&state.db_conn, body.into_inner()).await;
+    match res {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
-            message: Some("grading rubrics selected successfully".to_string()),
-            data: Some(i),
+            message: Some("grading rubric created successfully".to_string()),
+            data: Some(id.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -28,13 +28,13 @@ pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = TransactionsService::create_rubric(&state.db_conn, body.into_inner()).await;
-    match res {
-        Ok(id) => HttpResponse::Ok().json(ResponseData {
+pub async fn list(q: Query<RubricQueries>, state: State) -> HttpResponse {
+    let gradees = QueriesService::list_rubrics(&state.db_conn, q.into_inner()).await;
+    match gradees {
+        Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,
-            message: Some("grading rubric created successfully".to_string()),
-            data: Some(id.to_string()),
+            message: Some("grading rubrics selected successfully".to_string()),
+            data: Some(i),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

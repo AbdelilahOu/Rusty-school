@@ -12,7 +12,6 @@ use service::{
 
 // i like my functions to stay inline
 type Body = Json<Parent>;
-
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {

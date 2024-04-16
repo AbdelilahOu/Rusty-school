@@ -11,13 +11,13 @@ use service::{
 };
 //
 type Body = Json<Grade>;
-pub async fn list(q: Query<GradeQueries>, state: State) -> HttpResponse {
-    let gradees = QueriesService::list_grades(&state.db_conn, q.into_inner()).await;
-    match gradees {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+pub async fn create(body: Body, state: State) -> HttpResponse {
+    let res = MutationsService::create_grade(&state.db_conn, body.into_inner()).await;
+    match res {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
-            message: Some("Grades selected successfully".to_string()),
-            data: Some(i),
+            message: Some("Grade created successfully".to_string()),
+            data: Some(id.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -27,13 +27,13 @@ pub async fn list(q: Query<GradeQueries>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = MutationsService::create_grade(&state.db_conn, body.into_inner()).await;
-    match res {
-        Ok(id) => HttpResponse::Ok().json(ResponseData {
+pub async fn list(q: Query<GradeQueries>, state: State) -> HttpResponse {
+    let gradees = QueriesService::list_grades(&state.db_conn, q.into_inner()).await;
+    match gradees {
+        Ok(i) => HttpResponse::Created().json(ResponseData {
             error: None,
-            message: Some("Grade created successfully".to_string()),
-            data: Some(id.to_string()),
+            message: Some("Grades selected successfully".to_string()),
+            data: Some(i),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

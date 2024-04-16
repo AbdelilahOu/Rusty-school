@@ -9,9 +9,9 @@ use service::{
     query::QueriesService,
     uuid::Uuid,
 };
+
 //
 type Body = Json<Subject>;
-
 pub async fn create(body: Body, state: State) -> HttpResponse {
     let res = MutationsService::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
