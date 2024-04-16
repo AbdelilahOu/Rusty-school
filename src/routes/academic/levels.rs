@@ -4,8 +4,8 @@ use crate::handlers::academic::levels;
 
 pub fn load_levels_routes() -> Scope {
     web::scope("/levels")
-        .route("/all", web::post().to(levels::list))
-        .route("/", web::put().to(levels::update))
+        .route("/", web::get().to(levels::list))
         .route("/", web::post().to(levels::create))
-        .route("/", web::delete().to(levels::delete))
+        .route("/{id}", web::put().to(levels::update))
+        .route("/{id}", web::delete().to(levels::delete))
 }

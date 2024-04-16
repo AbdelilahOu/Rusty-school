@@ -4,7 +4,7 @@ use crate::handlers::academic::timetable;
 
 pub fn load_timetable_routes() -> Scope {
     web::scope("/timetable")
-        .route("/all", web::post().to(timetable::list))
+        .route("/", web::get().to(timetable::list))
         .route("/activity", web::post().to(timetable::create_activity))
         .route("/event", web::post().to(timetable::create_event))
         .route("/lecture", web::post().to(timetable::create_lecture))
