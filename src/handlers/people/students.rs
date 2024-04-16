@@ -1,4 +1,7 @@
-use crate::{guards::auth_guard, types::shared::*};
+use crate::{
+    guards::auth_guard,
+    types::shared::{ResponseData, State},
+};
 use actix_web::{
     web::{Json, Path, Query},
     HttpRequest, HttpResponse,
@@ -17,16 +20,16 @@ pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse 
     // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
-    if authorized.is_none() {
+    if let Err(message) = authorized {
         return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
-            error: Some("Unauthorized".to_string()),
+            error: Some(message),
             message: None,
             data: None,
         });
     }
     let res = MutationsService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created().json(ResponseData {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Student created successfully".to_string()),
             data: Some(id.to_string()),
@@ -45,9 +48,9 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
     // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
-    if authorized.is_none() {
+    if let Err(message) = authorized {
         return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
-            error: Some("Unauthorized".to_string()),
+            error: Some(message),
             message: None,
             data: None,
         });
@@ -55,7 +58,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
 
     let delete_res = MutationsService::delete_student(&state.db_conn, id.into_inner()).await;
     match delete_res {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+        Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Student deleted successfully".to_string()),
             data: Some(i.to_string()),
@@ -74,16 +77,16 @@ pub async fn list(q: Query<StudentQueries>, state: State, req: HttpRequest) -> H
     // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
-    if authorized.is_none() {
+    if let Err(message) = authorized {
         return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
-            error: Some("Unauthorized".to_string()),
+            error: Some(message),
             message: None,
             data: None,
         });
     }
     let students = QueriesService::list_students(&state.db_conn, q.into_inner()).await;
     match students {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+        Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Students selected successfully".to_string()),
             data: Some(i),
@@ -102,9 +105,9 @@ pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) 
     // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
-    if authorized.is_none() {
+    if let Err(message) = authorized {
         return HttpResponse::Unauthorized().json(ResponseData::<Option<String>> {
-            error: Some("Unauthorized".to_string()),
+            error: Some(message),
             message: None,
             data: None,
         });
@@ -113,7 +116,7 @@ pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) 
     let update_res =
         MutationsService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match update_res {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+        Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Student updated successfully".to_string()),
             data: Some(i),

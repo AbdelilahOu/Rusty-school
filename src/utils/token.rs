@@ -1,4 +1,3 @@
-use super::auth::Res;
 use crate::types::token::Claims;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use service::chrono::{Duration, Utc};
@@ -21,7 +20,7 @@ pub fn generate_tokens(user_id: Uuid, secret: String, duration: Duration) -> (St
     (token, claims)
 }
 
-pub fn verify_token(token: &str, secret: String) -> Res<Claims> {
+pub fn verify_token(token: &str, secret: String) -> Result<Claims, String> {
     let token_res = decode::<Claims>(
         &token,
         &DecodingKey::from_secret(secret.as_ref()),

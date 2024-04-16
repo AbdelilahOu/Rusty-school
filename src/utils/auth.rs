@@ -6,7 +6,6 @@ use reqwest::{
 use serde::Deserialize;
 use url::Url;
 
-pub type Res<T> = Result<T, String>;
 // #1
 pub async fn get_google_auth_url(client_id: String, redirect_uri: String) -> Url {
     let mut url = Url::parse("https://accounts.google.com/o/oauth2/v2/auth").unwrap();
@@ -31,7 +30,7 @@ pub struct TokenResponse {
     pub refresh_token: String,
     pub scope: String,
 }
-pub async fn request_tokens(code: String, conf: Config) -> Res<TokenResponse> {
+pub async fn request_tokens(code: String, conf: Config) -> Result<TokenResponse, String> {
     // base url
     let mut url = Url::parse("https://oauth2.googleapis.com/token").unwrap();
     // define params
@@ -75,7 +74,7 @@ pub struct GoogleUser {
     pub picture: String,
     pub locale: String,
 }
-pub async fn get_google_user(acc_token: String, id_token: String) -> Res<GoogleUser> {
+pub async fn get_google_user(acc_token: String, id_token: String) -> Result<GoogleUser, String> {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();
     let params = [("alt", "json"), ("access_token", acc_token.as_str())];
     let url = url.query_pairs_mut().extend_pairs(&params).finish();

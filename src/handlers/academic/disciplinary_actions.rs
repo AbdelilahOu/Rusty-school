@@ -65,7 +65,7 @@ pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
         MutationsService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner())
             .await;
     match update_res {
-        Ok(i) => HttpResponse::Created().json(ResponseData {
+        Ok(i) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("DisciAction updated successfully".to_string()),
             data: Some(i),

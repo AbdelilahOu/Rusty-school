@@ -1,3 +1,12 @@
+use crate::{
+    entities::*,
+    models::{
+        AnnouncementQueries, AssignmentQueries, AttendanceQueries, ClassQueries,
+        DisciActionQueries, GradeQueries, GroupQueries, LevelQueries, ParentQueries, RoomQueries,
+        RubricQueries, ScansQueries, SelectAttendance, SelectScans, SelectTimeTable,
+        StudentQueries, SubjectQueries, TeacherQueries,
+    },
+};
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::*,
@@ -9,16 +18,6 @@ use sea_orm::{
     Statement,
 };
 use serde_json::Value as SerdValue;
-
-use crate::{
-    entities::*,
-    models::{
-        AnnouncementQueries, AssignmentQueries, AttendanceQueries, ClassQueries,
-        DisciActionQueries, GradeQueries, GroupQueries, LevelQueries, ParentQueries, RoomQueries,
-        RubricQueries, ScansQueries, SelectAttendance, SelectScans, SelectTimeTable,
-        StudentQueries, SubjectQueries, TeacherQueries,
-    },
-};
 
 type Values = Vec<SerdValue>;
 
