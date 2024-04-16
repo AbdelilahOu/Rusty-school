@@ -7,13 +7,13 @@ use service::{
     models::{Rubric, RubricQuery},
     mutation::MutationService,
     query::QueryService,
-    transaction::TransactionsService,
+    transaction::TransactionService,
     uuid::Uuid,
 };
 //
 type Body = Json<Rubric>;
 pub async fn create(body: Body, state: State) -> HttpResponse {
-    let res = TransactionsService::create_rubric(&state.db_conn, body.into_inner()).await;
+    let res = TransactionService::create_rubric(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,

@@ -7,13 +7,13 @@ use service::{
     models::{Activity, Event, Lecture},
     mutation::MutationService,
     query::QueryService,
-    transaction::TransactionsService,
+    transaction::TransactionService,
     uuid::Uuid,
 };
 
 type EventBody = Json<Event>;
 pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
-    let res = TransactionsService::create_event(&state.db_conn, body.into_inner()).await;
+    let res = TransactionService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -30,7 +30,7 @@ pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
 
 type ActivityBody = Json<Activity>;
 pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
-    let res = TransactionsService::create_activity(&state.db_conn, body.into_inner()).await;
+    let res = TransactionService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
             error: None,
@@ -47,7 +47,7 @@ pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
 
 type LectureBody = Json<Lecture>;
 pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
-    let res = TransactionsService::create_lecture(&state.db_conn, body.into_inner()).await;
+    let res = TransactionService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
             error: None,

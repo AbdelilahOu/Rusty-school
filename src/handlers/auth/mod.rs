@@ -17,7 +17,7 @@ use service::{
     mutation::MutationService,
     query::QueryService,
     sea_orm::prelude::DateTimeUtc,
-    transaction::TransactionsService,
+    transaction::TransactionService,
     uuid::Uuid,
 };
 
@@ -146,7 +146,7 @@ pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -
             let user = get_google_user(res.access_token, res.id_token).await;
             match user {
                 Ok(user) => {
-                    let user_res = TransactionsService::upsert_user(
+                    let user_res = TransactionService::upsert_user(
                         &state.db_conn,
                         User {
                             first_name: user.name.clone(),

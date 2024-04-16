@@ -6,11 +6,11 @@ use crate::{
     utils::convert_to_enum::{to_day_of_week, to_performance},
 };
 
-pub struct TransactionsService;
+pub struct TransactionService;
 
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
 
-impl TransactionsService {
+impl TransactionService {
     pub async fn create_student(db: DbConn, data: Student) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
             Box::pin(async move {
