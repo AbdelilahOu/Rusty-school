@@ -13,7 +13,6 @@ pub struct Announcement {
     pub attachements: Option<NaiveDateTime>,
     pub important: Option<bool>,
     pub audience: Option<String>,
-    pub alert: Option<NaiveDateTime>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

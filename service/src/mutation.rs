@@ -7,13 +7,12 @@ use crate::{
     utils::convert_to_enum::{to_announcement_category, to_audience},
 };
 
+type DbResult<T> = Result<T, DbErr>;
 pub struct MutationService;
-
-type DyResult<T> = Result<T, DbErr>;
 
 impl MutationService {
     // students entity
-    pub async fn create_student(db: &DbConn, data: Student) -> DyResult<Uuid> {
+    pub async fn create_student(db: &DbConn, data: Student) -> DbResult<Uuid> {
         let student_a_model = StudentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
@@ -23,7 +22,7 @@ impl MutationService {
         let student = Students::insert(student_a_model).exec(db).await?;
         Ok(student.last_insert_id)
     }
-    pub async fn delete_student(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_student(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let student_model = Students::find_by_id(id).one(db).await?;
         match student_model {
             Some(student_model) => {
@@ -33,7 +32,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_student(db: &DbConn, id: Uuid, data: Student) -> DyResult<Uuid> {
+    pub async fn update_student(db: &DbConn, id: Uuid, data: Student) -> DbResult<Uuid> {
         let student_model = Students::find_by_id(id).one(db).await?;
         match student_model {
             Some(student_model) => {
@@ -51,7 +50,7 @@ impl MutationService {
         }
     }
     // teachers entity
-    pub async fn create_teacher(db: &DbConn, data: Teacher) -> DyResult<Uuid> {
+    pub async fn create_teacher(db: &DbConn, data: Teacher) -> DbResult<Uuid> {
         let teacher_a_model = TeacherActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
@@ -60,7 +59,7 @@ impl MutationService {
         let teacher = Teachers::insert(teacher_a_model).exec(db).await?;
         Ok(teacher.last_insert_id)
     }
-    pub async fn delete_teacher(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_teacher(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let teacher_model = Teachers::find_by_id(id).one(db).await?;
         match teacher_model {
             Some(teacher_model) => {
@@ -70,7 +69,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_teacher(db: &DbConn, id: Uuid, data: Teacher) -> DyResult<Uuid> {
+    pub async fn update_teacher(db: &DbConn, id: Uuid, data: Teacher) -> DbResult<Uuid> {
         let teacher_model = Teachers::find_by_id(id).one(db).await?;
         match teacher_model {
             Some(teacher_model) => {
@@ -87,7 +86,7 @@ impl MutationService {
         }
     }
     // parents entity
-    pub async fn create_parent(db: &DbConn, data: Parent) -> DyResult<Uuid> {
+    pub async fn create_parent(db: &DbConn, data: Parent) -> DbResult<Uuid> {
         let parent_a_model = ParentActiveModel {
             first_name: Set(data.first_name),
             last_name: Set(data.last_name),
@@ -96,7 +95,7 @@ impl MutationService {
         let parent = Parents::insert(parent_a_model).exec(db).await?;
         Ok(parent.last_insert_id)
     }
-    pub async fn delete_parent(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_parent(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let parent_model = Parents::find_by_id(id).one(db).await?;
         match parent_model {
             Some(parent_model) => {
@@ -106,7 +105,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_parent(db: &DbConn, id: Uuid, data: Parent) -> DyResult<Uuid> {
+    pub async fn update_parent(db: &DbConn, id: Uuid, data: Parent) -> DbResult<Uuid> {
         let parent_model = Parents::find_by_id(id).one(db).await?;
         match parent_model {
             Some(parent_model) => {
@@ -121,7 +120,7 @@ impl MutationService {
         }
     }
     // scans
-    pub async fn create_scan(db: &DbConn, data: Scan) -> DyResult<Uuid> {
+    pub async fn create_scan(db: &DbConn, data: Scan) -> DbResult<Uuid> {
         let now = Utc::now();
         let scan_a_model = ScanActiveModel {
             person_id: Set(data.person_id),
@@ -132,7 +131,7 @@ impl MutationService {
         Ok(scan.last_insert_id)
     }
     //
-    pub async fn create_level(db: &DbConn, data: Level) -> DyResult<Uuid> {
+    pub async fn create_level(db: &DbConn, data: Level) -> DbResult<Uuid> {
         let level_a_model = LevelActiveModel {
             level_name: Set(data.name),
             level_description: Set(data.description),
@@ -141,7 +140,7 @@ impl MutationService {
         let level = Levels::insert(level_a_model).exec(db).await?;
         Ok(level.last_insert_id)
     }
-    pub async fn delete_level(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_level(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let level_model = Levels::find_by_id(id).one(db).await?;
         match level_model {
             Some(level_model) => {
@@ -151,7 +150,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_level(db: &DbConn, id: Uuid, data: Level) -> DyResult<Uuid> {
+    pub async fn update_level(db: &DbConn, id: Uuid, data: Level) -> DbResult<Uuid> {
         let level_model = Levels::find_by_id(id).one(db).await?;
         match level_model {
             Some(level_model) => {
@@ -167,7 +166,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_subject(db: &DbConn, data: Subject) -> DyResult<Uuid> {
+    pub async fn create_subject(db: &DbConn, data: Subject) -> DbResult<Uuid> {
         let subject_a_model = SubjectActiveModel {
             subject_name: Set(data.name),
             subject_description: Set(data.description),
@@ -177,7 +176,7 @@ impl MutationService {
         let subject = Subjects::insert(subject_a_model).exec(db).await?;
         Ok(subject.last_insert_id)
     }
-    pub async fn delete_subject(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_subject(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let subject_model = Subjects::find_by_id(id).one(db).await?;
         match subject_model {
             Some(subject_model) => {
@@ -187,7 +186,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_subject(db: &DbConn, id: Uuid, data: Subject) -> DyResult<Uuid> {
+    pub async fn update_subject(db: &DbConn, id: Uuid, data: Subject) -> DbResult<Uuid> {
         let subject_model = Subjects::find_by_id(id).one(db).await?;
         match subject_model {
             Some(subject_model) => {
@@ -204,7 +203,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_group(db: &DbConn, data: Group) -> DyResult<Uuid> {
+    pub async fn create_group(db: &DbConn, data: Group) -> DbResult<Uuid> {
         let group_a_model = GroupActiveModel {
             group_name: Set(data.name),
             group_description: Set(data.description),
@@ -214,7 +213,7 @@ impl MutationService {
         let group = Groups::insert(group_a_model).exec(db).await?;
         Ok(group.last_insert_id)
     }
-    pub async fn delete_group(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_group(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let group_model = Groups::find_by_id(id).one(db).await?;
         match group_model {
             Some(group_model) => {
@@ -224,7 +223,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_group(db: &DbConn, id: Uuid, data: Group) -> DyResult<Uuid> {
+    pub async fn update_group(db: &DbConn, id: Uuid, data: Group) -> DbResult<Uuid> {
         let group_model = Groups::find_by_id(id).one(db).await?;
         match group_model {
             Some(group_model) => {
@@ -241,7 +240,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_room(db: &DbConn, data: Room) -> DyResult<Uuid> {
+    pub async fn create_room(db: &DbConn, data: Room) -> DbResult<Uuid> {
         let room_a_model = RoomActiveModel {
             room_name: Set(data.name),
             room_description: Set(data.description),
@@ -250,7 +249,7 @@ impl MutationService {
         let room = Rooms::insert(room_a_model).exec(db).await?;
         Ok(room.last_insert_id)
     }
-    pub async fn delete_room(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_room(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let room_model = Rooms::find_by_id(id).one(db).await?;
         match room_model {
             Some(room_model) => {
@@ -260,7 +259,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_room(db: &DbConn, id: Uuid, data: Room) -> DyResult<Uuid> {
+    pub async fn update_room(db: &DbConn, id: Uuid, data: Room) -> DbResult<Uuid> {
         let room_model = Rooms::find_by_id(id).one(db).await?;
         match room_model {
             Some(room_model) => {
@@ -276,7 +275,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_class(db: &DbConn, data: Class) -> DyResult<Uuid> {
+    pub async fn create_class(db: &DbConn, data: Class) -> DbResult<Uuid> {
         let class_a_model = ClassActiveModel {
             subject_id: Set(data.subject_id),
             teacher_id: Set(data.teacher_id),
@@ -287,7 +286,7 @@ impl MutationService {
         let class = Classes::insert(class_a_model).exec(db).await?;
         Ok(class.last_insert_id)
     }
-    pub async fn delete_class(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_class(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let class_model = Classes::find_by_id(id).one(db).await?;
         match class_model {
             Some(class_model) => {
@@ -297,7 +296,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn update_class(db: &DbConn, id: Uuid, data: Class) -> DyResult<Uuid> {
+    pub async fn update_class(db: &DbConn, id: Uuid, data: Class) -> DbResult<Uuid> {
         let class_model = Classes::find_by_id(id).one(db).await?;
         match class_model {
             Some(class_model) => {
@@ -315,7 +314,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn delete_time_table(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_time_table(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let time_table_model = TimeTables::find_by_id(id).one(db).await?;
         match time_table_model {
             Some(time_table_model) => {
@@ -326,7 +325,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_teacher_subject(db: &DbConn, data: (Uuid, Uuid)) -> DyResult<Uuid> {
+    pub async fn create_teacher_subject(db: &DbConn, data: (Uuid, Uuid)) -> DbResult<Uuid> {
         let teacher_subject_a_model = TeacherSubjectActiveModel {
             teacher_id: Set(Some(data.0)),
             subject_id: Set(Some(data.1)),
@@ -338,7 +337,7 @@ impl MutationService {
         Ok(teacher_subject.last_insert_id)
     }
 
-    pub async fn delete_teacher_subject(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_teacher_subject(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let teacher_subject_model = TeacherSubjects::find_by_id(id).one(db).await?;
         match teacher_subject_model {
             Some(teacher_subject_model) => {
@@ -349,7 +348,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_assignment(db: &DbConn, data: Assignment) -> DyResult<Uuid> {
+    pub async fn create_assignment(db: &DbConn, data: Assignment) -> DbResult<Uuid> {
         let assignment_a_model = AssignmentActiveModel {
             title: Set(data.title),
             description: Set(data.description),
@@ -363,7 +362,7 @@ impl MutationService {
         let assignment = Assignments::insert(assignment_a_model).exec(db).await?;
         Ok(assignment.last_insert_id)
     }
-    pub async fn update_assignment(db: &DbConn, id: Uuid, data: Assignment) -> DyResult<Uuid> {
+    pub async fn update_assignment(db: &DbConn, id: Uuid, data: Assignment) -> DbResult<Uuid> {
         let assignment_model = Assignments::find_by_id(id).one(db).await?;
         match assignment_model {
             Some(assignment_model) => {
@@ -383,7 +382,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn delete_assignment(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_assignment(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let assignment_model = Assignments::find_by_id(id).one(db).await?;
         match assignment_model {
             Some(assignment_model) => {
@@ -394,7 +393,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_grade(db: &DbConn, data: Grade) -> DyResult<Uuid> {
+    pub async fn create_grade(db: &DbConn, data: Grade) -> DbResult<Uuid> {
         let grade_a_model = GradeActiveModel {
             student_id: Set(data.student_id),
             assignment_id: Set(data.assignment_id),
@@ -405,7 +404,7 @@ impl MutationService {
         let grade = Grades::insert(grade_a_model).exec(db).await?;
         Ok(grade.last_insert_id)
     }
-    pub async fn update_grade(db: &DbConn, id: Uuid, data: Grade) -> DyResult<Uuid> {
+    pub async fn update_grade(db: &DbConn, id: Uuid, data: Grade) -> DbResult<Uuid> {
         let grade_model = Grades::find_by_id(id).one(db).await?;
         match grade_model {
             Some(grade_model) => {
@@ -422,7 +421,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn delete_grade(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_grade(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let grade_model = Grades::find_by_id(id).one(db).await?;
         match grade_model {
             Some(grade_model) => {
@@ -433,7 +432,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_disciplinary(db: &DbConn, data: DisciAction) -> DyResult<Uuid> {
+    pub async fn create_disciplinary(db: &DbConn, data: Disciplinary) -> DbResult<Uuid> {
         let disciplinary_a_model = DisciplinaryActiveModel {
             student_id: Set(data.student_id),
             issued_at: Set(data.issued_at),
@@ -446,7 +445,7 @@ impl MutationService {
             .await?;
         Ok(disciplinary.last_insert_id)
     }
-    pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: DisciAction) -> DyResult<Uuid> {
+    pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: Disciplinary) -> DbResult<Uuid> {
         let disciplinary_model = Disciplinaries::find_by_id(id).one(db).await?;
         match disciplinary_model {
             Some(disciplinary_model) => {
@@ -463,7 +462,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let disciplinary_model = Disciplinaries::find_by_id(id).one(db).await?;
         match disciplinary_model {
             Some(disciplinary_model) => {
@@ -474,7 +473,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn update_rubric(db: &DbConn, id: Uuid, data: Rubric) -> DyResult<Uuid> {
+    pub async fn update_rubric(db: &DbConn, id: Uuid, data: Rubric) -> DbResult<Uuid> {
         let rubric_model = Rubrics::find_by_id(id).one(db).await?;
         match rubric_model {
             Some(rubric_model) => {
@@ -489,7 +488,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn delete_rubric(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_rubric(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let rubric_model = Rubrics::find_by_id(id).one(db).await?;
         match rubric_model {
             Some(rubric_model) => {
@@ -500,7 +499,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_announcement(db: &DbConn, data: Announcement) -> DyResult<Uuid> {
+    pub async fn create_announcement(db: &DbConn, data: Announcement) -> DbResult<Uuid> {
         let announcement_a_model = AnnouncementActiveModel {
             title: Set(data.title),
             description: Set(data.description),
@@ -516,7 +515,7 @@ impl MutationService {
         let announcement = Announcements::insert(announcement_a_model).exec(db).await?;
         Ok(announcement.last_insert_id)
     }
-    pub async fn update_announcement(db: &DbConn, id: Uuid, data: Announcement) -> DyResult<Uuid> {
+    pub async fn update_announcement(db: &DbConn, id: Uuid, data: Announcement) -> DbResult<Uuid> {
         let announcement_model = Announcements::find_by_id(id).one(db).await?;
         match announcement_model {
             Some(announcement_model) => {
@@ -538,7 +537,7 @@ impl MutationService {
             None => Err(DbErr::RecordNotFound("record doesnt exist".to_string())),
         }
     }
-    pub async fn delete_announcement(db: &DbConn, id: Uuid) -> DyResult<u64> {
+    pub async fn delete_announcement(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let announcement_model = Announcements::find_by_id(id).one(db).await?;
         match announcement_model {
             Some(announcement_model) => {
@@ -549,7 +548,7 @@ impl MutationService {
         }
     }
     //
-    pub async fn create_session(db: &DbConn, data: Session) -> DyResult<Uuid> {
+    pub async fn create_session(db: &DbConn, data: Session) -> DbResult<Uuid> {
         let session_a_model = SessionActiveModel {
             id: Set(data.id),
             user_id: Set(data.user_id),

@@ -4,19 +4,18 @@ use actix_web::{
     HttpResponse,
 };
 use service::{
-    models::{DisciAction, DisciActionQuery},
+    models::{Disciplinary, DisciplinaryQuery},
     mutation::MutationService,
     query::QueryService,
     uuid::Uuid,
 };
 //
-type Body = Json<DisciAction>;
-pub async fn create(body: Body, state: State) -> HttpResponse {
+pub async fn create(body: Json<Disciplinary>, state: State) -> HttpResponse {
     let res = MutationService::create_disciplinary(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
             error: None,
-            message: Some("DisciAction created successfully".to_string()),
+            message: Some("Disciplinary created successfully".to_string()),
             data: Some(id.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
@@ -28,12 +27,12 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationService::delete_disciplinary(&state.db_conn, id.into_inner()).await;
-    match delete_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = MutationService::delete_disciplinary(&state.db_conn, id.into_inner()).await;
+    match res {
+        Ok(delete_count) => HttpResponse::Ok().json(ResponseData {
             error: None,
-            message: Some("DisciAction deleted successfully".to_string()),
-            data: Some(i.to_string()),
+            message: Some("Disciplinary deleted successfully".to_string()),
+            data: Some(delete_count.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -43,14 +42,13 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<DisciActionQuery>, state: State) -> HttpResponse {
-    let disciplinary_actions =
-        QueryService::list_disciplinaries(&state.db_conn, q.into_inner()).await;
-    match disciplinary_actions {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+pub async fn list(query: Query<DisciplinaryQuery>, state: State) -> HttpResponse {
+    let res = QueryService::list_disciplinaries(&state.db_conn, query.into_inner()).await;
+    match res {
+        Ok(disciplinary_actions) => HttpResponse::Ok().json(ResponseData {
             error: None,
-            message: Some("DisciActions selected successfully".to_string()),
-            data: Some(i),
+            message: Some("Disciplinarys selected successfully".to_string()),
+            data: Some(disciplinary_actions),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -60,15 +58,15 @@ pub async fn list(q: Query<DisciActionQuery>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
-    let update_res =
+pub async fn update(id: Path<Uuid>, body: Json<Disciplinary>, state: State) -> HttpResponse {
+    let res =
         MutationService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner())
             .await;
-    match update_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    match res {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
-            message: Some("DisciAction updated successfully".to_string()),
-            data: Some(i),
+            message: Some("Disciplinary updated successfully".to_string()),
+            data: Some(id),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

@@ -6,6 +6,9 @@ pub mod utils;
 
 // group imports from entity
 mod entities {
+    pub use ::entity::activities::{
+        self, ActiveModel as ActivityActiveModel, Entity as Activities,
+    };
     pub use ::entity::announcements::{
         self, ActiveModel as AnnouncementActiveModel, Entity as Announcements,
     };
@@ -27,7 +30,7 @@ mod entities {
     pub use ::entity::levels::{self, ActiveModel as LevelActiveModel, Entity as Levels};
     pub use ::entity::parents::{self, ActiveModel as ParentActiveModel, Entity as Parents};
     pub use ::entity::persons::{self, ActiveModel as PersonActiveModel, Entity as Persons};
-    pub use ::entity::pickups;
+    // pub use ::entity::pickups;
     pub use ::entity::rooms::{self, ActiveModel as RoomActiveModel, Entity as Rooms};
     pub use ::entity::scans::{self, ActiveModel as ScanActiveModel, Entity as Scans};
     pub use ::entity::sea_orm_active_enums::*;
@@ -42,7 +45,6 @@ mod entities {
         self, ActiveModel as TimeTableActiveModel, Entity as TimeTables,
     };
     pub use ::entity::users::{self, ActiveModel as UserActiveModel, Entity as Users};
-    pub use entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activities};
 }
 
 pub use chrono;

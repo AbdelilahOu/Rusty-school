@@ -13,8 +13,7 @@ use service::{
     uuid::Uuid,
 };
 //
-type Body = Json<Student>;
-pub async fn create(body: Body, state: State, req: HttpRequest) -> HttpResponse {
+pub async fn create(body: Json<Student>, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -56,12 +55,12 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
         });
     }
 
-    let delete_res = MutationService::delete_student(&state.db_conn, id.into_inner()).await;
-    match delete_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = MutationService::delete_student(&state.db_conn, id.into_inner()).await;
+    match res {
+        Ok(delete_count) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Student deleted successfully".to_string()),
-            data: Some(i.to_string()),
+            data: Some(delete_count.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -71,7 +70,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: HttpRequest) -> HttpRespo
     }
 }
 
-pub async fn list(q: Query<StudentQuery>, state: State, req: HttpRequest) -> HttpResponse {
+pub async fn list(query: Query<StudentQuery>, state: State, req: HttpRequest) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -84,12 +83,12 @@ pub async fn list(q: Query<StudentQuery>, state: State, req: HttpRequest) -> Htt
             data: None,
         });
     }
-    let students = QueryService::list_students(&state.db_conn, q.into_inner()).await;
-    match students {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = QueryService::list_students(&state.db_conn, query.into_inner()).await;
+    match res {
+        Ok(students) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Students selected successfully".to_string()),
-            data: Some(i),
+            data: Some(students),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -99,7 +98,12 @@ pub async fn list(q: Query<StudentQuery>, state: State, req: HttpRequest) -> Htt
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) -> HttpResponse {
+pub async fn update(
+    id: Path<Uuid>,
+    body: Json<Student>,
+    state: State,
+    req: HttpRequest,
+) -> HttpResponse {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -113,13 +117,13 @@ pub async fn update(id: Path<Uuid>, body: Body, state: State, req: HttpRequest) 
         });
     }
 
-    let update_res =
+    let res =
         MutationService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
-    match update_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    match res {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Student updated successfully".to_string()),
-            data: Some(i),
+            data: Some(id),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

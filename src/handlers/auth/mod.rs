@@ -44,12 +44,9 @@ struct LogInResponse {
 }
 //
 #[derive(Deserialize, Debug)]
-pub struct AuthQueryParams {
+pub struct AuthQuery {
     pub code: String,
 }
-//
-type AuthQuery = Query<AuthQueryParams>;
-type RefreshBody = Json<RenewAccess>;
 
 pub async fn login(state: State) -> HttpResponse {
     let url = get_google_auth_url(
@@ -62,7 +59,7 @@ pub async fn login(state: State) -> HttpResponse {
         .finish()
 }
 
-pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse {
+pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpResponse {
     match verify_token(&body.refresh_token, state.config.jwt_secret.clone()) {
         Ok(claims) => match QueryService::get_session(&state.db_conn, claims.session_id).await {
             Ok(session_op) => match session_op {
@@ -139,8 +136,8 @@ pub async fn renew_access_token(body: RefreshBody, state: State) -> HttpResponse
     }
 }
 
-pub async fn google_auth_handler(req: HttpRequest, q: AuthQuery, state: State) -> HttpResponse {
-    let res = request_tokens(q.code.clone(), state.config.clone()).await;
+pub async fn google_auth(req: HttpRequest, query: Query<AuthQuery>, state: State) -> HttpResponse {
+    let res = request_tokens(query.code.clone(), state.config.clone()).await;
     match res {
         Ok(res) => {
             let user = get_google_user(res.access_token, res.id_token).await;

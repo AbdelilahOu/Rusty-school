@@ -1,10 +1,9 @@
 use crate::{
     entities::*,
     models::{
-        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery,
-        DisciActionQuery, GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery,
-        RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable,
-        StudentQuery, SubjectQuery, TeacherQuery,
+        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery,
+        GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery, RubricQuery, ScansQuery,
+        SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
     },
 };
 use chrono::NaiveDateTime;
@@ -20,14 +19,14 @@ use sea_orm::{
 use serde_json::Value as SerdValue;
 
 type Values = Vec<SerdValue>;
-
+type DbResult<T> = Result<T, DbErr>;
 pub struct QueryService;
 
 impl QueryService {
     // students entity
-    pub async fn list_students(db: &DbConn, q: StudentQuery) -> Result<Values, DbErr> {
+    pub async fn list_students(db: &DbConn, query: StudentQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.full_name {
+        if let Some(name) = query.full_name {
             conditions = conditions.add(Expr::col(students::Column::FullName).ilike(name));
         }
         let students = Students::find()
@@ -42,8 +41,8 @@ impl QueryService {
             .join(JoinType::LeftJoin, students::Relation::Groups.def())
             .filter(conditions)
             .order_by_desc(students::Column::CreatedAt)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
@@ -51,9 +50,9 @@ impl QueryService {
         Ok(students)
     }
     //
-    pub async fn list_teachers(db: &DbConn, q: TeacherQuery) -> Result<Values, DbErr> {
+    pub async fn list_teachers(db: &DbConn, query: TeacherQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.full_name {
+        if let Some(name) = query.full_name {
             conditions = conditions.add(Expr::col(teachers::Column::FullName).ilike(name));
         }
         let teachers = Teachers::find()
@@ -62,8 +61,8 @@ impl QueryService {
             .expr(Expr::col(levels::Column::LevelName))
             .join(JoinType::LeftJoin, teachers::Relation::Levels.def())
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .order_by_desc(teachers::Column::CreatedAt)
             .into_json()
             .all(db)
@@ -72,20 +71,17 @@ impl QueryService {
         Ok(teachers)
     }
     //
-    pub async fn list_parents(db: &DbConn, q: ParentQuery) -> Result<Values, DbErr> {
-        let pickup_alias = "pickups_count";
+    pub async fn list_parents(db: &DbConn, query: ParentQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.full_name {
+        if let Some(name) = query.full_name {
             conditions = conditions.add(Expr::col(teachers::Column::FullName).ilike(name));
         }
         let parents = Parents::find()
             .select_only()
             .columns([parents::Column::Id, parents::Column::FullName])
-            .column_as(pickups::Column::Id.count(), pickup_alias)
-            .join(JoinType::LeftJoin, parents::Relation::Pickups.def())
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .group_by(parents::Column::Id)
             .order_by_desc(parents::Column::CreatedAt)
             .into_json()
@@ -95,7 +91,7 @@ impl QueryService {
         Ok(parents)
     }
     //
-    pub async fn list_scans(db: &DbConn, q: ScansQuery) -> Result<Values, DbErr> {
+    pub async fn list_scans(db: &DbConn, query: ScansQuery) -> DbResult<Values> {
         //
         let (sql, values) = Query::select()
             .from(Scans)
@@ -217,9 +213,9 @@ impl QueryService {
             )
             // FULL_NAME filter
             .conditions(
-                q.full_name.is_some(),
+                query.full_name.is_some(),
                 |x| {
-                    let full_name = q.full_name.unwrap();
+                    let full_name = query.full_name.unwrap();
                     x.and_where(
                         Expr::case(
                             Expr::col(persons::Column::PersonType).eq("student".to_owned()),
@@ -279,10 +275,10 @@ impl QueryService {
             )
             // START scan_date
             .conditions(
-                q.scan_time_start.is_some(),
+                query.scan_time_start.is_some(),
                 |x| {
                     // get avlue
-                    let scan_time_start = q.scan_time_start.unwrap();
+                    let scan_time_start = query.scan_time_start.unwrap();
                     // check
                     let start_time = NaiveDateTime::parse_from_str(
                         scan_time_start.as_str(),
@@ -299,10 +295,10 @@ impl QueryService {
             )
             // END scan_date
             .conditions(
-                q.scan_time_end.is_some(),
+                query.scan_time_end.is_some(),
                 |x| {
                     // get avlue
-                    let scan_time_end = q.scan_time_end.unwrap();
+                    let scan_time_end = query.scan_time_end.unwrap();
                     // check
                     let end_time =
                         NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
@@ -317,16 +313,16 @@ impl QueryService {
             )
             // FILTER BY PERSON_TYPE
             .conditions(
-                q.person_type.is_some(),
+                query.person_type.is_some(),
                 |x| {
-                    let person_type = q.person_type.unwrap();
+                    let person_type = query.person_type.unwrap();
                     x.and_where(Expr::col(persons::Column::PersonType).eq(person_type));
                 },
                 |_| {},
             )
             //
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .order_by(scans::Column::ScanDate, Order::Desc)
             .to_owned()
             .build(PostgresQueryBuilder);
@@ -343,7 +339,7 @@ impl QueryService {
         Ok(result)
     }
     //
-    pub async fn list_attendance(db: &DbConn, q: AttendanceQuery) -> Result<Values, DbErr> {
+    pub async fn list_attendance(db: &DbConn, query: AttendanceQuery) -> DbResult<Values> {
         //
         let (sql, values) = Query::select()
             .from(Scans)
@@ -382,9 +378,9 @@ impl QueryService {
             )
             // FULL_NAME filter
             .conditions(
-                q.full_name.is_some(),
+                query.full_name.is_some(),
                 |x| {
-                    let full_name = q.full_name.unwrap();
+                    let full_name = query.full_name.unwrap();
                     x.and_where(
                         Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)),
                     );
@@ -393,9 +389,9 @@ impl QueryService {
             )
             // START scan_date
             .conditions(
-                q.scan_time_start.is_some(),
+                query.scan_time_start.is_some(),
                 |x| {
-                    let start_time = q.scan_time_start.unwrap();
+                    let start_time = query.scan_time_start.unwrap();
                     // check
                     let start_time =
                         NaiveDateTime::parse_from_str(start_time.as_str(), "%Y-%m-%d %H:%M:%S%");
@@ -410,9 +406,9 @@ impl QueryService {
             )
             // END scan_date
             .conditions(
-                q.scan_time_end.is_some(),
+                query.scan_time_end.is_some(),
                 |x| {
-                    let end_time = q.scan_time_end.unwrap();
+                    let end_time = query.scan_time_end.unwrap();
                     // check
                     let end_time =
                         NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
@@ -427,16 +423,16 @@ impl QueryService {
             )
             // GROUP_ID
             .conditions(
-                q.group_id.is_some(),
+                query.group_id.is_some(),
                 |x| {
-                    let group_id = q.group_id.unwrap();
+                    let group_id = query.group_id.unwrap();
                     x.and_where(Expr::col((Students, students::Column::GroupId)).eq(group_id));
                 },
                 |_| {},
             )
             //
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .order_by(scans::Column::ScanDate, Order::Desc)
             .to_owned()
             .build(PostgresQueryBuilder);
@@ -453,9 +449,9 @@ impl QueryService {
         Ok(result)
     }
     //
-    pub async fn list_levels(db: &DbConn, q: LevelQuery) -> Result<Values, DbErr> {
+    pub async fn list_levels(db: &DbConn, query: LevelQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.name {
+        if let Some(name) = query.name {
             conditions = conditions.add(Expr::col(levels::Column::LevelName).ilike(name));
         }
         let levels = Levels::find()
@@ -467,8 +463,8 @@ impl QueryService {
             ])
             .filter(conditions)
             .order_by_desc(levels::Column::CreatedAt)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
@@ -476,10 +472,10 @@ impl QueryService {
         Ok(levels)
     }
     //
-    pub async fn list_subjects(db: &DbConn, q: SubjectQuery) -> Result<Values, DbErr> {
+    pub async fn list_subjects(db: &DbConn, query: SubjectQuery) -> DbResult<Values> {
         let level_alias = "level_name";
         let mut conditions = Condition::all();
-        if let Some(name) = q.name {
+        if let Some(name) = query.name {
             conditions = conditions.add(Expr::col(subjects::Column::SubjectName).ilike(name));
         }
         let subjects = Subjects::find()
@@ -494,8 +490,8 @@ impl QueryService {
             .join(JoinType::LeftJoin, subjects::Relation::Levels.def())
             .filter(conditions)
             .order_by_desc(subjects::Column::CreatedAt)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
@@ -503,7 +499,7 @@ impl QueryService {
         Ok(subjects)
     }
     //
-    pub async fn list_level_subjects(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
+    pub async fn list_level_subjects(db: &DbConn, level_id: Uuid) -> DbResult<Values> {
         let level_subjects = Subjects::find()
             .filter(subjects::Column::LevelId.eq(level_id.clone()))
             .into_json()
@@ -513,9 +509,9 @@ impl QueryService {
         Ok(level_subjects)
     }
     //
-    pub async fn list_groups(db: &DbConn, q: GroupQuery) -> Result<Values, DbErr> {
+    pub async fn list_groups(db: &DbConn, query: GroupQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.name {
+        if let Some(name) = query.name {
             conditions = conditions.add(Expr::col(groups::Column::GroupName).ilike(name));
         }
         let groups = Groups::find()
@@ -532,8 +528,8 @@ impl QueryService {
             // .join(JoinType::Join, groups::Relation::Students.def())
             .filter(conditions)
             .order_by_desc(groups::Column::CreatedAt)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
@@ -541,7 +537,7 @@ impl QueryService {
         Ok(groups)
     }
     //
-    pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> Result<Values, DbErr> {
+    pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> DbResult<Values> {
         let level_groups = Groups::find()
             .filter(groups::Column::LevelId.eq(level_id.clone()))
             .into_json()
@@ -551,43 +547,43 @@ impl QueryService {
         Ok(level_groups)
     }
     //
-    pub async fn list_rooms(db: &DbConn, q: RoomQuery) -> Result<Values, DbErr> {
+    pub async fn list_rooms(db: &DbConn, query: RoomQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(name) = q.name {
+        if let Some(name) = query.name {
             conditions = conditions.add(Expr::col(rooms::Column::RoomName).ilike(name));
         }
         let rooms = Rooms::find()
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(rooms)
     }
     //
-    pub async fn list_classes(db: &DbConn, q: ClassQuery) -> Result<Values, DbErr> {
+    pub async fn list_classes(db: &DbConn, query: ClassQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(teacher_id) = q.teacher_id {
+        if let Some(teacher_id) = query.teacher_id {
             conditions = conditions.add(Expr::col(classes::Column::TeacherId).eq(teacher_id));
         }
-        if let Some(group_id) = q.group_id {
+        if let Some(group_id) = query.group_id {
             conditions = conditions.add(Expr::col(classes::Column::GroupId).eq(group_id));
         }
-        if let Some(subject_id) = q.subject_id {
+        if let Some(subject_id) = query.subject_id {
             conditions = conditions.add(Expr::col(classes::Column::SubjectId).eq(subject_id));
         }
         let classes = Classes::find()
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(classes)
     }
     //
-    pub async fn list_time_table(db: &DbConn) -> Result<Values, DbErr> {
+    pub async fn list_time_table(db: &DbConn) -> DbResult<Values> {
         let (sql, values) = Query::select()
             .from(TimeTables)
             .columns(time_table::Column::iter().filter(|f| match f {
@@ -684,15 +680,15 @@ impl QueryService {
         Ok(result)
     }
     //
-    pub async fn list_assignments(db: &DbConn, q: AssignmentQuery) -> Result<Values, DbErr> {
+    pub async fn list_assignments(db: &DbConn, query: AssignmentQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(teacher_id) = q.teacher_id {
+        if let Some(teacher_id) = query.teacher_id {
             conditions = conditions.add(Expr::col(assignments::Column::TeacherId).eq(teacher_id));
         }
-        if let Some(title) = q.title {
+        if let Some(title) = query.title {
             conditions = conditions.add(Expr::col(assignments::Column::Title).eq(title));
         }
-        if let Some(due_date) = q.due_date {
+        if let Some(due_date) = query.due_date {
             conditions = conditions.add(Expr::col(assignments::Column::DueDate).eq(due_date));
         }
         let assignments = Assignments::find()
@@ -703,38 +699,38 @@ impl QueryService {
                 _ => true,
             }))
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(assignments)
     }
     //
-    pub async fn list_grades(db: &DbConn, q: GradeQuery) -> Result<Values, DbErr> {
+    pub async fn list_grades(db: &DbConn, query: GradeQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(student_id) = q.student_id {
+        if let Some(student_id) = query.student_id {
             conditions = conditions.add(Expr::col(grades::Column::StudentId).eq(student_id));
         }
         let grades = Grades::find()
             .select_only()
             .columns(grades::Column::iter())
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(grades)
     }
     //
-    pub async fn list_disciplinaries(db: &DbConn, q: DisciActionQuery) -> Result<Values, DbErr> {
+    pub async fn list_disciplinaries(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(student_id) = q.student_id {
+        if let Some(student_id) = query.student_id {
             conditions =
                 conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
         }
-        if let Some(issued_at) = q.issued_at {
+        if let Some(issued_at) = query.issued_at {
             conditions =
                 conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
         }
@@ -748,26 +744,26 @@ impl QueryService {
                 disciplinary_actions::Relation::Students.def(),
             )
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(disciplinaries)
     }
     //
-    pub async fn list_announcements(db: &DbConn, q: AnnouncementQuery) -> Result<Values, DbErr> {
+    pub async fn list_announcements(db: &DbConn, query: AnnouncementQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(title) = q.title {
+        if let Some(title) = query.title {
             conditions = conditions.add(Expr::col(announcements::Column::Title).eq(title));
         }
-        if let Some(start_date) = q.start_date {
+        if let Some(start_date) = query.start_date {
             conditions = conditions.add(Expr::col(announcements::Column::StartDate).eq(start_date));
         }
-        if let Some(end_date) = q.end_date {
+        if let Some(end_date) = query.end_date {
             conditions = conditions.add(Expr::col(announcements::Column::EndDate).eq(end_date));
         }
-        if let Some(category) = q.category {
+        if let Some(category) = query.category {
             conditions = conditions.add(Expr::col(announcements::Column::Category).eq(category));
         }
 
@@ -775,32 +771,32 @@ impl QueryService {
             .select_only()
             .columns(announcements::Column::iter())
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(announcements)
     }
     //
-    pub async fn list_rubrics(db: &DbConn, q: RubricQuery) -> Result<Values, DbErr> {
+    pub async fn list_rubrics(db: &DbConn, query: RubricQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
-        if let Some(title) = q.title {
+        if let Some(title) = query.title {
             conditions = conditions.add(Expr::col(grading_rubrics::Column::Title).eq(title));
         }
         let rubrics = Rubrics::find()
             .select_only()
             .columns(grading_rubrics::Column::iter())
             .filter(conditions)
-            .offset((q.page - 1) * q.limit)
-            .limit(q.limit)
+            .offset((query.page - 1) * query.limit)
+            .limit(query.limit)
             .into_json()
             .all(db)
             .await?;
         Ok(rubrics)
     }
     //
-    pub async fn get_session(db: &DbConn, id: Uuid) -> Result<Option<sessions::Model>, DbErr> {
+    pub async fn get_session(db: &DbConn, id: Uuid) -> DbResult<Option<sessions::Model>> {
         let session = Sessions::find_by_id(id).one(db).await?;
         Ok(session)
     }

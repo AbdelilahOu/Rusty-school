@@ -11,8 +11,7 @@ use service::{
 };
 
 //
-type Body = Json<Subject>;
-pub async fn create(body: Body, state: State) -> HttpResponse {
+pub async fn create(body: Json<Subject>, state: State) -> HttpResponse {
     let res = MutationService::create_subject(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
@@ -29,12 +28,12 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
 }
 
 pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
-    let delete_res = MutationService::delete_subject(&state.db_conn, id.into_inner()).await;
-    match delete_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = MutationService::delete_subject(&state.db_conn, id.into_inner()).await;
+    match res {
+        Ok(delete_count) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Subject deleted successfully".to_string()),
-            data: Some(i.to_string()),
+            data: Some(delete_count.to_string()),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -45,13 +44,12 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
 }
 
 pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
-    let selected_subject =
-        QueryService::list_level_subjects(&state.db_conn, id.into_inner()).await;
-    match selected_subject {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = QueryService::list_level_subjects(&state.db_conn, id.into_inner()).await;
+    match res {
+        Ok(subjects) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Subject selected by level id successfully".to_string()),
-            data: Some(i),
+            data: Some(subjects),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -61,13 +59,13 @@ pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<SubjectQuery>, state: State) -> HttpResponse {
-    let subjects = QueryService::list_subjects(&state.db_conn, q.into_inner()).await;
-    match subjects {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+pub async fn list(query: Query<SubjectQuery>, state: State) -> HttpResponse {
+    let res = QueryService::list_subjects(&state.db_conn, query.into_inner()).await;
+    match res {
+        Ok(subjects) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Subjects selected successfully".to_string()),
-            data: Some(i),
+            data: Some(subjects),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
@@ -77,14 +75,14 @@ pub async fn list(q: Query<SubjectQuery>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Body, state: State) -> HttpResponse {
-    let update_res =
+pub async fn update(id: Path<Uuid>, body: Json<Subject>, state: State) -> HttpResponse {
+    let res =
         MutationService::update_subject(&state.db_conn, id.into_inner(), body.into_inner()).await;
-    match update_res {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    match res {
+        Ok(id) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Subject updated successfully".to_string()),
-            data: Some(i),
+            data: Some(id),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

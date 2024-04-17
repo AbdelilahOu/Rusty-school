@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct DisciAction {
+pub struct Disciplinary {
     pub student_id: Uuid,
     pub issued_at: Option<NaiveDateTime>,
     pub description: String,
@@ -11,7 +11,7 @@ pub struct DisciAction {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct DisciActionQuery {
+pub struct DisciplinaryQuery {
     pub page: u64,
     pub limit: u64,
     pub student_id: Option<Uuid>,

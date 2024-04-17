@@ -10,9 +10,8 @@ use service::{
     transaction::TransactionService,
     uuid::Uuid,
 };
-
-type EventBody = Json<Event>;
-pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
+//
+pub async fn create_event(body: Json<Event>, state: State) -> HttpResponse {
     let res = TransactionService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -28,8 +27,7 @@ pub async fn create_event(body: EventBody, state: State) -> HttpResponse {
     }
 }
 
-type ActivityBody = Json<Activity>;
-pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
+pub async fn create_activity(body: Json<Activity>, state: State) -> HttpResponse {
     let res = TransactionService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -45,8 +43,7 @@ pub async fn create_activity(body: ActivityBody, state: State) -> HttpResponse {
     }
 }
 
-type LectureBody = Json<Lecture>;
-pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
+pub async fn create_lecture(body: Json<Lecture>, state: State) -> HttpResponse {
     let res = TransactionService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => HttpResponse::Created().json(ResponseData {
@@ -63,12 +60,12 @@ pub async fn create_lecture(body: LectureBody, state: State) -> HttpResponse {
 }
 
 pub async fn list(state: State) -> HttpResponse {
-    let timetable = QueryService::list_time_table(&state.db_conn).await;
-    match timetable {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+    let res = QueryService::list_time_table(&state.db_conn).await;
+    match res {
+        Ok(timetable) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("TimeTable selected successfully".to_string()),
-            data: Some(i),
+            data: Some(timetable),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),

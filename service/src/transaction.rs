@@ -6,9 +6,8 @@ use crate::{
     utils::convert_to_enum::{to_day_of_week, to_performance},
 };
 
-pub struct TransactionService;
-
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
+pub struct TransactionService;
 
 impl TransactionService {
     pub async fn create_student(db: DbConn, data: Student) -> TxnRes<()> {

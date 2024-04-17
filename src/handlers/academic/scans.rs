@@ -8,9 +8,8 @@ use service::{
     mutation::MutationService,
     query::QueryService,
 };
-
-type Body = Json<Scan>;
-pub async fn create(body: Body, state: State) -> HttpResponse {
+//
+pub async fn create(body: Json<Scan>, state: State) -> HttpResponse {
     let res = MutationService::create_scan(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => HttpResponse::Created().json(ResponseData {
@@ -26,13 +25,13 @@ pub async fn create(body: Body, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(q: Query<ScansQuery>, state: State) -> HttpResponse {
-    let scans = QueryService::list_scans(&state.db_conn, q.into_inner()).await;
-    match scans {
-        Ok(i) => HttpResponse::Ok().json(ResponseData {
+pub async fn list(query: Query<ScansQuery>, state: State) -> HttpResponse {
+    let res = QueryService::list_scans(&state.db_conn, query.into_inner()).await;
+    match res {
+        Ok(scans) => HttpResponse::Ok().json(ResponseData {
             error: None,
             message: Some("Scans selected successfully".to_string()),
-            data: Some(i),
+            data: Some(scans),
         }),
         Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
