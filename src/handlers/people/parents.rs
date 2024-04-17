@@ -1,7 +1,7 @@
 use crate::types::shared::{ResponseData, State};
 use actix_web::{
     web::{Json, Path, Query},
-    HttpResponse,
+    HttpResponse as Response,
 };
 use service::{
     models::{Parent, ParentQuery},
@@ -10,15 +10,15 @@ use service::{
     uuid::Uuid,
 };
 
-pub async fn create(body: Json<Parent>, state: State) -> HttpResponse {
+pub async fn create(body: Json<Parent>, state: State) -> Response {
     let res = MutationService::create_parent(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created().json(ResponseData {
+        Ok(id) => Response::Created().json(ResponseData {
             error: None,
             message: Some("Parent created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -26,15 +26,15 @@ pub async fn create(body: Json<Parent>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> Response {
     let res = MutationService::delete_parent(&state.db_conn, id.into_inner()).await;
     match res {
-        Ok(delete_count) => HttpResponse::Ok().json(ResponseData {
+        Ok(delete_count) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Parent deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -42,15 +42,15 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(query: Query<ParentQuery>, state: State) -> HttpResponse {
+pub async fn list(query: Query<ParentQuery>, state: State) -> Response {
     let res = QueryService::list_parents(&state.db_conn, query.into_inner()).await;
     match res {
-        Ok(parents) => HttpResponse::Ok().json(ResponseData {
+        Ok(parents) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Parents selected successfully".to_string()),
             data: Some(parents),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -58,16 +58,16 @@ pub async fn list(query: Query<ParentQuery>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Json<Parent>, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Json<Parent>, state: State) -> Response {
     let res =
         MutationService::update_parent(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Ok().json(ResponseData {
+        Ok(id) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Parent updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,

@@ -1,7 +1,7 @@
 use crate::types::shared::{ResponseData, State};
 use actix_web::{
     web::{Json, Path, Query},
-    HttpResponse,
+    HttpResponse as Response,
 };
 use service::{
     models::{Class, ClassQuery},
@@ -10,15 +10,15 @@ use service::{
     uuid::Uuid,
 };
 //
-pub async fn create(body: Json<Class>, state: State) -> HttpResponse {
+pub async fn create(body: Json<Class>, state: State) -> Response {
     let res = MutationService::create_class(&state.db_conn, body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Created().json(ResponseData {
+        Ok(id) => Response::Created().json(ResponseData {
             error: None,
             message: Some("Class created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -26,15 +26,15 @@ pub async fn create(body: Json<Class>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
+pub async fn delete(id: Path<Uuid>, state: State) -> Response {
     let res = MutationService::delete_class(&state.db_conn, id.into_inner()).await;
     match res {
-        Ok(delete_count) => HttpResponse::Ok().json(ResponseData {
+        Ok(delete_count) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Class deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -42,15 +42,15 @@ pub async fn delete(id: Path<Uuid>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn list(query: Query<ClassQuery>, state: State) -> HttpResponse {
+pub async fn list(query: Query<ClassQuery>, state: State) -> Response {
     let res = QueryService::list_classes(&state.db_conn, query.into_inner()).await;
     match res {
-        Ok(classes) => HttpResponse::Ok().json(ResponseData {
+        Ok(classes) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Classs selected successfully".to_string()),
             data: Some(classes),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -58,16 +58,16 @@ pub async fn list(query: Query<ClassQuery>, state: State) -> HttpResponse {
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Json<Class>, state: State) -> HttpResponse {
+pub async fn update(id: Path<Uuid>, body: Json<Class>, state: State) -> Response {
     let res =
         MutationService::update_class(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
-        Ok(id) => HttpResponse::Ok().json(ResponseData {
+        Ok(id) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Class updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: None,
             data: None,

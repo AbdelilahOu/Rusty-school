@@ -1,4 +1,4 @@
-use actix_web::{middleware::Logger, web, App, HttpResponse, HttpServer};
+use actix_web::{middleware::Logger, web, App, HttpResponse as Response, HttpServer};
 use service::sea_orm::DatabaseConnection;
 use types::config::Config;
 
@@ -53,7 +53,7 @@ async fn main() -> std::io::Result<()> {
             .service(academic::load_grading_rubric_routes())
             .service(academic::load_disciplinary_actions_routes())
             .service(communication::load_announcements_routes())
-            .default_service(web::to(|| HttpResponse::NotFound()))
+            .default_service(web::to(|| Response::NotFound()))
     })
     .bind(("0.0.0.0", 8080))?
     .run()

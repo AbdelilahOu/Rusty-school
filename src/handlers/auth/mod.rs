@@ -8,7 +8,7 @@ use crate::{
 use actix_web::{
     http::header,
     web::{Json, Query},
-    HttpRequest, HttpResponse,
+    HttpRequest as Request, HttpResponse as Response,
 };
 use serde::{Deserialize, Serialize};
 use service::{
@@ -48,24 +48,24 @@ pub struct AuthQuery {
     pub code: String,
 }
 
-pub async fn login(state: State) -> HttpResponse {
+pub async fn login(state: State) -> Response {
     let url = get_google_auth_url(
         state.config.client_id.clone(),
         state.config.redirect_uri.clone(),
     )
     .await;
-    HttpResponse::Found()
+    Response::Found()
         .append_header(("Location", url.as_str()))
         .finish()
 }
 
-pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpResponse {
+pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> Response {
     match verify_token(&body.refresh_token, state.config.jwt_secret.clone()) {
         Ok(claims) => match QueryService::get_session(&state.db_conn, claims.session_id).await {
             Ok(session_op) => match session_op {
                 Some(session) => {
                     if session.is_blocked {
-                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                        return Response::Unauthorized().json(ResponseData::<String> {
                             error: None,
                             message: Some("this user is blocked".to_string()),
                             data: None,
@@ -73,7 +73,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
                     };
 
                     if !session.user_id.eq(&claims.user_id) {
-                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                        return Response::Unauthorized().json(ResponseData::<String> {
                             error: None,
                             message: Some("user doesnt match".to_string()),
                             data: None,
@@ -81,7 +81,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
                     };
 
                     if !session.refresh_token.eq(&body.refresh_token) {
-                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                        return Response::Unauthorized().json(ResponseData::<String> {
                             error: None,
                             message: Some("refersh token doesnt match".to_string()),
                             data: None,
@@ -92,7 +92,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
                         .expires_at
                         .lt(&NaiveDateTime::new(now.date_naive(), now.time()))
                     {
-                        return HttpResponse::Unauthorized().json(ResponseData::<String> {
+                        return Response::Unauthorized().json(ResponseData::<String> {
                             error: None,
                             message: Some("refresh token expired".to_string()),
                             data: None,
@@ -105,7 +105,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
                         Duration::minutes(5),
                     );
 
-                    HttpResponse::Ok().json(ResponseData::<RefreshAccessResponse> {
+                    Response::Ok().json(ResponseData::<RefreshAccessResponse> {
                         error: None,
                         message: Some("access token refreshed".to_string()),
                         data: Some(RefreshAccessResponse {
@@ -116,19 +116,19 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
                         }),
                     })
                 }
-                None => HttpResponse::Unauthorized().json(ResponseData::<String> {
+                None => Response::Unauthorized().json(ResponseData::<String> {
                     error: None,
                     message: Some("no session found".to_string()),
                     data: None,
                 }),
             },
-            Err(e) => HttpResponse::Unauthorized().json(ResponseData::<String> {
+            Err(e) => Response::Unauthorized().json(ResponseData::<String> {
                 error: None,
                 message: Some(e.to_string()),
                 data: None,
             }),
         },
-        Err(e) => HttpResponse::Unauthorized().json(ResponseData::<String> {
+        Err(e) => Response::Unauthorized().json(ResponseData::<String> {
             error: None,
             message: Some(e.to_string()),
             data: None,
@@ -136,7 +136,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> HttpRe
     }
 }
 
-pub async fn google_auth(req: HttpRequest, query: Query<AuthQuery>, state: State) -> HttpResponse {
+pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) -> Response {
     let res = request_tokens(query.code.clone(), state.config.clone()).await;
     match res {
         Ok(res) => {
@@ -201,7 +201,7 @@ pub async fn google_auth(req: HttpRequest, query: Query<AuthQuery>, state: State
                                         DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
                                             .unwrap()
                                             .naive_utc();
-                                    HttpResponse::Ok().json(ResponseData::<LogInResponse> {
+                                    Response::Ok().json(ResponseData::<LogInResponse> {
                                         error: None,
                                         message: Some("user logged in successfully".to_string()),
                                         data: Some(LogInResponse {
@@ -215,7 +215,7 @@ pub async fn google_auth(req: HttpRequest, query: Query<AuthQuery>, state: State
                                         }),
                                     })
                                 }
-                                Err(e) => HttpResponse::InternalServerError().json(ResponseData::<
+                                Err(e) => Response::InternalServerError().json(ResponseData::<
                                     Option<String>,
                                 > {
                                     error: Some(e.to_string()),
@@ -224,25 +224,23 @@ pub async fn google_auth(req: HttpRequest, query: Query<AuthQuery>, state: State
                                 }),
                             }
                         }
-                        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<
-                            Option<String>,
-                        > {
-                            error: Some(e.to_string()),
-                            message: Some("coudnt insert user into db".to_string()),
-                            data: None,
-                        }),
+                        Err(e) => {
+                            Response::InternalServerError().json(ResponseData::<Option<String>> {
+                                error: Some(e.to_string()),
+                                message: Some("coudnt insert user into db".to_string()),
+                                data: None,
+                            })
+                        }
                     }
                 }
-                Err(e) => {
-                    HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
-                        error: Some(e.to_string()),
-                        message: Some("coudnt get user profile from google".to_string()),
-                        data: None,
-                    })
-                }
+                Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+                    error: Some(e.to_string()),
+                    message: Some("coudnt get user profile from google".to_string()),
+                    data: None,
+                }),
             }
         }
-        Err(e) => HttpResponse::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
             error: Some(e.to_string()),
             message: Some("coudnt get access token from google".to_string()),
             data: None,
