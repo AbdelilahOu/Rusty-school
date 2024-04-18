@@ -224,23 +224,21 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                                 }),
                             }
                         }
-                        Err(e) => {
-                            Response::InternalServerError().json(ResponseData::<Option<String>> {
-                                error: Some(e.to_string()),
-                                message: Some("coudnt insert user into db".to_string()),
-                                data: None,
-                            })
-                        }
+                        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
+                            error: Some(e.to_string()),
+                            message: Some("coudnt insert user into db".to_string()),
+                            data: None,
+                        }),
                     }
                 }
-                Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+                Err(e) => Response::InternalServerError().json(ResponseData::<String> {
                     error: Some(e.to_string()),
                     message: Some("coudnt get user profile from google".to_string()),
                     data: None,
                 }),
             }
         }
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: Some("coudnt get access token from google".to_string()),
             data: None,

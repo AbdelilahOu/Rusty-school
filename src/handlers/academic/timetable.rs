@@ -19,7 +19,7 @@ pub async fn create_event(body: Json<Event>, state: State) -> Response {
             message: Some("time table event created successfully".to_string()),
             data: Some(()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -35,7 +35,7 @@ pub async fn create_activity(body: Json<Activity>, state: State) -> Response {
             message: Some("time table activity created successfully".to_string()),
             data: Some(()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -51,7 +51,7 @@ pub async fn create_lecture(body: Json<Lecture>, state: State) -> Response {
             message: Some("time table lecture created successfully".to_string()),
             data: Some(()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -67,7 +67,7 @@ pub async fn list(state: State) -> Response {
             message: Some("TimeTable selected successfully".to_string()),
             data: Some(timetable),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -83,7 +83,7 @@ pub async fn delete_timetable_item(id: Path<Uuid>, state: State) -> Response {
             message: Some("TimeTable item deleted successfully".to_string()),
             data: Some(i),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

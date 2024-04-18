@@ -19,7 +19,7 @@ pub async fn create(body: Json<Group>, state: State) -> Response {
             message: Some("Group created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -35,7 +35,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
             message: Some("Group deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -51,7 +51,7 @@ pub async fn list_by_level_id(id: Path<Uuid>, state: State) -> Response {
             message: Some("Groups selected by level id successfully".to_string()),
             data: Some(groups),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -67,7 +67,7 @@ pub async fn list(query: Query<GroupQuery>, state: State) -> Response {
             message: Some("Groups selected successfully".to_string()),
             data: Some(groups),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -84,7 +84,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Group>, state: State) -> Response
             message: Some("Group updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

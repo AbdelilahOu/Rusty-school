@@ -19,7 +19,7 @@ pub async fn create(body: Json<Assignment>, state: State) -> Response {
             message: Some("Assignment created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -35,7 +35,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
             message: Some("Assignment deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -51,7 +51,7 @@ pub async fn list(query: Query<AssignmentQuery>, state: State) -> Response {
             message: Some("Assignments selected successfully".to_string()),
             data: Some(assignmentes),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -69,7 +69,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Assignment>, state: State) -> Res
             message: Some("Assignment updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

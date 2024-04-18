@@ -18,7 +18,7 @@ pub async fn create(body: Json<Room>, state: State) -> Response {
             message: Some("Room created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -34,7 +34,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
             message: Some("Room deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -50,7 +50,7 @@ pub async fn list(query: Query<RoomQuery>, state: State) -> Response {
             message: Some("Rooms selected successfully".to_string()),
             data: Some(rooms),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -67,7 +67,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Room>, state: State) -> Response 
             message: Some("Room updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

@@ -20,7 +20,7 @@ pub async fn create(body: Json<Student>, state: State, req: Request) -> Response
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
     if let Err(message) = authorized {
-        return Response::Unauthorized().json(ResponseData::<Option<String>> {
+        return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
             message: None,
             data: None,
@@ -33,7 +33,7 @@ pub async fn create(body: Json<Student>, state: State, req: Request) -> Response
             message: Some("Student created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -48,7 +48,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: Request) -> Response {
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
     if let Err(message) = authorized {
-        return Response::Unauthorized().json(ResponseData::<Option<String>> {
+        return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
             message: None,
             data: None,
@@ -62,7 +62,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: Request) -> Response {
             message: Some("Student deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -77,7 +77,7 @@ pub async fn list(query: Query<StudentQuery>, state: State, req: Request) -> Res
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
     if let Err(message) = authorized {
-        return Response::Unauthorized().json(ResponseData::<Option<String>> {
+        return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
             message: None,
             data: None,
@@ -90,7 +90,7 @@ pub async fn list(query: Query<StudentQuery>, state: State, req: Request) -> Res
             message: Some("Students selected successfully".to_string()),
             data: Some(students),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -105,7 +105,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Student>, state: State, req: Requ
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     // unauth
     if let Err(message) = authorized {
-        return Response::Unauthorized().json(ResponseData::<Option<String>> {
+        return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
             message: None,
             data: None,
@@ -120,7 +120,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Student>, state: State, req: Requ
             message: Some("Student updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

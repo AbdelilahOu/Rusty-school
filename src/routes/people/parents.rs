@@ -1,5 +1,6 @@
 use crate::handlers::people::parents;
 use actix_web::{web, Scope};
+
 pub fn load_parents_routes() -> Scope {
     web::scope("/parents")
         .route("/", web::get().to(parents::list))

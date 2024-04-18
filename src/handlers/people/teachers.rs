@@ -18,7 +18,7 @@ pub async fn create(body: Json<Teacher>, state: State) -> Response {
             message: Some("Teacher created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -34,7 +34,7 @@ pub async fn add_subject(params: Path<(Uuid, Uuid)>, state: State) -> Response {
             message: Some("Subject added successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -50,7 +50,7 @@ pub async fn delete_subject(id: Path<Uuid>, state: State) -> Response {
             message: Some("Subject deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -66,7 +66,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
             message: Some("Teacher deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -82,7 +82,7 @@ pub async fn list(query: Query<TeacherQuery>, state: State) -> Response {
             message: Some("Teachers selected successfully".to_string()),
             data: Some(teachers),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -99,7 +99,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Teacher>, state: State) -> Respon
             message: Some("Teacher updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

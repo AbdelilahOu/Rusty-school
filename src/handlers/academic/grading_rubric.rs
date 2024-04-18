@@ -19,7 +19,7 @@ pub async fn create(body: Json<Rubric>, state: State) -> Response {
             message: Some("grading rubric created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -35,7 +35,7 @@ pub async fn list(query: Query<RubricQuery>, state: State) -> Response {
             message: Some("grading rubrics selected successfully".to_string()),
             data: Some(rubrics),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -51,7 +51,7 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
             message: Some("grading rubric deleted successfully".to_string()),
             data: Some(delete_count.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -68,7 +68,7 @@ pub async fn update(id: Path<Uuid>, body: Json<Rubric>, state: State) -> Respons
             message: Some("grading rubric updated successfully".to_string()),
             data: Some(id),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

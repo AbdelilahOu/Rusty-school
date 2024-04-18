@@ -7,7 +7,7 @@ pub fn load_config() -> Config {
     // set logging env
     env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
     //
-    let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
+    let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let client_id = env::var("OAUTH_CLIENT_ID").expect("OAUTH_CLIENT_ID must be set");
     let client_secret = env::var("OAUTH_SECRET").expect("OAUTH_SECRET must be set");
     let redirect_uri = env::var("REDIRECT_URL").expect("REDIRECT_URL must be set");

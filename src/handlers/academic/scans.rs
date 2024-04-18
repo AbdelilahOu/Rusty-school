@@ -17,7 +17,7 @@ pub async fn create(body: Json<Scan>, state: State) -> Response {
             message: Some("scan created successfully".to_string()),
             data: Some(id.to_string()),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
@@ -33,7 +33,7 @@ pub async fn list(query: Query<ScansQuery>, state: State) -> Response {
             message: Some("Scans selected successfully".to_string()),
             data: Some(scans),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,

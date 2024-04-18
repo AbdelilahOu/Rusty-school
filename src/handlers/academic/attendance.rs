@@ -10,7 +10,7 @@ pub async fn list(query: Query<AttendanceQuery>, state: State) -> Response {
             message: Some("Attendance selected successfully".to_string()),
             data: Some(attendances),
         }),
-        Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
+        Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
             message: None,
             data: None,
