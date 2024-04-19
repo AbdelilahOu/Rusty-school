@@ -13,7 +13,7 @@ use service::{
     uuid::Uuid,
 };
 //
-pub async fn create(body: Json<Student>, state: State, req: Request) -> Response {
+pub async fn create(req: Request, body: Json<Student>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -41,7 +41,7 @@ pub async fn create(body: Json<Student>, state: State, req: Request) -> Response
     }
 }
 
-pub async fn delete(id: Path<Uuid>, state: State, req: Request) -> Response {
+pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -70,7 +70,7 @@ pub async fn delete(id: Path<Uuid>, state: State, req: Request) -> Response {
     }
 }
 
-pub async fn list(query: Query<StudentQuery>, state: State, req: Request) -> Response {
+pub async fn list(req: Request, query: Query<StudentQuery>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -98,7 +98,7 @@ pub async fn list(query: Query<StudentQuery>, state: State, req: Request) -> Res
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Json<Student>, state: State, req: Request) -> Response {
+pub async fn update(req: Request, id: Path<Uuid>, body: Json<Student>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
