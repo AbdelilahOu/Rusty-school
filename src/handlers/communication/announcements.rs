@@ -97,12 +97,7 @@ pub async fn list(req: Request, query: Query<AnnouncementQuery>, state: State) -
     }
 }
 
-pub async fn update(
-    req: Request,
-    id: Path<Uuid>,
-    body: Json<Announcement>,
-    state: State,
-) -> Response {
+pub async fn update(req: Request, id: Path<Uuid>, body: Json<Announcement>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -115,9 +110,7 @@ pub async fn update(
             data: None,
         });
     }
-    let res =
-        MutationService::update_announcement(&state.db_conn, id.into_inner(), body.into_inner())
-            .await;
+    let res = MutationService::update_announcement(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
             error: None,
