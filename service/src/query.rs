@@ -1,20 +1,15 @@
 use crate::{
     entities::*,
     models::{
-        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery,
-        GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery, RubricQuery, ScansQuery,
-        SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
+        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery, RubricQuery, ScansQuery, SelectAttendance,
+        SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
     },
 };
 use chrono::NaiveDateTime;
 use sea_orm::{
     prelude::*,
-    sea_query::{
-        extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
-        SubQueryStatement,
-    },
-    Condition, DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect,
-    Statement,
+    sea_query::{extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement},
+    Condition, DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect, Statement,
 };
 use serde_json::Value as SerdValue;
 
@@ -31,12 +26,7 @@ impl QueryService {
         }
         let students = Students::find()
             .select_only()
-            .columns([
-                students::Column::Id,
-                students::Column::PersonId,
-                students::Column::GroupId,
-                students::Column::FullName,
-            ])
+            .columns([students::Column::Id, students::Column::PersonId, students::Column::GroupId, students::Column::FullName])
             .expr(Expr::col(groups::Column::GroupName))
             .join(JoinType::LeftJoin, students::Relation::Groups.def())
             .filter(conditions)
@@ -111,10 +101,7 @@ impl QueryService {
                             Query::select()
                                 .from(Students)
                                 .column(students::Column::FullName)
-                                .cond_where(
-                                    Expr::col((Students, students::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -127,10 +114,7 @@ impl QueryService {
                             Query::select()
                                 .from(Parents)
                                 .column(parents::Column::FullName)
-                                .cond_where(
-                                    Expr::col((Parents, parents::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -143,10 +127,7 @@ impl QueryService {
                             Query::select()
                                 .from(Teachers)
                                 .column(teachers::Column::FullName)
-                                .cond_where(
-                                    Expr::col((Teachers, teachers::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -163,10 +144,7 @@ impl QueryService {
                             Query::select()
                                 .from(Students)
                                 .column(students::Column::Id)
-                                .cond_where(
-                                    Expr::col((Students, students::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -179,10 +157,7 @@ impl QueryService {
                             Query::select()
                                 .from(Parents)
                                 .column(parents::Column::Id)
-                                .cond_where(
-                                    Expr::col((Parents, parents::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -195,10 +170,7 @@ impl QueryService {
                             Query::select()
                                 .from(Teachers)
                                 .column(teachers::Column::Id)
-                                .cond_where(
-                                    Expr::col((Teachers, teachers::Column::PersonId))
-                                        .equals((Scans, scans::Column::PersonId)),
-                                )
+                                .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                 .to_owned(),
                         )),
                     ),
@@ -206,11 +178,7 @@ impl QueryService {
                 Alias::new("_id"),
             )
             //
-            .join(
-                JoinType::Join,
-                Persons,
-                Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)),
-            )
+            .join(JoinType::Join, Persons, Expr::col((Persons, persons::Column::Id)).equals((Scans, scans::Column::PersonId)))
             // FULL_NAME filter
             .conditions(
                 query.full_name.is_some(),
@@ -225,10 +193,7 @@ impl QueryService {
                                     Query::select()
                                         .from(Students)
                                         .column(students::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Students, students::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
+                                        .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                         .to_owned(),
                                 )),
                             )
@@ -242,10 +207,7 @@ impl QueryService {
                                     Query::select()
                                         .from(Parents)
                                         .column(parents::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Parents, parents::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
+                                        .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                         .to_owned(),
                                 )),
                             )
@@ -259,10 +221,7 @@ impl QueryService {
                                     Query::select()
                                         .from(Teachers)
                                         .column(teachers::Column::FullName)
-                                        .cond_where(
-                                            Expr::col((Teachers, teachers::Column::PersonId))
-                                                .equals((Scans, scans::Column::PersonId)),
-                                        )
+                                        .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
                                         .to_owned(),
                                 )),
                             )
@@ -280,10 +239,7 @@ impl QueryService {
                     // get avlue
                     let scan_time_start = query.scan_time_start.unwrap();
                     // check
-                    let start_time = NaiveDateTime::parse_from_str(
-                        scan_time_start.as_str(),
-                        "%Y-%m-%d %H:%M:%S%",
-                    );
+                    let start_time = NaiveDateTime::parse_from_str(scan_time_start.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(start_time) = start_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
@@ -300,8 +256,7 @@ impl QueryService {
                     // get avlue
                     let scan_time_end = query.scan_time_end.unwrap();
                     // check
-                    let end_time =
-                        NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let end_time = NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(end_time));
@@ -327,14 +282,10 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(
-            DbBackend::Postgres,
-            sql,
-            values,
-        ))
-        .into_json()
-        .all(db)
-        .await?;
+        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
+            .into_json()
+            .all(db)
+            .await?;
 
         Ok(result)
     }
@@ -352,38 +303,19 @@ impl QueryService {
                 Expr::col((Levels, levels::Column::LevelName)),
             ])
             // GET _id
-            .expr_as(
-                Expr::col((Students, students::Column::Id)),
-                Alias::new("_id"),
-            )
+            .expr_as(Expr::col((Students, students::Column::Id)), Alias::new("_id"))
             //
-            .join(
-                JoinType::Join,
-                Students,
-                Expr::col((Students, students::Column::PersonId))
-                    .equals((Scans, scans::Column::PersonId)),
-            )
+            .join(JoinType::Join, Students, Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
             //
-            .join(
-                JoinType::Join,
-                Groups,
-                Expr::col((Groups, groups::Column::Id))
-                    .equals((Students, students::Column::GroupId)),
-            )
+            .join(JoinType::Join, Groups, Expr::col((Groups, groups::Column::Id)).equals((Students, students::Column::GroupId)))
             //
-            .join(
-                JoinType::Join,
-                Levels,
-                Expr::col((Levels, levels::Column::Id)).equals((Groups, groups::Column::LevelId)),
-            )
+            .join(JoinType::Join, Levels, Expr::col((Levels, levels::Column::Id)).equals((Groups, groups::Column::LevelId)))
             // FULL_NAME filter
             .conditions(
                 query.full_name.is_some(),
                 |x| {
                     let full_name = query.full_name.unwrap();
-                    x.and_where(
-                        Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)),
-                    );
+                    x.and_where(Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)));
                 },
                 |_| {},
             )
@@ -393,8 +325,7 @@ impl QueryService {
                 |x| {
                     let start_time = query.scan_time_start.unwrap();
                     // check
-                    let start_time =
-                        NaiveDateTime::parse_from_str(start_time.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let start_time = NaiveDateTime::parse_from_str(start_time.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(start_time) = start_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
@@ -410,8 +341,7 @@ impl QueryService {
                 |x| {
                     let end_time = query.scan_time_end.unwrap();
                     // check
-                    let end_time =
-                        NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let end_time = NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(end_time));
@@ -437,14 +367,10 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectAttendance::find_by_statement(Statement::from_sql_and_values(
-            DbBackend::Postgres,
-            sql,
-            values,
-        ))
-        .into_json()
-        .all(db)
-        .await?;
+        let result = SelectAttendance::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
+            .into_json()
+            .all(db)
+            .await?;
 
         Ok(result)
     }
@@ -456,11 +382,7 @@ impl QueryService {
         }
         let levels = Levels::find()
             .select_only()
-            .columns([
-                levels::Column::Id,
-                levels::Column::LevelName,
-                levels::Column::LevelDescription,
-            ])
+            .columns([levels::Column::Id, levels::Column::LevelName, levels::Column::LevelDescription])
             .filter(conditions)
             .order_by_desc(levels::Column::CreatedAt)
             .offset((query.page - 1) * query.limit)
@@ -480,12 +402,7 @@ impl QueryService {
         }
         let subjects = Subjects::find()
             .select_only()
-            .columns([
-                subjects::Column::Id,
-                subjects::Column::SubjectName,
-                subjects::Column::SubjectDescription,
-                subjects::Column::LevelId,
-            ])
+            .columns([subjects::Column::Id, subjects::Column::SubjectName, subjects::Column::SubjectDescription, subjects::Column::LevelId])
             .column_as(levels::Column::LevelName, level_alias)
             .join(JoinType::LeftJoin, subjects::Relation::Levels.def())
             .filter(conditions)
@@ -500,12 +417,7 @@ impl QueryService {
     }
     //
     pub async fn list_level_subjects(db: &DbConn, level_id: Uuid) -> DbResult<Values> {
-        let level_subjects = Subjects::find()
-            .filter(subjects::Column::LevelId.eq(level_id.clone()))
-            .into_json()
-            .all(db)
-            .await?;
-
+        let level_subjects = Subjects::find().filter(subjects::Column::LevelId.eq(level_id.clone())).into_json().all(db).await?;
         Ok(level_subjects)
     }
     //
@@ -516,16 +428,10 @@ impl QueryService {
         }
         let groups = Groups::find()
             .select_only()
-            .columns([
-                groups::Column::Id,
-                groups::Column::GroupName,
-                groups::Column::GroupDescription,
-                groups::Column::LevelId,
-            ])
+            .columns([groups::Column::Id, groups::Column::GroupName, groups::Column::GroupDescription, groups::Column::LevelId])
+            .expr(Expr::col(levels::Column::LevelName))
             .expr(Expr::col(levels::Column::LevelName))
             .join(JoinType::Join, groups::Relation::Levels.def())
-            // .join(JoinType::Join, groups::Relation::Classes.def())
-            // .join(JoinType::Join, groups::Relation::Students.def())
             .filter(conditions)
             .order_by_desc(groups::Column::CreatedAt)
             .offset((query.page - 1) * query.limit)
@@ -538,12 +444,7 @@ impl QueryService {
     }
     //
     pub async fn list_level_groups(db: &DbConn, level_id: Uuid) -> DbResult<Values> {
-        let level_groups = Groups::find()
-            .filter(groups::Column::LevelId.eq(level_id.clone()))
-            .into_json()
-            .all(db)
-            .await?;
-
+        let level_groups = Groups::find().filter(groups::Column::LevelId.eq(level_id.clone())).into_json().all(db).await?;
         Ok(level_groups)
     }
     //
@@ -552,13 +453,7 @@ impl QueryService {
         if let Some(name) = query.name {
             conditions = conditions.add(Expr::col(rooms::Column::RoomName).ilike(name));
         }
-        let rooms = Rooms::find()
-            .filter(conditions)
-            .offset((query.page - 1) * query.limit)
-            .limit(query.limit)
-            .into_json()
-            .all(db)
-            .await?;
+        let rooms = Rooms::find().filter(conditions).offset((query.page - 1) * query.limit).limit(query.limit).into_json().all(db).await?;
         Ok(rooms)
     }
     //
@@ -573,13 +468,7 @@ impl QueryService {
         if let Some(subject_id) = query.subject_id {
             conditions = conditions.add(Expr::col(classes::Column::SubjectId).eq(subject_id));
         }
-        let classes = Classes::find()
-            .filter(conditions)
-            .offset((query.page - 1) * query.limit)
-            .limit(query.limit)
-            .into_json()
-            .all(db)
-            .await?;
+        let classes = Classes::find().filter(conditions).offset((query.page - 1) * query.limit).limit(query.limit).into_json().all(db).await?;
         Ok(classes)
     }
     //
@@ -589,10 +478,10 @@ impl QueryService {
             .columns(time_table::Column::iter().filter(|f| match f {
                 time_table::Column::DayOfWeek => false,
                 time_table::Column::ItemType => false,
-                _ => true
+                _ => true,
             }))
-            .expr_as(Expr::col((TimeTables,time_table::Column::DayOfWeek)).cast_as(Alias::new("TEXT")),Alias::new("day_of_week"))
-            .expr_as(Expr::col((TimeTables,time_table::Column::ItemType)).cast_as(Alias::new("TEXT")),Alias::new("item_type"))
+            .expr_as(Expr::col((TimeTables, time_table::Column::DayOfWeek)).cast_as(Alias::new("TEXT")), Alias::new("day_of_week"))
+            .expr_as(Expr::col((TimeTables, time_table::Column::ItemType)).cast_as(Alias::new("TEXT")), Alias::new("item_type"))
             .expr_as(
                 Expr::case(
                     Expr::col(time_table::Column::ItemType).cast_as(Alias::new("TEXT")).eq(TimeTableItemTypeEnum::Event),
@@ -602,10 +491,7 @@ impl QueryService {
                             Query::select()
                                 .from(Events)
                                 .column(events::Column::EventTitle)
-                                .cond_where(
-                                    Expr::col((Events, events::Column::TimeTableId))
-                                        .equals((TimeTables, time_table::Column::Id)),
-                                )
+                                .cond_where(Expr::col((Events, events::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
                                 .to_owned(),
                         )),
                     ),
@@ -618,10 +504,7 @@ impl QueryService {
                             Query::select()
                                 .from(Activities)
                                 .column(activities::Column::ActivityTitle)
-                                .cond_where(
-                                    Expr::col((Activities, activities::Column::TimeTableId))
-                                        .equals((TimeTables, time_table::Column::Id)),
-                                )
+                                .cond_where(Expr::col((Activities, activities::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
                                 .to_owned(),
                         )),
                     ),
@@ -632,34 +515,11 @@ impl QueryService {
                         Query::select()
                             .from(Lectures)
                             .expr(Expr::cust("FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)"))
-                            .join(
-                                JoinType::Join,
-                                Classes,
-                                Expr::col((Classes, classes::Column::Id))
-                                    .equals((Lectures, lectures::Column::ClassId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Teachers,
-                                Expr::col((Teachers, classes::Column::Id))
-                                    .equals((Classes, classes::Column::TeacherId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Groups,
-                                Expr::col((Groups, classes::Column::Id))
-                                    .equals((Classes, classes::Column::GroupId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Subjects,
-                                Expr::col((Subjects, classes::Column::Id))
-                                    .equals((Classes, classes::Column::SubjectId)),
-                            )
-                            .cond_where(
-                                Expr::col((Lectures, lectures::Column::TimeTableId))
-                                    .equals((TimeTables, time_table::Column::Id)),
-                            )
+                            .join(JoinType::Join, Classes, Expr::col((Classes, classes::Column::Id)).equals((Lectures, lectures::Column::ClassId)))
+                            .join(JoinType::Join, Teachers, Expr::col((Teachers, classes::Column::Id)).equals((Classes, classes::Column::TeacherId)))
+                            .join(JoinType::Join, Groups, Expr::col((Groups, classes::Column::Id)).equals((Classes, classes::Column::GroupId)))
+                            .join(JoinType::Join, Subjects, Expr::col((Subjects, classes::Column::Id)).equals((Classes, classes::Column::SubjectId)))
+                            .cond_where(Expr::col((Lectures, lectures::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
                             .to_owned(),
                     )),
                 )),
@@ -668,14 +528,10 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectTimeTable::find_by_statement(Statement::from_sql_and_values(
-            DbBackend::Postgres,
-            sql,
-            values,
-        ))
-        .into_json()
-        .all(db)
-        .await?;
+        let result = SelectTimeTable::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
+            .into_json()
+            .all(db)
+            .await?;
 
         Ok(result)
     }
@@ -727,22 +583,16 @@ impl QueryService {
     pub async fn list_disciplinaries(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
         if let Some(student_id) = query.student_id {
-            conditions =
-                conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
+            conditions = conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
         }
         if let Some(issued_at) = query.issued_at {
-            conditions =
-                conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
+            conditions = conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
         }
-
         let disciplinaries = Disciplinaries::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
             .column(students::Column::FullName)
-            .join(
-                JoinType::Join,
-                disciplinary_actions::Relation::Students.def(),
-            )
+            .join(JoinType::Join, disciplinary_actions::Relation::Students.def())
             .filter(conditions)
             .offset((query.page - 1) * query.limit)
             .limit(query.limit)
@@ -766,7 +616,6 @@ impl QueryService {
         if let Some(category) = query.category {
             conditions = conditions.add(Expr::col(announcements::Column::Category).eq(category));
         }
-
         let announcements = Announcements::find()
             .select_only()
             .columns(announcements::Column::iter())
