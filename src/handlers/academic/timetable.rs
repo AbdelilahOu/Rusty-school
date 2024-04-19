@@ -1,7 +1,10 @@
-use crate::types::shared::{ResponseData, State};
+use crate::{
+    guards::auth_guard,
+    types::shared::{ResponseData, State},
+};
 use actix_web::{
     web::{Json, Path},
-    HttpResponse as Response,
+    HttpRequest as Request, HttpResponse as Response,
 };
 use service::{
     models::{Activity, Event, Lecture},
@@ -11,7 +14,19 @@ use service::{
     uuid::Uuid,
 };
 //
-pub async fn create_event(body: Json<Event>, state: State) -> Response {
+pub async fn create_event(req: Request, body: Json<Event>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = TransactionService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => Response::Created().json(ResponseData {
@@ -27,7 +42,19 @@ pub async fn create_event(body: Json<Event>, state: State) -> Response {
     }
 }
 
-pub async fn create_activity(body: Json<Activity>, state: State) -> Response {
+pub async fn create_activity(req: Request, body: Json<Activity>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = TransactionService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => Response::Created().json(ResponseData {
@@ -43,7 +70,19 @@ pub async fn create_activity(body: Json<Activity>, state: State) -> Response {
     }
 }
 
-pub async fn create_lecture(body: Json<Lecture>, state: State) -> Response {
+pub async fn create_lecture(req: Request, body: Json<Lecture>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = TransactionService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => Response::Created().json(ResponseData {
@@ -59,7 +98,19 @@ pub async fn create_lecture(body: Json<Lecture>, state: State) -> Response {
     }
 }
 
-pub async fn list(state: State) -> Response {
+pub async fn list(req: Request, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = QueryService::list_time_table(&state.db_conn).await;
     match res {
         Ok(timetable) => Response::Ok().json(ResponseData {
@@ -75,7 +126,19 @@ pub async fn list(state: State) -> Response {
     }
 }
 
-pub async fn delete_timetable_item(id: Path<Uuid>, state: State) -> Response {
+pub async fn delete_timetable_item(req: Request, id: Path<Uuid>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = MutationService::delete_time_table(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(i) => Response::Ok().json(ResponseData {

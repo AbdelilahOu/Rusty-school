@@ -1,7 +1,10 @@
-use crate::types::shared::{ResponseData, State};
+use crate::{
+    guards::auth_guard,
+    types::shared::{ResponseData, State},
+};
 use actix_web::{
     web::{Json, Path, Query},
-    HttpResponse as Response,
+    HttpRequest as Request, HttpResponse as Response,
 };
 use service::{
     models::{Disciplinary, DisciplinaryQuery},
@@ -10,7 +13,19 @@ use service::{
     uuid::Uuid,
 };
 //
-pub async fn create(body: Json<Disciplinary>, state: State) -> Response {
+pub async fn create(req: Request, body: Json<Disciplinary>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = MutationService::create_disciplinary(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => Response::Created().json(ResponseData {
@@ -26,7 +41,19 @@ pub async fn create(body: Json<Disciplinary>, state: State) -> Response {
     }
 }
 
-pub async fn delete(id: Path<Uuid>, state: State) -> Response {
+pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = MutationService::delete_disciplinary(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(delete_count) => Response::Ok().json(ResponseData {
@@ -42,7 +69,19 @@ pub async fn delete(id: Path<Uuid>, state: State) -> Response {
     }
 }
 
-pub async fn list(query: Query<DisciplinaryQuery>, state: State) -> Response {
+pub async fn list(req: Request, query: Query<DisciplinaryQuery>, state: State) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res = QueryService::list_disciplinaries(&state.db_conn, query.into_inner()).await;
     match res {
         Ok(disciplinary_actions) => Response::Ok().json(ResponseData {
@@ -58,7 +97,24 @@ pub async fn list(query: Query<DisciplinaryQuery>, state: State) -> Response {
     }
 }
 
-pub async fn update(id: Path<Uuid>, body: Json<Disciplinary>, state: State) -> Response {
+pub async fn update(
+    req: Request,
+    id: Path<Uuid>,
+    body: Json<Disciplinary>,
+    state: State,
+) -> Response {
+    // get headers
+    let headers = req.headers();
+    // check token for auth
+    let authorized = auth_guard(headers, state.config.jwt_secret.clone());
+    // unauth
+    if let Err(message) = authorized {
+        return Response::Unauthorized().json(ResponseData::<String> {
+            error: Some(message),
+            message: None,
+            data: None,
+        });
+    }
     let res =
         MutationService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner())
             .await;
