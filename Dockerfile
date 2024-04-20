@@ -4,32 +4,24 @@ ARG APP_NAME=school-management-api
 FROM rust:${RUST_VERSION}-buster AS build
 ARG APP_NAME
 # 
-WORKDIR app
-# MAKE A NEW RUST PROJECT JUST TO CASHE THE DEPS
-RUN cargo new cached-deps
-RUN cargo new --lib cached-deps/entity
-RUN cargo new --lib cached-deps/migration
-RUN cargo new --lib cached-deps/service
-#
-COPY ./Cargo.lock ./cached-deps/Cargo.lock
-COPY ./Cargo.toml ./cached-deps/Cargo.toml
-COPY ./entity/Cargo.toml ./cached-deps/entity/Cargo.toml
-COPY ./migration/Cargo.toml ./cached-deps/migration/Cargo.toml
-COPY ./service/Cargo.toml ./cached-deps/service/Cargo.toml
-# 
-WORKDIR cached-deps
-# DOWNLOAD THE NECESSARY DEPS
-RUN cargo build --release
-# 
-WORKDIR app
-# 
-COPY . .
+WORKDIR /app
 # BUILD THE APP
-RUN cargo build --workspace --locked --release
-RUN cp ./target/release/$APP_NAME /app/server
-RUN cp ./target/release/migration /app/migration
-RUN cp ./start.sh /app/start.sh
-RUN cp ./wait-for.sh /app/wait-for.sh
+RUN --mount=type=bind,source=src,target=src \
+    --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
+    --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
+    --mount=type=bind,source=entity,target=entity \
+    --mount=type=bind,source=migration,target=migration \
+    --mount=type=bind,source=service,target=service \
+    --mount=type=bind,source=start.sh,target=start.sh \
+    --mount=type=bind,source=wait-for.sh,target=wait-for.sh \
+    --mount=type=cache,target=/app/target/ \
+    --mount=type=cache,target=/usr/local/cargo/git/db \
+    --mount=type=cache,target=/usr/local/cargo/registry/ \
+cargo build --locked --release && \
+cp ./target/release/$APP_NAME /bin/server && \
+cp ./target/release/migration /bin/migration && \
+cp ./start.sh /bin/start.sh && \
+cp ./wait-for.sh /bin/wait-for.sh
 # 
 FROM debian:buster-slim AS final
 # 
@@ -38,10 +30,10 @@ WORKDIR /school-api
 RUN apt update
 RUN apt install pkg-config openssl netcat -y
 # Copy the executable from the "build" stage.
-COPY --from=build /app/server . 
-COPY --from=build /app/migration .
-COPY --from=build /app/start.sh .
-COPY --from=build /app/wait-for.sh .
+COPY --from=build /bin/server . 
+COPY --from=build /bin/migration .
+COPY --from=build /bin/start.sh .
+COPY --from=build /bin/wait-for.sh .
 # 
 RUN chmod +x ./start.sh
 RUN chmod +x ./wait-for.sh
