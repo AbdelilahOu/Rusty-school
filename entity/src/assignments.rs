@@ -14,6 +14,7 @@ pub struct Model {
     pub gradin_rubric_id: Option<Uuid>,
     pub file: Option<String>,
     pub teacher_id: Option<Uuid>,
+    pub subject_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -28,6 +29,16 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     GradingRubrics,
+    #[sea_orm(has_many = "super::group_assignments::Entity")]
+    GroupAssignments,
+    #[sea_orm(
+        belongs_to = "super::subjects::Entity",
+        from = "Column::GradinRubricId",
+        to = "super::subjects::Column::Id",
+        on_update = "NoAction",
+        on_delete = "SetNull"
+    )]
+    Subjects,
     #[sea_orm(
         belongs_to = "super::teachers::Entity",
         from = "Column::GradinRubricId",
@@ -47,6 +58,18 @@ impl Related<super::grades::Entity> for Entity {
 impl Related<super::grading_rubrics::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::GradingRubrics.def()
+    }
+}
+
+impl Related<super::group_assignments::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GroupAssignments.def()
+    }
+}
+
+impl Related<super::subjects::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Subjects.def()
     }
 }
 

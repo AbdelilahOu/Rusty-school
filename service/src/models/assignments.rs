@@ -11,6 +11,7 @@ pub struct Assignment {
     pub gradin_rubric_id: Option<Uuid>,
     pub file: Option<String>,
     pub teacher_id: Option<Uuid>,
+    pub subject_id: Option<Uuid>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

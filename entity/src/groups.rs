@@ -17,6 +17,8 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::classes::Entity")]
     Classes,
+    #[sea_orm(has_many = "super::group_assignments::Entity")]
+    GroupAssignments,
     #[sea_orm(
         belongs_to = "super::levels::Entity",
         from = "Column::LevelId",
@@ -32,6 +34,12 @@ pub enum Relation {
 impl Related<super::classes::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Classes.def()
+    }
+}
+
+impl Related<super::group_assignments::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GroupAssignments.def()
     }
 }
 

@@ -331,9 +331,7 @@ impl MutationService {
             subject_id: Set(Some(data.1)),
             ..Default::default()
         };
-        let teacher_subject = TeacherSubjects::insert(teacher_subject_a_model)
-            .exec(db)
-            .await?;
+        let teacher_subject = TeacherSubjects::insert(teacher_subject_a_model).exec(db).await?;
         Ok(teacher_subject.last_insert_id)
     }
 
@@ -357,6 +355,7 @@ impl MutationService {
             gradin_rubric_id: Set(data.gradin_rubric_id),
             file: Set(data.file),
             teacher_id: Set(data.teacher_id),
+            subject_id: Set(data.subject_id),
             ..Default::default()
         };
         let assignment = Assignments::insert(assignment_a_model).exec(db).await?;
@@ -375,6 +374,7 @@ impl MutationService {
                 assignment_model.gradin_rubric_id = Set(data.gradin_rubric_id);
                 assignment_model.file = Set(data.file);
                 assignment_model.teacher_id = Set(data.teacher_id);
+                assignment_model.subject_id = Set(data.subject_id);
                 //
                 let assignment = assignment_model.update(db).await?;
                 Ok(assignment.id)
@@ -440,9 +440,7 @@ impl MutationService {
             consequences: Set(data.consequences),
             ..Default::default()
         };
-        let disciplinary = Disciplinaries::insert(disciplinary_a_model)
-            .exec(db)
-            .await?;
+        let disciplinary = Disciplinaries::insert(disciplinary_a_model).exec(db).await?;
         Ok(disciplinary.last_insert_id)
     }
     pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: Disciplinary) -> DbResult<Uuid> {
