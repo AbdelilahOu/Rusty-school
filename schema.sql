@@ -154,24 +154,12 @@ CREATE TABLE public.assignments (
     submission_type character varying NOT NULL,
     gradin_rubric_id uuid,
     file character varying,
-    teacher_id uuid
+    teacher_id uuid,
+    subject_id uuid
 );
 
 
 ALTER TABLE public.assignments OWNER TO root;
-
---
--- Name: class_assignments; Type: TABLE; Schema: public; Owner: root
---
-
-CREATE TABLE public.class_assignments (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    class_id uuid,
-    assignment_id uuid
-);
-
-
-ALTER TABLE public.class_assignments OWNER TO root;
 
 --
 -- Name: classes; Type: TABLE; Schema: public; Owner: root
@@ -261,6 +249,19 @@ CREATE TABLE public.grading_rubrics (
 
 
 ALTER TABLE public.grading_rubrics OWNER TO root;
+
+--
+-- Name: group_assignments; Type: TABLE; Schema: public; Owner: root
+--
+
+CREATE TABLE public.group_assignments (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    group_id uuid,
+    assignment_id uuid
+);
+
+
+ALTER TABLE public.group_assignments OWNER TO root;
 
 --
 -- Name: groups; Type: TABLE; Schema: public; Owner: root
@@ -523,14 +524,6 @@ ALTER TABLE ONLY public.assignments
 
 
 --
--- Name: class_assignments class_assignments_pkey; Type: CONSTRAINT; Schema: public; Owner: root
---
-
-ALTER TABLE ONLY public.class_assignments
-    ADD CONSTRAINT class_assignments_pkey PRIMARY KEY (id);
-
-
---
 -- Name: classes classes_pkey; Type: CONSTRAINT; Schema: public; Owner: root
 --
 
@@ -576,6 +569,14 @@ ALTER TABLE ONLY public.grading_criteria
 
 ALTER TABLE ONLY public.grading_rubrics
     ADD CONSTRAINT grading_rubrics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: group_assignments group_assignments_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.group_assignments
+    ADD CONSTRAINT group_assignments_pkey PRIMARY KEY (id);
 
 
 --
@@ -759,27 +760,19 @@ ALTER TABLE ONLY public.assignments
 
 
 --
+-- Name: assignments fk_assignment_subject_id; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.assignments
+    ADD CONSTRAINT fk_assignment_subject_id FOREIGN KEY (gradin_rubric_id) REFERENCES public.subjects(id) ON DELETE SET NULL;
+
+
+--
 -- Name: assignments fk_assignment_teacher_id; Type: FK CONSTRAINT; Schema: public; Owner: root
 --
 
 ALTER TABLE ONLY public.assignments
     ADD CONSTRAINT fk_assignment_teacher_id FOREIGN KEY (gradin_rubric_id) REFERENCES public.teachers(id) ON DELETE SET NULL;
-
-
---
--- Name: class_assignments fk_class_assignments_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: root
---
-
-ALTER TABLE ONLY public.class_assignments
-    ADD CONSTRAINT fk_class_assignments_assignment_id FOREIGN KEY (class_id) REFERENCES public.assignments(id) ON DELETE SET NULL;
-
-
---
--- Name: class_assignments fk_class_assignments_class_id; Type: FK CONSTRAINT; Schema: public; Owner: root
---
-
-ALTER TABLE ONLY public.class_assignments
-    ADD CONSTRAINT fk_class_assignments_class_id FOREIGN KEY (class_id) REFERENCES public.classes(id) ON DELETE SET NULL;
 
 
 --
@@ -860,6 +853,22 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.grading_criteria
     ADD CONSTRAINT fk_grading_criteria_rubrics_id FOREIGN KEY (grading_rubric_id) REFERENCES public.grading_rubrics(id) ON DELETE CASCADE;
+
+
+--
+-- Name: group_assignments fk_group_assignments_assignment_id; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.group_assignments
+    ADD CONSTRAINT fk_group_assignments_assignment_id FOREIGN KEY (group_id) REFERENCES public.assignments(id) ON DELETE SET NULL;
+
+
+--
+-- Name: group_assignments fk_group_assignments_group_id; Type: FK CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.group_assignments
+    ADD CONSTRAINT fk_group_assignments_group_id FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE SET NULL;
 
 
 --
