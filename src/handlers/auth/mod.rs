@@ -12,11 +12,10 @@ use actix_web::{
 };
 use serde::{Deserialize, Serialize};
 use service::{
-    chrono::{Duration, NaiveDateTime, Utc},
+    chrono::{DateTime, Duration, NaiveDateTime, Utc},
     models::{Session, User},
     mutation::MutationService,
     query::QueryService,
-    sea_orm::prelude::DateTimeUtc,
     transaction::TransactionService,
     uuid::Uuid,
 };
@@ -49,14 +48,8 @@ pub struct AuthQuery {
 }
 
 pub async fn login(state: State) -> Response {
-    let url = get_google_auth_url(
-        state.config.client_id.clone(),
-        state.config.redirect_uri.clone(),
-    )
-    .await;
-    Response::Found()
-        .append_header(("Location", url.as_str()))
-        .finish()
+    let url = get_google_auth_url(state.config.client_id.clone(), state.config.redirect_uri.clone()).await;
+    Response::Found().append_header(("Location", url.as_str())).finish()
 }
 
 pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> Response {
@@ -88,10 +81,7 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> Respon
                         });
                     };
                     let now = Utc::now();
-                    if session
-                        .expires_at
-                        .lt(&NaiveDateTime::new(now.date_naive(), now.time()))
-                    {
+                    if session.expires_at.lt(&NaiveDateTime::new(now.date_naive(), now.time())) {
                         return Response::Unauthorized().json(ResponseData::<String> {
                             error: None,
                             message: Some("refresh token expired".to_string()),
@@ -99,20 +89,14 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> Respon
                         });
                     };
 
-                    let (access_token, claims) = generate_tokens(
-                        session.user_id,
-                        state.config.jwt_secret.clone(),
-                        Duration::minutes(5),
-                    );
+                    let (access_token, claims) = generate_tokens(session.user_id, state.config.jwt_secret.clone(), Duration::minutes(5));
 
                     Response::Ok().json(ResponseData::<RefreshAccessResponse> {
                         error: None,
                         message: Some("access token refreshed".to_string()),
                         data: Some(RefreshAccessResponse {
                             access_token,
-                            access_token_expires_at: DateTimeUtc::from_timestamp(claims.exp, 0)
-                                .unwrap()
-                                .naive_utc(),
+                            access_token_expires_at: DateTime::<Utc>::from_timestamp(claims.exp, 0).unwrap().naive_utc(),
                         }),
                     })
                 }
@@ -156,28 +140,14 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                     match user_res {
                         Ok(user_uuid) => {
                             // create access token
-                            let (access_token, access_claims) = generate_tokens(
-                                user_uuid,
-                                state.config.jwt_secret.clone(),
-                                Duration::minutes(5),
-                            );
-                            let (refresh_token, refresh_claims) = generate_tokens(
-                                user_uuid,
-                                state.config.jwt_secret.clone(),
-                                Duration::hours(48),
-                            );
+                            let (access_token, access_claims) = generate_tokens(user_uuid, state.config.jwt_secret.clone(), Duration::minutes(5));
+                            let (refresh_token, refresh_claims) = generate_tokens(user_uuid, state.config.jwt_secret.clone(), Duration::hours(48));
                             // create session
-                            let (user_agent, client_ip) =
-                                match (req.headers().get(header::USER_AGENT), req.peer_addr()) {
-                                    (Some(agent), Some(ip)) => (
-                                        agent.to_str().unwrap_or("").to_string(),
-                                        ip.ip().to_string(),
-                                    ),
-                                    _ => ("".to_string(), "".to_string()),
-                                };
-                            let expires_at = DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
-                                .unwrap()
-                                .naive_utc();
+                            let (user_agent, client_ip) = match (req.headers().get(header::USER_AGENT), req.peer_addr()) {
+                                (Some(agent), Some(ip)) => (agent.to_str().unwrap_or("").to_string(), ip.ip().to_string()),
+                                _ => ("".to_string(), "".to_string()),
+                            };
+                            let expires_at = DateTime::<Utc>::from_timestamp(refresh_claims.exp, 0).unwrap().naive_utc();
                             let create_session_res = MutationService::create_session(
                                 &state.db_conn,
                                 Session {
@@ -193,14 +163,8 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                             .await;
                             match create_session_res {
                                 Ok(session_id) => {
-                                    let access_token_expires_at =
-                                        DateTimeUtc::from_timestamp(access_claims.exp, 0)
-                                            .unwrap()
-                                            .naive_utc();
-                                    let refresh_token_expires_at =
-                                        DateTimeUtc::from_timestamp(refresh_claims.exp, 0)
-                                            .unwrap()
-                                            .naive_utc();
+                                    let access_token_expires_at = DateTime::<Utc>::from_timestamp(access_claims.exp, 0).unwrap().naive_utc();
+                                    let refresh_token_expires_at = DateTime::<Utc>::from_timestamp(refresh_claims.exp, 0).unwrap().naive_utc();
                                     Response::Ok().json(ResponseData::<LogInResponse> {
                                         error: None,
                                         message: Some("user logged in successfully".to_string()),
@@ -215,9 +179,7 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                                         }),
                                     })
                                 }
-                                Err(e) => Response::InternalServerError().json(ResponseData::<
-                                    Option<String>,
-                                > {
+                                Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
                                     error: Some(e.to_string()),
                                     message: Some("coudnt create session".to_string()),
                                     data: None,
