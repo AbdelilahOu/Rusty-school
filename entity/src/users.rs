@@ -9,9 +9,9 @@ pub struct Model {
     pub id: Uuid,
     #[sea_orm(unique)]
     pub email: String,
-    pub first_name: String,
-    pub last_name: String,
-    pub full_name: Option<String>,
+    pub name: String,
+    pub given_name: String,
+    pub family_name: String,
     pub person_id: Uuid,
     pub picture: Option<String>,
 }

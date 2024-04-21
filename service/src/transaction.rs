@@ -90,10 +90,7 @@ impl TransactionService {
         db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
-                let user = Users::find()
-                    .filter(users::Column::Email.eq(&data.email))
-                    .one(txn)
-                    .await?;
+                let user = Users::find().filter(users::Column::Email.eq(&data.email)).one(txn).await?;
 
                 if user.is_some() {
                     println!("user already exists");
@@ -109,8 +106,9 @@ impl TransactionService {
                 .await?;
 
                 let c_user = UserActiveModel {
-                    first_name: Set(data.first_name),
-                    last_name: Set(data.last_name),
+                    name: Set(data.name),
+                    given_name: Set(data.given_name),
+                    family_name: Set(data.family_name),
                     email: Set(data.email),
                     picture: Set(data.picture),
                     person_id: Set(c_person.id),

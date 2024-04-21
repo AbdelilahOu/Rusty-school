@@ -1,4 +1,4 @@
-use sea_orm_migration::{prelude::*, sea_query::extension::postgres::PgExpr};
+use sea_orm_migration::prelude::*;
 
 use crate::m20231118_162555_c_persons::Person;
 
@@ -13,24 +13,11 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(User::Table)
                     .if_not_exists()
-                    .col(
-                        ColumnDef::new(User::Id)
-                            .uuid()
-                            .not_null()
-                            .default(Expr::cust("gen_random_uuid()"))
-                            .primary_key(),
-                    )
+                    .col(ColumnDef::new(User::Id).uuid().not_null().default(Expr::cust("gen_random_uuid()")).primary_key())
                     .col(ColumnDef::new(User::Email).string().unique_key().not_null())
-                    .col(ColumnDef::new(User::FirstName).string().not_null())
-                    .col(ColumnDef::new(User::LastName).string().not_null())
-                    .col(
-                        ColumnDef::new(User::FullName).string().generated(
-                            Expr::col(User::FirstName)
-                                .concat(" ")
-                                .concat(Expr::col(User::LastName)),
-                            true,
-                        ),
-                    )
+                    .col(ColumnDef::new(User::Name).string().not_null())
+                    .col(ColumnDef::new(User::GivenName).string().not_null())
+                    .col(ColumnDef::new(User::FamilyName).string().not_null())
                     .col(ColumnDef::new(User::PersonId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
@@ -46,9 +33,7 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager
-            .drop_table(Table::drop().table(User::Table).to_owned())
-            .await
+        manager.drop_table(Table::drop().table(User::Table).to_owned()).await
     }
 }
 
@@ -58,12 +43,12 @@ pub enum User {
     Table,
     Id,
     Email,
-    #[sea_orm(iden = "first_name")]
-    FirstName,
-    #[sea_orm(iden = "last_name")]
-    LastName,
-    #[sea_orm(iden = "full_name")]
-    FullName,
+    #[sea_orm(iden = "name")]
+    Name,
+    #[sea_orm(iden = "given_name")]
+    GivenName,
+    #[sea_orm(iden = "family_name")]
+    FamilyName,
     #[sea_orm(iden = "person_id")]
     PersonId,
     Picture,

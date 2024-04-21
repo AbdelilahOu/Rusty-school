@@ -130,8 +130,9 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                     let user_res = TransactionService::upsert_user(
                         &state.db_conn,
                         User {
-                            first_name: user.name.clone(),
-                            last_name: "".to_string(),
+                            name: user.name.clone(),
+                            given_name: user.given_name.clone(),
+                            family_name: user.family_name.clone(),
                             email: user.email.clone(),
                             picture: Some(user.picture),
                         },
