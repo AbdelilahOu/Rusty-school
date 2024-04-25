@@ -59,7 +59,7 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
         Ok(delete_count) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Disciplinary deleted successfully".to_string()),
-            data: Some(delete_count.to_string()),
+            data: Some(delete_count),
         }),
         Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
@@ -97,12 +97,7 @@ pub async fn list(req: Request, query: Query<DisciplinaryQuery>, state: State) -
     }
 }
 
-pub async fn update(
-    req: Request,
-    id: Path<Uuid>,
-    body: Json<Disciplinary>,
-    state: State,
-) -> Response {
+pub async fn update(req: Request, id: Path<Uuid>, body: Json<Disciplinary>, state: State) -> Response {
     // get headers
     let headers = req.headers();
     // check token for auth
@@ -115,9 +110,7 @@ pub async fn update(
             data: None,
         });
     }
-    let res =
-        MutationService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner())
-            .await;
+    let res = MutationService::update_disciplinary(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
             error: None,

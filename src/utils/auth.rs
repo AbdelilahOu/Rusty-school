@@ -53,10 +53,7 @@ pub async fn request_tokens(code: String, conf: Config) -> Result<TokenResponse,
         .expect("Failed to send request");
     //
     if res.status().is_success() {
-        let resp = res
-            .json::<TokenResponse>()
-            .await
-            .expect("Failed to parse response");
+        let resp = res.json::<TokenResponse>().await.expect("Failed to parse response");
         return Ok(resp);
     } else {
         Err("Error getting tokens".to_string())
@@ -67,12 +64,10 @@ pub async fn request_tokens(code: String, conf: Config) -> Result<TokenResponse,
 pub struct GoogleUser {
     pub id: String,
     pub email: String,
-    pub verified_email: bool,
     pub name: String,
     pub given_name: String,
     pub family_name: String,
     pub picture: String,
-    pub locale: String,
 }
 pub async fn get_google_user(acc_token: String, id_token: String) -> Result<GoogleUser, String> {
     let mut url = Url::parse("https://www.googleapis.com/oauth2/v1/userinfo").unwrap();

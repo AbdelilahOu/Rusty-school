@@ -60,7 +60,7 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
         Ok(delete_count) => Response::Ok().json(ResponseData {
             error: None,
             message: Some("Group deleted successfully".to_string()),
-            data: Some(delete_count.to_string()),
+            data: Some(delete_count),
         }),
         Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
@@ -139,8 +139,7 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Group>, state: Stat
             data: None,
         });
     }
-    let res =
-        MutationService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
+    let res = MutationService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
             error: None,
