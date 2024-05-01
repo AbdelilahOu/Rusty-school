@@ -15,7 +15,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set(PersonTypeEnum::Student),
+                    person_type: Set(PersonEnums::Student),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -41,7 +41,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set(PersonTypeEnum::Teacher),
+                    person_type: Set(PersonEnums::Teacher),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -66,7 +66,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create person
                 let person = PersonActiveModel {
-                    person_type: Set(PersonTypeEnum::Parent),
+                    person_type: Set(PersonEnums::Parent),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -99,7 +99,7 @@ impl TransactionService {
                 }
                 // create details first
                 let c_person = PersonActiveModel {
-                    person_type: Set(PersonTypeEnum::NotDefined),
+                    person_type: Set(PersonEnums::NotDefined),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -127,7 +127,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemTypeEnum::Lecture),
+                    item_type: Set(TimeTableItemCategories::Lecture),
                     full_date: Set(Some(data.full_date)),
                     start_time: Set(Some(data.start_time)),
                     ..Default::default()
@@ -153,7 +153,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemTypeEnum::Activity),
+                    item_type: Set(TimeTableItemCategories::Activity),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
                     day_of_week: Set(to_day_of_week(data.day_of_week)),
@@ -180,7 +180,7 @@ impl TransactionService {
             Box::pin(async move {
                 // create time table
                 let timetable_active_modal = TimeTableActiveModel {
-                    item_type: Set(TimeTableItemTypeEnum::Lecture),
+                    item_type: Set(TimeTableItemCategories::Lecture),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
                     day_of_week: Set(to_day_of_week(data.day_of_week)),

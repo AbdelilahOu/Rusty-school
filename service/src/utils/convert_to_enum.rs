@@ -1,47 +1,45 @@
-use crate::entities::{
-    AnnouncementCategoryEnum, AudienceEnum, DayOfWeekEnum, PerformanceLevelEnum,
-};
+use crate::entities::{AnnouncementCategories, Audiences, PerformanceLevels, WeekDays};
 
-pub fn to_day_of_week(i: u32) -> Option<DayOfWeekEnum> {
+pub fn to_day_of_week(i: u32) -> Option<WeekDays> {
     match i {
-        0 => Some(DayOfWeekEnum::Sunday),
-        1 => Some(DayOfWeekEnum::Monday),
-        2 => Some(DayOfWeekEnum::Tuesday),
-        3 => Some(DayOfWeekEnum::Wednesday),
-        4 => Some(DayOfWeekEnum::Thursday),
-        5 => Some(DayOfWeekEnum::Friday),
-        6 => Some(DayOfWeekEnum::Saturday),
+        0 => Some(WeekDays::Sunday),
+        1 => Some(WeekDays::Monday),
+        2 => Some(WeekDays::Tuesday),
+        3 => Some(WeekDays::Wednesday),
+        4 => Some(WeekDays::Thursday),
+        5 => Some(WeekDays::Friday),
+        6 => Some(WeekDays::Saturday),
         _ => None,
     }
 }
 
-pub fn to_announcement_category(category: String) -> AnnouncementCategoryEnum {
+pub fn to_announcement_category(category: String) -> AnnouncementCategories {
     match category.as_str() {
-        "academic" => AnnouncementCategoryEnum::Academic,
-        "event" => AnnouncementCategoryEnum::Event,
-        _ => AnnouncementCategoryEnum::General,
+        "academic" => AnnouncementCategories::Academic,
+        "event" => AnnouncementCategories::Event,
+        _ => AnnouncementCategories::General,
     }
 }
 
-pub fn to_audience(audience: Option<String>) -> Option<AudienceEnum> {
+pub fn to_audience(audience: Option<String>) -> Option<Audiences> {
     match audience {
         Some(audience) => match audience.as_str() {
-            "groups" => Some(AudienceEnum::Groups),
-            "parents" => Some(AudienceEnum::Parents),
-            "students" => Some(AudienceEnum::Students),
-            "teachers" => Some(AudienceEnum::Teachers),
+            "groups" => Some(Audiences::Groups),
+            "parents" => Some(Audiences::Parents),
+            "students" => Some(Audiences::Students),
+            "teachers" => Some(Audiences::Teachers),
             _ => None,
         },
         None => None,
     }
 }
 
-pub fn to_performance(performance: String) -> PerformanceLevelEnum {
+pub fn to_performance(performance: String) -> PerformanceLevels {
     match performance.as_str() {
-        "exceeds_expectations" => PerformanceLevelEnum::ExceedsExpectations,
-        "meets_expectations" => PerformanceLevelEnum::MeetsExpectations,
-        "below_expectations" => PerformanceLevelEnum::BelowExpectations,
-        "needs_improvement" => PerformanceLevelEnum::NeedsImprovement,
-        _ => PerformanceLevelEnum::NotYetMeetingExpectations,
+        "exceeds_expectations" => PerformanceLevels::ExceedsExpectations,
+        "meets_expectations" => PerformanceLevels::MeetsExpectations,
+        "below_expectations" => PerformanceLevels::BelowExpectations,
+        "needs_improvement" => PerformanceLevels::NeedsImprovement,
+        _ => PerformanceLevels::NotYetMeetingExpectations,
     }
 }
