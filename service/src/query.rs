@@ -1,8 +1,8 @@
 use crate::{
     entities::*,
     models::{
-        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GradeQuery, GroupQuery, LevelQuery, ParentQuery,
-        RoomQuery, RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
+        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GetSessionWithRole, GradeQuery, GroupQuery, LevelQuery,
+        ParentQuery, RoomQuery, RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
     },
 };
 use chrono::NaiveDateTime;
@@ -724,8 +724,32 @@ impl QueryService {
         Ok(rubrics)
     }
     //
-    pub async fn get_session(db: &DbConn, id: Uuid) -> DbResult<Option<sessions::Model>> {
-        let session = Sessions::find_by_id(id).one(db).await?;
-        Ok(session)
+    pub async fn get_session(db: &DbConn, id: Uuid) -> DbResult<Option<GetSessionWithRole>> {
+        let (sql, values) = Query::select()
+            .from(Sessions)
+            .columns([
+                (Sessions, sessions::Column::Id),
+                (Sessions, sessions::Column::UserId),
+                (Sessions, sessions::Column::IsBlocked),
+                (Sessions, sessions::Column::RefreshToken),
+                (Sessions, sessions::Column::ExpiresAt),
+            ])
+            .expr(Expr::col(users::Column::Role).cast_as(Alias::new("TEXT")))
+            .join(
+                JoinType::Join,
+                Users,
+                Expr::col((Users, users::Column::Id)).equals((Sessions, sessions::Column::UserId)),
+            )
+            .cond_where(Condition::all().add(Expr::col((Sessions, sessions::Column::Id)).eq(id)))
+            .to_owned()
+            .build(PostgresQueryBuilder);
+
+        let result = GetSessionWithRole::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
+            .one(db)
+            .await?;
+
+        println!("{:?}", result);
+
+        Ok(result)
     }
 }

@@ -89,7 +89,8 @@ pub async fn renew_access_token(body: Json<RenewAccess>, state: State) -> Respon
                         });
                     };
 
-                    let (access_token, claims) = generate_tokens(session.user_id, state.config.jwt_secret.clone(), Duration::minutes(5));
+                    let (access_token, claims) =
+                        generate_tokens(session.user_id, session.role, state.config.jwt_secret.clone(), Duration::minutes(5));
 
                     Response::Ok().json(ResponseData::<RefreshAccessResponse> {
                         error: None,
@@ -135,14 +136,17 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                             family_name: user.family_name.clone(),
                             email: user.email.clone(),
                             picture: Some(user.picture),
+                            role: "not_defined".to_string(),
                         },
                     )
                     .await;
                     match user_res {
-                        Ok(user_uuid) => {
+                        Ok((user, id)) => {
                             // create access token
-                            let (access_token, access_claims) = generate_tokens(user_uuid, state.config.jwt_secret.clone(), Duration::minutes(5));
-                            let (refresh_token, refresh_claims) = generate_tokens(user_uuid, state.config.jwt_secret.clone(), Duration::hours(48));
+                            let (access_token, access_claims) =
+                                generate_tokens(id, user.role.clone(), state.config.jwt_secret.clone(), Duration::minutes(5));
+                            let (refresh_token, refresh_claims) =
+                                generate_tokens(id, user.role, state.config.jwt_secret.clone(), Duration::hours(48));
                             // create session
                             let (user_agent, client_ip) = match (req.headers().get(header::USER_AGENT), req.peer_addr()) {
                                 (Some(agent), Some(ip)) => (agent.to_str().unwrap_or("").to_string(), ip.ip().to_string()),
@@ -153,7 +157,7 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                                 &state.db_conn,
                                 Session {
                                     id: refresh_claims.session_id,
-                                    user_id: user_uuid,
+                                    user_id: id,
                                     user_agent,
                                     client_ip,
                                     is_blocked: false,

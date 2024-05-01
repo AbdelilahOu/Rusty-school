@@ -3,7 +3,7 @@ use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 use crate::{
     entities::*,
     models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
-    utils::convert_to_enum::{to_day_of_week, to_performance},
+    utils::enum_convertion::{roles_to_string, to_day_of_week, to_performance},
 };
 
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
@@ -86,16 +86,27 @@ impl TransactionService {
         })
         .await
     }
-    pub async fn upsert_user(db: &DbConn, data: User) -> TxnRes<Uuid> {
-        db.transaction::<_, Uuid, DbErr>(|txn| {
+    pub async fn upsert_user(db: &DbConn, data: User) -> TxnRes<(User, Uuid)> {
+        db.transaction::<_, (User, Uuid), DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
-                let user = Users::find().filter(users::Column::Email.eq(&data.email)).one(txn).await?;
+                let user_op: Option<UserModel> = Users::find().filter(users::Column::Email.eq(&data.email)).one(txn).await?;
 
-                if user.is_some() {
+                if user_op.is_some() {
                     println!("user already exists");
                     // upsert the user first
-                    return Ok(user.unwrap().id.to_owned());
+                    let user = user_op.unwrap();
+                    return Ok((
+                        User {
+                            name: user.name,
+                            given_name: user.given_name,
+                            family_name: user.family_name,
+                            email: user.email,
+                            picture: user.picture,
+                            role: roles_to_string(user.role),
+                        },
+                        user.id,
+                    ));
                 }
                 // create details first
                 let c_person = PersonActiveModel {
@@ -105,7 +116,7 @@ impl TransactionService {
                 .insert(txn)
                 .await?;
 
-                let c_user = UserActiveModel {
+                let new_user: UserModel = UserActiveModel {
                     name: Set(data.name),
                     given_name: Set(data.given_name),
                     family_name: Set(data.family_name),
@@ -117,7 +128,17 @@ impl TransactionService {
                 .insert(txn)
                 .await?;
 
-                Ok(c_user.id)
+                Ok((
+                    User {
+                        name: new_user.name,
+                        given_name: new_user.given_name,
+                        family_name: new_user.family_name,
+                        email: new_user.email,
+                        picture: new_user.picture,
+                        role: roles_to_string(new_user.role),
+                    },
+                    new_user.id,
+                ))
             })
         })
         .await

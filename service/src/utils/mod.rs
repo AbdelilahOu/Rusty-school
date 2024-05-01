@@ -1,1 +1,1 @@
-pub mod convert_to_enum;
+pub mod enum_convertion;

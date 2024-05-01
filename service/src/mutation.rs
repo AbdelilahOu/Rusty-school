@@ -4,7 +4,7 @@ use sea_orm::{prelude::*, Set};
 use crate::{
     entities::*,
     models::*,
-    utils::convert_to_enum::{to_announcement_category, to_audience},
+    utils::enum_convertion::{to_announcement_category, to_audience},
 };
 
 type DbResult<T> = Result<T, DbErr>;

@@ -1,4 +1,4 @@
-use crate::entities::{AnnouncementCategories, Audiences, PerformanceLevels, WeekDays};
+use crate::entities::{AnnouncementCategories, Audiences, PerformanceLevels, Roles, WeekDays};
 
 pub fn to_day_of_week(i: u32) -> Option<WeekDays> {
     match i {
@@ -41,5 +41,16 @@ pub fn to_performance(performance: String) -> PerformanceLevels {
         "below_expectations" => PerformanceLevels::BelowExpectations,
         "needs_improvement" => PerformanceLevels::NeedsImprovement,
         _ => PerformanceLevels::NotYetMeetingExpectations,
+    }
+}
+
+pub fn roles_to_string(role: Roles) -> String {
+    match role {
+        Roles::Admin => "admin".to_string(),
+        Roles::Assistant => "assistant".to_string(),
+        Roles::Student => "student".to_string(),
+        Roles::Teacher => "teacher".to_string(),
+        Roles::Parent => "parent".to_string(),
+        Roles::NotDefined => "not-defined".to_string(),
     }
 }
