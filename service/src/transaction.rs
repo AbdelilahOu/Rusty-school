@@ -1,7 +1,11 @@
 use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
 use crate::{
-    entities::*,
+    entities::{
+        users, ActivityActiveModel, CriteriaActiveModel, Criterias, EventActiveModel, LectureActiveModel, ParentActiveModel, PersonActiveModel,
+        PersonEnums, RubricActiveModel, StudentActiveModel, TeacherActiveModel, TimeTableActiveModel, TimeTableItemCategories, UserActiveModel,
+        UserModel, Users,
+    },
     models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
     utils::enum_convertion::{roles_to_string, to_day_of_week, to_performance},
 };
@@ -222,7 +226,6 @@ impl TransactionService {
         })
         .await
     }
-    //
     pub async fn create_rubric(db: &DbConn, data: Rubric) -> TxnRes<Uuid> {
         db.transaction::<_, Uuid, DbErr>(|txn| {
             Box::pin(async move {

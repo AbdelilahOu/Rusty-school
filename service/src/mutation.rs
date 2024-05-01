@@ -334,7 +334,6 @@ impl MutationService {
         let teacher_subject = TeacherSubjects::insert(teacher_subject_a_model).exec(db).await?;
         Ok(teacher_subject.last_insert_id)
     }
-
     pub async fn delete_teacher_subject(db: &DbConn, id: Uuid) -> DbResult<u64> {
         let teacher_subject_model = TeacherSubjects::find_by_id(id).one(db).await?;
         match teacher_subject_model {

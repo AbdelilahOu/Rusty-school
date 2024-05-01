@@ -1,5 +1,10 @@
 use crate::{
-    entities::*,
+    entities::{
+        activities, announcements, assignments, classes, disciplinary_actions, events, grades, grading_rubrics, groups, lectures, levels, parents,
+        persons, rooms, scans, sessions, students, subjects, teachers, time_table, users, Activities, Announcements, Assignments, Classes,
+        Disciplinaries, Events, Grades, Groups, Lectures, Levels, Parents, Persons, Rooms, Rubrics, Scans, Sessions, Students, Subjects, Teachers,
+        TimeTableItemCategories, TimeTables, Users,
+    },
     models::{
         AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GetSessionWithRole, GradeQuery, GroupQuery, LevelQuery,
         ParentQuery, RoomQuery, RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
