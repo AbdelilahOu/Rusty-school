@@ -2,8 +2,13 @@ use chrono::Utc;
 use sea_orm::{prelude::*, Set};
 
 use crate::{
-    entities::*,
-    models::*,
+    entities::{
+        AnnouncementActiveModel, Announcements, AssignmentActiveModel, Assignments, ClassActiveModel, Classes, Disciplinaries,
+        DisciplinaryActiveModel, GradeActiveModel, Grades, GroupActiveModel, Groups, LevelActiveModel, Levels, ParentActiveModel, Parents,
+        RoomActiveModel, Rooms, RubricActiveModel, Rubrics, ScanActiveModel, Scans, SessionActiveModel, Sessions, StudentActiveModel, Students,
+        SubjectActiveModel, Subjects, TeacherActiveModel, TeacherSubjectActiveModel, TeacherSubjects, Teachers, TimeTables,
+    },
+    models::{Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric, Scan, Session, Student, Subject, Teacher},
     utils::enum_convertion::{to_announcement_category, to_audience},
 };
 
