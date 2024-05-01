@@ -36,7 +36,11 @@ impl MigrationTrait for Migration {
                             .to(Teacher::Table, Teacher::Id)
                             .on_delete(ForeignKeyAction::Cascade),
                     )
-                    .col(ColumnDef::new(TeacherSubjects::MdIdx).string().extra("GENERATED ALWAYS AS (MD5(CAST(subject_id AS VARCHAR) || '-' || CAST(teacher_id AS VARCHAR))) STORED"))
+                    .col(
+                        ColumnDef::new(TeacherSubjects::MdIdx)
+                            .string()
+                            .extra("GENERATED ALWAYS AS (MD5(CAST(subject_id AS VARCHAR) || '-' || CAST(teacher_id AS VARCHAR))) STORED"),
+                    )
                     .to_owned(),
             )
             .await?;
@@ -44,9 +48,7 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager
-            .drop_table(Table::drop().table(TeacherSubjects::Table).to_owned())
-            .await
+        manager.drop_table(Table::drop().table(TeacherSubjects::Table).to_owned()).await
     }
 }
 

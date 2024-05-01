@@ -11,20 +11,15 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // create week days enum
         manager
-            .create_type(
-                Type::create()
-                    .as_enum(DayOfWeekEnum::Table)
-                    .values(DayOfWeekEnum::iter().skip(1))
-                    .to_owned(),
-            )
+            .create_type(Type::create().as_enum(WeekDays::Table).values(WeekDays::iter().skip(1)).to_owned())
             .await?;
 
         // create timetable item type enum
         manager
             .create_type(
                 Type::create()
-                    .as_enum(TimeTableItemTypeEnum::Table)
-                    .values(TimeTableItemTypeEnum::iter().skip(1))
+                    .as_enum(TimeTableItemCategories::Table)
+                    .values(TimeTableItemCategories::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -44,16 +39,10 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(TimeTable::Type)
-                            .enumeration(
-                                TimeTableItemTypeEnum::Table,
-                                TimeTableItemTypeEnum::iter().skip(1),
-                            )
+                            .enumeration(TimeTableItemCategories::Table, TimeTableItemCategories::iter().skip(1))
                             .not_null(),
                     )
-                    .col(
-                        ColumnDef::new(TimeTable::DayOfWeek)
-                            .enumeration(DayOfWeekEnum::Table, DayOfWeekEnum::iter().skip(1)),
-                    )
+                    .col(ColumnDef::new(TimeTable::DayOfWeek).enumeration(WeekDays::Table, WeekDays::iter().skip(1)))
                     .col(ColumnDef::new(TimeTable::FullDate).date())
                     .col(ColumnDef::new(TimeTable::StartTime).time())
                     .col(ColumnDef::new(TimeTable::EndTime).time())
@@ -162,9 +151,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_table(Table::drop().table(Event::Table).to_owned())
-            .await?;
+        manager.drop_table(Table::drop().table(Event::Table).to_owned()).await?;
 
         manager
             .drop_foreign_key(
@@ -175,9 +162,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_table(Table::drop().table(Lecture::Table).to_owned())
-            .await?;
+        manager.drop_table(Table::drop().table(Lecture::Table).to_owned()).await?;
 
         manager
             .drop_foreign_key(
@@ -188,30 +173,14 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_table(Table::drop().table(Activity::Table).to_owned())
-            .await?;
+        manager.drop_table(Table::drop().table(Activity::Table).to_owned()).await?;
+
+        manager.drop_table(Table::drop().table(TimeTable::Table).to_owned()).await?;
+
+        manager.drop_type(Type::drop().if_exists().name(WeekDays::Table).to_owned()).await?;
 
         manager
-            .drop_table(Table::drop().table(TimeTable::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_type(
-                Type::drop()
-                    .if_exists()
-                    .name(DayOfWeekEnum::Table)
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .drop_type(
-                Type::drop()
-                    .if_exists()
-                    .name(TimeTableItemTypeEnum::Table)
-                    .to_owned(),
-            )
+            .drop_type(Type::drop().if_exists().name(TimeTableItemCategories::Table).to_owned())
             .await?;
 
         Ok(())
@@ -219,8 +188,8 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(Iden, EnumIter)]
-enum DayOfWeekEnum {
-    #[iden = "day_of_week_enum"]
+enum WeekDays {
+    #[iden = "week_days"]
     Table,
     Monday,
     Tuesday,
@@ -232,8 +201,8 @@ enum DayOfWeekEnum {
 }
 
 #[derive(Iden, EnumIter)]
-enum TimeTableItemTypeEnum {
-    #[iden = "time_table_item_type_enum"]
+enum TimeTableItemCategories {
+    #[iden = "time_table_item_categories"]
     Table,
     Activity,
     Lecture,

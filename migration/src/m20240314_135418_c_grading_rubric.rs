@@ -10,8 +10,8 @@ impl MigrationTrait for Migration {
         manager
             .create_type(
                 Type::create()
-                    .as_enum(PerformanceLevelEnum::Table)
-                    .values(PerformanceLevelEnum::iter().skip(1))
+                    .as_enum(PerformanceLevels::Table)
+                    .values(PerformanceLevels::iter().skip(1))
                     .to_owned(),
             )
             .await?;
@@ -46,11 +46,7 @@ impl MigrationTrait for Migration {
                             .default(Expr::cust("gen_random_uuid()"))
                             .primary_key(),
                     )
-                    .col(
-                        ColumnDef::new(GradingCriteria::GradingRubricId)
-                            .uuid()
-                            .not_null(),
-                    )
+                    .col(ColumnDef::new(GradingCriteria::GradingRubricId).uuid().not_null())
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk_grading_criteria_rubrics_id")
@@ -61,10 +57,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(GradingCriteria::Description).string())
                     .col(
                         ColumnDef::new(GradingCriteria::Performance)
-                            .enumeration(
-                                PerformanceLevelEnum::Table,
-                                PerformanceLevelEnum::iter().skip(1),
-                            )
+                            .enumeration(PerformanceLevels::Table, PerformanceLevels::iter().skip(1))
                             .not_null(),
                     )
                     .to_owned(),
@@ -84,21 +77,12 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager
-            .drop_table(Table::drop().table(GradingCriteria::Table).to_owned())
-            .await?;
+        manager.drop_table(Table::drop().table(GradingCriteria::Table).to_owned()).await?;
+
+        manager.drop_table(Table::drop().table(GradingRubrics::Table).to_owned()).await?;
 
         manager
-            .drop_table(Table::drop().table(GradingRubrics::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_type(
-                Type::drop()
-                    .if_exists()
-                    .name(PerformanceLevelEnum::Table)
-                    .to_owned(),
-            )
+            .drop_type(Type::drop().if_exists().name(PerformanceLevels::Table).to_owned())
             .await?;
 
         Ok(())
@@ -123,8 +107,8 @@ enum GradingCriteria {
 }
 
 #[derive(Iden, EnumIter)]
-enum PerformanceLevelEnum {
-    #[iden = "performance_level_enum"]
+enum PerformanceLevels {
+    #[iden = "performance_levels"]
     Table,
     ExceedsExpectations,
     MeetsExpectations,

@@ -1,6 +1,9 @@
 use sea_orm_migration::prelude::*;
 
-use crate::{m20231113_170500_c_teachers::Teacher, m20231215_142739_c_subjects::Subject, m20231222_155651_c_groups::Group, m20240314_135418_c_grading_rubric::GradingRubrics};
+use crate::{
+    m20231113_170500_c_teachers::Teacher, m20231215_142739_c_subjects::Subject, m20231222_155651_c_groups::Group,
+    m20240314_135418_c_grading_rubric::GradingRubrics,
+};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -13,7 +16,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Assignment::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Assignment::Id).uuid().not_null().default(Expr::cust("gen_random_uuid()")).primary_key())
+                    .col(
+                        ColumnDef::new(Assignment::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Assignment::Title).string().not_null())
                     .col(ColumnDef::new(Assignment::Description).string().not_null())
                     .col(ColumnDef::new(Assignment::DueDate).timestamp().not_null())
@@ -52,7 +61,13 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(GroupAssignment::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(GroupAssignment::Id).uuid().not_null().default(Expr::cust("gen_random_uuid()")).primary_key())
+                    .col(
+                        ColumnDef::new(GroupAssignment::Id)
+                            .uuid()
+                            .not_null()
+                            .default(Expr::cust("gen_random_uuid()"))
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(GroupAssignment::GroupId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -78,19 +93,39 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_assignment_rubric_id").table(Assignment::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_assignment_rubric_id")
+                    .table(Assignment::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_group_assignments_group_id").table(GroupAssignment::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_group_assignments_group_id")
+                    .table(GroupAssignment::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_group_assignments_assignment_id").table(GroupAssignment::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_group_assignments_assignment_id")
+                    .table(GroupAssignment::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_assignment_teacher_id").table(Assignment::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_assignment_teacher_id")
+                    .table(Assignment::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager.drop_table(Table::drop().table(GroupAssignment::Table).to_owned()).await?;

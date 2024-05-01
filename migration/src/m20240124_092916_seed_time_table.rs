@@ -34,7 +34,7 @@ impl MigrationTrait for Migration {
                             VALUES 
                                 (
                                     'activity', 
-                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::day_of_week_enum, 
+                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::week_days, 
                                     random_start_time_v, 
                                     random_end_time_v
                                 );
@@ -64,7 +64,7 @@ impl MigrationTrait for Migration {
                             $2
                         );
                 "#,
-                [random_activity.title.into(),random_activity.description.into()]
+                [random_activity.title.into(), random_activity.description.into()],
             ))
             .await?;
         }
@@ -117,7 +117,7 @@ impl MigrationTrait for Migration {
                             $2
                         );
                 "#,
-                [random_event.title.into(),random_event.description.into()]
+                [random_event.title.into(), random_event.description.into()],
             ))
             .await?;
         }
@@ -144,7 +144,7 @@ impl MigrationTrait for Migration {
                             VALUES 
                                 (
                                     'lecture', 
-                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::day_of_week_enum, 
+                                    LOWER(TRIM(TO_CHAR(CURRENT_DATE + ((random() * 7) :: INTEGER + 1) * INTERVAL '1 day', 'DAY')))::week_days, 
                                     random_start_time_v, 
                                     random_end_time_v
                                 )
