@@ -748,8 +748,6 @@ impl QueryService {
             .one(db)
             .await?;
 
-        println!("{:?}", result);
-
         Ok(result)
     }
 }
