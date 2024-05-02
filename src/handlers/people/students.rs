@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -26,6 +26,10 @@ pub async fn create(req: Request, body: Json<Student>, state: State) -> Response
             data: None,
         });
     }
+    // ONLY ASSISTANT AND ADMIN CAN CREATE
+    if let Ok(claims) = authorized
+        && !role_guard(claims.role, ["assistant", "admin"])
+    {}
     let res = MutationService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {

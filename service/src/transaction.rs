@@ -1,5 +1,3 @@
-use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
-
 use crate::{
     entities::{
         users, ActivityActiveModel, CriteriaActiveModel, Criterias, EventActiveModel, LectureActiveModel, ParentActiveModel, PersonActiveModel,
@@ -9,6 +7,7 @@ use crate::{
     models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
     utils::enum_convertion::{roles_to_string, to_day_of_week, to_performance},
 };
+use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
 type TxnRes<T> = Result<T, TransactionError<DbErr>>;
 pub struct TransactionService;

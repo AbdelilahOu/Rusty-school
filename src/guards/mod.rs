@@ -31,3 +31,12 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
         None => return Err("no auth headers".to_string()),
     }
 }
+
+pub fn role_guard(role: String, roles: Vec<String>) -> bool {
+    for allowed_role in roles.into_iter() {
+        if allowed_role == role {
+            return true;
+        }
+    }
+    return false;
+}
