@@ -26,10 +26,16 @@ pub async fn create(req: Request, body: Json<Student>, state: State) -> Response
             data: None,
         });
     }
-    // ONLY ASSISTANT AND ADMIN CAN CREATE
-    if let Ok(claims) = authorized
-        && !role_guard(claims.role, ["assistant", "admin"])
-    {}
+    //
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::create_student(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
@@ -58,7 +64,16 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
             data: None,
         });
     }
-
+    //
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::delete_student(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(delete_count) => Response::Ok().json(ResponseData {
@@ -86,6 +101,16 @@ pub async fn list(req: Request, query: Query<StudentQuery>, state: State) -> Res
             message: None,
             data: None,
         });
+    }
+    //
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin", "teacher", "parent"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = QueryService::list_students(&state.db_conn, query.into_inner()).await;
     match res {
@@ -115,7 +140,16 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Student>, state: St
             data: None,
         });
     }
-
+    //
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::update_student(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
