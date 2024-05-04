@@ -33,6 +33,9 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
 }
 
 pub fn role_guard(role: String, roles: Vec<&str>) -> bool {
+    if roles.len() == 0 {
+        return true;
+    }
     for allowed_role in roles.into_iter() {
         if allowed_role == role.as_str() {
             return true;

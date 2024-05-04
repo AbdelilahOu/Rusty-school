@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -25,6 +25,16 @@ pub async fn create(req: Request, body: Json<Teacher>, state: State) -> Response
             message: None,
             data: None,
         });
+    }
+    //
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::create_teacher(&state.db_conn, body.into_inner()).await;
     match res {
@@ -54,6 +64,15 @@ pub async fn add_subject(req: Request, params: Path<(Uuid, Uuid)>, state: State)
             data: None,
         });
     }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::create_teacher_subject(&state.db_conn, params.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
@@ -81,6 +100,15 @@ pub async fn delete_subject(req: Request, id: Path<Uuid>, state: State) -> Respo
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::delete_teacher_subject(&state.db_conn, id.into_inner()).await;
     match res {
@@ -110,6 +138,15 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
             data: None,
         });
     }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::delete_teacher(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(delete_count) => Response::Ok().json(ResponseData {
@@ -138,6 +175,15 @@ pub async fn list(req: Request, query: Query<TeacherQuery>, state: State) -> Res
             data: None,
         });
     }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec![]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = QueryService::list_teachers(&state.db_conn, query.into_inner()).await;
     match res {
         Ok(teachers) => Response::Ok().json(ResponseData {
@@ -165,6 +211,15 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Teacher>, state: St
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin", "teacher"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::update_teacher(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
