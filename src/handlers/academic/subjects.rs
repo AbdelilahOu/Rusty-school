@@ -26,7 +26,7 @@ pub async fn create(req: Request, body: Json<Subject>, state: State) -> Response
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
@@ -60,7 +60,7 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
@@ -144,7 +144,7 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Subject>, state: St
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,

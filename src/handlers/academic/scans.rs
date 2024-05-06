@@ -49,7 +49,7 @@ pub async fn list(req: Request, query: Query<ScansQuery>, state: State) -> Respo
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,

@@ -26,7 +26,7 @@ pub async fn create_event(req: Request, body: Json<Event>, state: State) -> Resp
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
@@ -60,7 +60,7 @@ pub async fn create_activity(req: Request, body: Json<Activity>, state: State) -
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
@@ -94,7 +94,7 @@ pub async fn create_lecture(req: Request, body: Json<Lecture>, state: State) -> 
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
@@ -153,7 +153,7 @@ pub async fn delete_timetable_item(req: Request, id: Path<Uuid>, state: State) -
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,

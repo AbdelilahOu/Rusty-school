@@ -17,7 +17,7 @@ pub async fn list(req: Request, query: Query<AttendanceQuery>, state: State) -> 
     }
     if let Ok(claims) = authorized {
         if !role_guard(claims.role, vec!["teacher", "parent", "admin", "assistant"]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
+            return Response::Forbidden().json(ResponseData::<String> {
                 error: Some("unauthorized role".to_string()),
                 message: None,
                 data: None,
