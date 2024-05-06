@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -23,6 +23,15 @@ pub async fn create_event(req: Request, body: Json<Event>, state: State) -> Resp
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = TransactionService::create_event(&state.db_conn, body.into_inner()).await;
     match res {
@@ -49,6 +58,15 @@ pub async fn create_activity(req: Request, body: Json<Activity>, state: State) -
             data: None,
         });
     }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = TransactionService::create_activity(&state.db_conn, body.into_inner()).await;
     match res {
         Ok(_) => Response::Created().json(ResponseData {
@@ -73,6 +91,15 @@ pub async fn create_lecture(req: Request, body: Json<Lecture>, state: State) -> 
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = TransactionService::create_lecture(&state.db_conn, body.into_inner()).await;
     match res {
@@ -123,6 +150,15 @@ pub async fn delete_timetable_item(req: Request, id: Path<Uuid>, state: State) -
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::delete_time_table(&state.db_conn, id.into_inner()).await;
     match res {

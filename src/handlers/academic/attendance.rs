@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{web::Query, HttpRequest as Request, HttpResponse as Response};
@@ -14,6 +14,15 @@ pub async fn list(req: Request, query: Query<AttendanceQuery>, state: State) -> 
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["teacher", "parent", "admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = QueryService::list_attendance(&state.db_conn, query.into_inner()).await;
     match res {

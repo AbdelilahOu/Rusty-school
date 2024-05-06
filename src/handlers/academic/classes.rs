@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -22,6 +22,15 @@ pub async fn create(req: Request, body: Json<Class>, state: State) -> Response {
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::create_class(&state.db_conn, body.into_inner()).await;
     match res {
@@ -48,6 +57,15 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
             data: None,
         });
     }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
+    }
     let res = MutationService::delete_class(&state.db_conn, id.into_inner()).await;
     match res {
         Ok(delete_count) => Response::Ok().json(ResponseData {
@@ -73,6 +91,7 @@ pub async fn list(req: Request, query: Query<ClassQuery>, state: State) -> Respo
             data: None,
         });
     }
+
     let res = QueryService::list_classes(&state.db_conn, query.into_inner()).await;
     match res {
         Ok(classes) => Response::Ok().json(ResponseData {
@@ -97,6 +116,15 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Class>, state: Stat
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["assistant", "admin"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::update_class(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {

@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -46,6 +46,15 @@ pub async fn list(req: Request, query: Query<ScansQuery>, state: State) -> Respo
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = QueryService::list_scans(&state.db_conn, query.into_inner()).await;
     match res {

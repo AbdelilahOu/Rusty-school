@@ -1,5 +1,5 @@
 use crate::{
-    guards::auth_guard,
+    guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
 use actix_web::{
@@ -22,6 +22,15 @@ pub async fn create(req: Request, body: Json<Room>, state: State) -> Response {
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::create_room(&state.db_conn, body.into_inner()).await;
     match res {
@@ -47,6 +56,15 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::delete_room(&state.db_conn, id.into_inner()).await;
     match res {
@@ -97,6 +115,15 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Room>, state: State
             message: None,
             data: None,
         });
+    }
+    if let Ok(claims) = authorized {
+        if !role_guard(claims.role, vec!["admin", "assistant"]) {
+            return Response::Unauthorized().json(ResponseData::<String> {
+                error: Some("unauthorized role".to_string()),
+                message: None,
+                data: None,
+            });
+        }
     }
     let res = MutationService::update_room(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {

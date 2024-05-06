@@ -92,15 +92,7 @@ pub async fn list(req: Request, query: Query<AnnouncementQuery>, state: State) -
             data: None,
         });
     }
-    if let Ok(claims) = authorized {
-        if !role_guard(claims.role, vec![]) {
-            return Response::Unauthorized().json(ResponseData::<String> {
-                error: Some("unauthorized role".to_string()),
-                message: None,
-                data: None,
-            });
-        }
-    }
+
     let res = QueryService::list_announcements(&state.db_conn, query.into_inner()).await;
     match res {
         Ok(announcements) => Response::Ok().json(ResponseData {
