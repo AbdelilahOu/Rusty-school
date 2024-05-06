@@ -14,11 +14,8 @@ use service::{
 };
 //
 pub async fn create(req: Request, body: Json<Teacher>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -52,11 +49,8 @@ pub async fn create(req: Request, body: Json<Teacher>, state: State) -> Response
 }
 
 pub async fn add_subject(req: Request, params: Path<(Uuid, Uuid)>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -89,11 +83,8 @@ pub async fn add_subject(req: Request, params: Path<(Uuid, Uuid)>, state: State)
 }
 
 pub async fn delete_subject(req: Request, id: Path<Uuid>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -126,11 +117,8 @@ pub async fn delete_subject(req: Request, id: Path<Uuid>, state: State) -> Respo
 }
 
 pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -163,11 +151,8 @@ pub async fn delete(req: Request, id: Path<Uuid>, state: State) -> Response {
 }
 
 pub async fn list(req: Request, query: Query<TeacherQuery>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -200,11 +185,8 @@ pub async fn list(req: Request, query: Query<TeacherQuery>, state: State) -> Res
 }
 
 pub async fn update(req: Request, id: Path<Uuid>, body: Json<Teacher>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),

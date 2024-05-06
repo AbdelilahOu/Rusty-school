@@ -13,11 +13,8 @@ use service::{
 };
 //
 pub async fn create(req: Request, body: Json<Scan>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),
@@ -41,11 +38,8 @@ pub async fn create(req: Request, body: Json<Scan>, state: State) -> Response {
 }
 
 pub async fn list(req: Request, query: Query<ScansQuery>, state: State) -> Response {
-    // get headers
     let headers = req.headers();
-    // check token for auth
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
-    // unauth
     if let Err(message) = authorized {
         return Response::Unauthorized().json(ResponseData::<String> {
             error: Some(message),

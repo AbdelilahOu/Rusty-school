@@ -33,6 +33,7 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
 }
 
 pub fn role_guard(role: String, roles: Vec<&str>) -> bool {
+    // access to all roles
     if roles.len() == 0 {
         return true;
     }
