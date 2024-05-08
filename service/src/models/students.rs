@@ -3,9 +3,10 @@ use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Student {
-    pub first_name: String,
-    pub last_name: String,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
     pub group_id: Option<Uuid>,
+    pub person_id: Option<Uuid>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

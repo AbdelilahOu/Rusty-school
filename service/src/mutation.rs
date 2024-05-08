@@ -18,9 +18,10 @@ impl MutationService {
     // students entity
     pub async fn create_student(db: &DbConn, data: Student) -> DbResult<Uuid> {
         let student_a_model = StudentActiveModel {
-            first_name: Set(data.first_name),
-            last_name: Set(data.last_name),
+            first_name: Set(data.first_name.unwrap()),
+            last_name: Set(data.last_name.unwrap()),
             group_id: Set(data.group_id),
+            person_id: Set(data.person_id),
             ..Default::default()
         };
         let student = Students::insert(student_a_model).exec(db).await?;
@@ -42,10 +43,18 @@ impl MutationService {
             Some(student_model) => {
                 let mut student_model: StudentActiveModel = student_model.into();
                 // set new feild
-                student_model.first_name = Set(data.first_name);
-                student_model.last_name = Set(data.last_name);
-                student_model.group_id = Set(data.group_id);
-                student_model.id = Set(id);
+                if let Some(first_name) = data.first_name {
+                    student_model.first_name = Set(first_name);
+                }
+                if let Some(last_name) = data.last_name {
+                    student_model.last_name = Set(last_name);
+                }
+                if let Some(group_id) = data.group_id {
+                    student_model.group_id = Set(Some(group_id));
+                }
+                if let Some(person_id) = data.person_id {
+                    student_model.person_id = Set(Some(person_id));
+                }
                 //
                 let student = student_model.update(db).await?;
                 Ok(student.id)
@@ -56,8 +65,9 @@ impl MutationService {
     // teachers entity
     pub async fn create_teacher(db: &DbConn, data: Teacher) -> DbResult<Uuid> {
         let teacher_a_model = TeacherActiveModel {
-            first_name: Set(data.first_name),
-            last_name: Set(data.last_name),
+            first_name: Set(data.first_name.unwrap()),
+            last_name: Set(data.last_name.unwrap()),
+            person_id: Set(data.person_id),
             ..Default::default()
         };
         let teacher = Teachers::insert(teacher_a_model).exec(db).await?;
@@ -79,8 +89,15 @@ impl MutationService {
             Some(teacher_model) => {
                 //
                 let mut teacher_model: TeacherActiveModel = teacher_model.into();
-                teacher_model.first_name = Set(data.first_name);
-                teacher_model.last_name = Set(data.last_name);
+                if let Some(first_name) = data.first_name {
+                    teacher_model.first_name = Set(first_name);
+                }
+                if let Some(last_name) = data.last_name {
+                    teacher_model.last_name = Set(last_name);
+                }
+                if let Some(person_id) = data.person_id {
+                    teacher_model.person_id = Set(Some(person_id));
+                }
                 teacher_model.id = Set(id);
                 //
                 let teacher = teacher_model.update(db).await?;
@@ -92,8 +109,9 @@ impl MutationService {
     // parents entity
     pub async fn create_parent(db: &DbConn, data: Parent) -> DbResult<Uuid> {
         let parent_a_model = ParentActiveModel {
-            first_name: Set(data.first_name),
-            last_name: Set(data.last_name),
+            first_name: Set(data.first_name.unwrap()),
+            last_name: Set(data.last_name.unwrap()),
+            person_id: Set(data.person_id),
             ..Default::default()
         };
         let parent = Parents::insert(parent_a_model).exec(db).await?;
@@ -114,8 +132,15 @@ impl MutationService {
         match parent_model {
             Some(parent_model) => {
                 let mut parent_model: ParentActiveModel = parent_model.into();
-                parent_model.first_name = Set(data.first_name);
-                parent_model.last_name = Set(data.last_name);
+                if let Some(first_name) = data.first_name {
+                    parent_model.first_name = Set(first_name);
+                }
+                if let Some(last_name) = data.last_name {
+                    parent_model.last_name = Set(last_name);
+                }
+                if let Some(person_id) = data.person_id {
+                    parent_model.person_id = Set(Some(person_id));
+                }
                 parent_model.id = Set(id);
                 let parent = parent_model.update(db).await?;
                 Ok(parent.id)

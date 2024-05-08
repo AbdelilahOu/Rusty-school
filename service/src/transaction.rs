@@ -25,8 +25,8 @@ impl TransactionService {
                 .await?;
                 //
                 StudentActiveModel {
-                    first_name: Set(data.first_name),
-                    last_name: Set(data.last_name),
+                    first_name: Set(data.first_name.unwrap()),
+                    last_name: Set(data.last_name.unwrap()),
                     group_id: Set(data.group_id),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
@@ -51,8 +51,8 @@ impl TransactionService {
                 .await?;
                 //
                 TeacherActiveModel {
-                    first_name: Set(data.first_name),
-                    last_name: Set(data.last_name),
+                    first_name: Set(data.first_name.unwrap()),
+                    last_name: Set(data.last_name.unwrap()),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
@@ -76,8 +76,8 @@ impl TransactionService {
                 .await?;
                 //
                 ParentActiveModel {
-                    first_name: Set(data.first_name),
-                    last_name: Set(data.last_name),
+                    first_name: Set(data.first_name.unwrap()),
+                    last_name: Set(data.last_name.unwrap()),
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }

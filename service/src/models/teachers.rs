@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Teacher {
-    pub first_name: String,
-    pub last_name: String,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
+    pub person_id: Option<Uuid>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
