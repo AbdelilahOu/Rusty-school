@@ -11,7 +11,7 @@ pub fn load_config() -> Config {
     let client_id = env::var("OAUTH_CLIENT_ID").expect("OAUTH_CLIENT_ID must be set");
     let client_secret = env::var("OAUTH_SECRET").expect("OAUTH_SECRET must be set");
     let redirect_uri = env::var("REDIRECT_URL").expect("REDIRECT_URL must be set");
-    let jwt_secret = env::var("RANDOM_KEY").expect("RANDOM_KEY must be set");
+    let jwt_secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
     //
     return Config {
         client_id,

@@ -1,8 +1,6 @@
 # RustThingy
 
-## WHATS THIS
-
-This is school management system build using:
+School management api build using:
 
 - actix-web as backend server
 - postgres as database
@@ -20,7 +18,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - OAUTH_CLIENT_ID
 - OAUTH_SECRET
 - REDIRECT_URL
-- RANDOM_KEY
+- JWT_SECRET
 
 ## API
 
@@ -91,3 +89,18 @@ Im using docker to run my database if you wanna use an other database you can he
 ### Attendance
 
 - GET /attendance/ > list attendance of students > query params: "{ page: u64, limit: u64, scan_time_end?: String, scan_time_start?: String, full_name?: String, group_id?: Uuid}"
+
+### Assignments
+
+- POST /assignments/ > create new assignment > body: "{title: String, description: String, due_date: String, submission_type: String, gradin_rubric_id: Uuid, file?: String, teacher_id?: Uuid, subject_id?: Uuid}"
+- GET /assignments/ > list all assignments > query params: "{page: u64, limit: u64, title?: String, due_date?: String, teacher_id?: Uuid}"
+- DELETE /assignments/{id} > delete a assignment
+- PUT /assignments/{id} > update a assignment > body: "{title: String,description: String,due_date: String,submission_type: String,gradin_rubric_id: Uuid,file: String,teacher_id: Uuid,subject_id: Uuid}"
+
+### disciplinary actions
+
+### grades
+
+### grading rubrics
+
+### rooms
