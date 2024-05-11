@@ -24,78 +24,351 @@ Im using docker to run my database if you wanna use an other database you can he
 
 ### Auth
 
-- GET /auth/login > login using google account
-- GET /auth/sessions/google > redirect route after google log in
-- POST /auth/renew-access > renew access token > body: "{refresh_token: String}"
+- login using google account :
+
+  ```
+    curl http://0.0.0.0:8080/auth/login
+  ```
+
+- renew access token :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/auth/renew-access \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{ "refresh_token": "YOUR_REFRESH_TOKEN" }'
+  ```
 
 ### Students
 
-- POST /students/ > create new student > body: "{first_name: String, last_name: String, group_id?: Uuid, person_id?: Uuid}"
-- GET /students/ > list all students > query params: "{page: u64, limit: u64, full_name?: String}"
-- DELETE /students/{id} > delete a student
-- PUT /students/{id} > update a student > body: "{first_name: String, last_name: String, group_id?: Uuid, person_id?: Uuid}"
+- create new student:
+
+  ```
+    curl -X POST http://0.0.0.0:8080/students/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "group_id": "GROUP_ID", "person_id": "PERSON_ID"}"
+  ```
+
+- list all students :
+
+  ```
+    curl http://0.0.0.0:8080/students/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a student :
+
+  ```
+    curl -X DELETE http://0.0.0.0:8080/students/{your_student_id} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+  ```
+
+- update a student :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/students/{your_student_id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "group_id": "GROUP_ID", "person_id": "PERSON_ID"}'
+  ```
 
 ### Parents
 
-- POST /parents/ > create new parent > body: "{first_name: String, last_name: String, person_id?: Uuid}"
-- GET /parents/ > list all parents > query params: "{page: u64, limit: u64, full_name?: String}"
-- DELETE /parents/{id} > delete a parent
-- PUT /parents/{id} > update a parent > body: "{first_name: String, last_name: String, person_id?: Uuid}"
+- create new parent :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/parents/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "person_id": "PERSON_ID"}'
+  ```
+
+- list all parents :
+
+  ```
+    curl http://0.0.0.0:8080/parents/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a parent :
+
+  ```
+    curl http://0.0.0.0:8080/parents/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a parent :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/parents/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "person_id": "PERSON_ID"}'
+  ```
 
 ### Teachers
 
-- POST /teachers/ > create new teacher > body: "{first_name: String, last_name: String, person_id?: Uuid}"
-- GET /teachers/ > list all teachers > query params: "{page: u64, limit: u64, full_name?: String}"
-- DELETE /teachers/{id} > delete a teacher
-- PUT /teachers/{id} > update a teacher > body: "{first_name: String, last_name: String, person_id?: Uuid}"
-- POST /teachers/{id}/subject/{id} > create new subject to teacher (first id is for teacher and second id is for subject id)
-- DELETE /teachers/subject/{id} > delete teacher subject id using id of the column in teacher_subjects table
+- create new teacher :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/teachers/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "person_id": "PERSON_ID"}'
+  ```
+
+- list all teachers :
+
+  ```
+    curl http://0.0.0.0:8080/teachers/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a teacher :
+
+  ```
+    curl http://0.0.0.0:8080/teachers/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a teacher :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/teachers/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"first_name": "FIRST_NAME", "last_name": "LAST_NAME", "person_id": "PERSON_ID"}'
+  ```
+
+- Assign subject to teacher :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/teachers/{teacher_id}/subject/{subject_id} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete teacher subject id using id of the column in teacher_subjects table :
+
+  ```
+    curl http://0.0.0.0:8080/teachers/subject/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
 
 ### Levels
 
-- POST /levels/ > create new level > body: "{name: String, description String}"
-- GET /levels/ > list all levels > query params: "{page: u64, limit: u64, name?: String}"
-- DELETE /levels/{id} > delete a level
-- PUT /levels/{id} > update a level > body: "{name: String, description String}"
+- create new level :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/levels/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"name": "LEVEL_NAME", "description": "LEVEL_DESCRIPTION"}'
+  ```
+
+- list all levels :
+
+  ```
+    curl http://0.0.0.0:8080/levels/?page={PAGE}&limit={LIMIT}&name={NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a level :
+
+  ```
+    curl http://0.0.0.0:8080/levels/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a level :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/levels/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"name": "LEVEL_NAME", "description": "LEVEL_DESCRIPTION"}'
+  ```
 
 ### Groups
 
-- POST /groups/ > create new group > body: "{name: String, description String, level_id?: Uuid}"
-- GET /groups/ > list all groups > query params: "{page: u64, limit: u64, name?: String}"
-- DELETE /groups/{id} > delete a group
-- PUT /groups/{id} > update a group > body: "{name: String, description String, level_id Option Uuid}"
-- GET /groups/by-level-id/{id} > select groups by level
+- create new group :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/groups/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"name": "GROUP_NAME", "description": "GROUP_DESCRIPTION", "level_id": "LEVEL_ID"}'
+  ```
+
+- list all groups :
+
+  ```
+    curl http://0.0.0.0:8080/groups/?page={PAGE}&limit={LIMIT}&name={NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a group :
+
+  ```
+    curl http://0.0.0.0:8080/groups/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a group :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/groups/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"name": "GROUP_NAME", "description": "GROUP_DESCRIPTION", "level_id": "LEVEL_ID"}'
+  ```
+
+- select groups by level :
+
+  ```
+    curl http://0.0.0.0:8080/groups/by-level-id/{id} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
 
 ### Subjects
 
-- POST /subjects/ > create new subject > body: "{name: String, description: String, level_id?: Uuid}"
-- GET /subjects/ > list all subjects > query params: "{page: u64, limit: u64, name?: String}"
-- DELETE /subjects/{id} > delete a subject
-- PUT /subjects/{id} > update a subject > body: "{name: String, description: String, level_id?: Uuid}"
-- GET /subjects/by-level-id/{id} > select subjects by level
+- create new subject :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/subjects/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ ACCESS_TOKEN" \
+        -d '{"name": "SUBJECT_NAME", "description": "SUBJECT_DESCRIPTION", "level_id": "LEVEL_ID"}'
+  ```
+
+- list all subjects :
+
+  ```
+    curl http://0.0.0.0:8080/subjects/?page={PAGE}&limit={LIMIT}&name={NAME} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a subject :
+
+  ```
+    curl http://0.0.0.0:8080/subjects/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a subject :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/subjects/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"name": "SUBJECT_NAME", "description": "SUBJECT_DESCRIPTION", "level_id": "LEVEL_ID"}'
+  ```
+
+- select subjects by level :
+
+  ```
+    curl http://0.0.0.0:8080/subjects/by-level-id/{id} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
 
 ### Classes
 
-- POST /classes/ > create new class > body: "{subject_id?: Uuid, teacher_id?: Uuid, group_id?: Uuid, room_id?: Uuid}"
-- GET /classes/ > list all classes > query params: "{page: u64, limit: u64, subject_id?: Uuid, teacher_id?: Uuid, group_id?: Uuid}"
-- DELETE /classes/{id} > delete a class
-- PUT /classes/{id} > update a class > body: "{subject_id?: Uuid, teacher_id?: Uuid, group_id?: Uuid, room_id?: Uuid}"
+- create new class :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/classes/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"subject_id": "SUBJECT_ID", "teacher_id": "TEACHER_ID", "group_id": "GROUP_ID", "room_id": "ROOM_ID"}'
+  ```
+
+- list all classes :
+
+  ```
+    curl http://0.0.0.0:8080/classes/?page={PAGE}&limit={LIMIT}&subject_id={SUBJECT_ID}&teacher_id={TEACHER_ID}&group_id={GROUP_ID} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- delete a class :
+
+  ```
+    curl http://0.0.0.0:8080/classes/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a class :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/classes/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"subject_id": "SUBJECT_ID", "teacher_id": "TEACHER_ID", "group_id": "GROUP_ID", "room_id": "ROOM_ID"}'
+  ```
 
 ### Scans
 
-- GET /scans/ > list all scans (students, parents, teachers) > body: "{person_id: Uuid}"
-- POST /scans/ > create a scans > query params: "{ page: u64, limit: u64, scan_time_end?: String, scan_time_start?: String, full_name?: String, person_type?: String}"
+- list all scans (students, parents, teachers) :
+
+  ```
+    curl http://0.0.0.0:8080/scans/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&person_type={PERSON_TYPE}\
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- create a scans :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/scans/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"person_id": "{PERSON_ID}"}'
+  ```
 
 ### Attendance
 
-- GET /attendance/ > list attendance of students > query params: "{ page: u64, limit: u64, scan_time_end?: String, scan_time_start?: String, full_name?: String, group_id?: Uuid}"
+- list attendance of students :
+
+  ```
+    curl http://0.0.0.0:8080/attendance/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&group_id={GROUP_ID} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
 
 ### Assignments
 
-- POST /assignments/ > create new assignment > body: "{title: String, description: String, due_date: String, submission_type: String, gradin_rubric_id: Uuid, file?: String, teacher_id?: Uuid, subject_id?: Uuid}"
-- GET /assignments/ > list all assignments > query params: "{page: u64, limit: u64, title?: String, due_date?: String, teacher_id?: Uuid}"
-- DELETE /assignments/{id} > delete a assignment
-- PUT /assignments/{id} > update a assignment > body: "{title: String,description: String,due_date: String,submission_type: String,gradin_rubric_id: Uuid,file: String,teacher_id: Uuid,subject_id: Uuid}"
+- create new assignment :
+
+  ```
+    curl -X POST http://0.0.0.0:8080/assignments/ \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"title": "TITLE", "description": "DESCRIPTION", "due_date": "DUE_DATE", "submission_type": "SUBMISSION_TYPE", "grading_rubric_id": "GRADING_RUBRIC_ID", "file": "FILE", "teacher_id": "TEACHER_ID", "subject_id": "SUBJECT_ID"}'
+
+  ```
+
+- list all assignments :
+
+  ```
+    curl http://0.0.0.0:8080/assignments/?page={PAGE}&limit={LIMIT}&title={TITLE}&due_date={DUE_DATE}&teacher_id={TEACHER_ID} \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+  ```
+
+- delete a assignment :
+
+  ```
+    curl http://0.0.0.0:8080/assignments/{id} -X DELETE \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+  ```
+
+- update a assignment :
+
+  ```
+    curl -X PUT http://0.0.0.0:8080/assignments/{id} \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+        -d '{"title": "TITLE", "description": "DESCRIPTION", "due_date": "DUE_DATE", "submission_type": "SUBMISSION_TYPE", "grading_rubric_id": "GRADING_RUBRIC_ID", "file": "FILE", "teacher_id": "TEACHER_ID", "subject_id": "SUBJECT_ID"}'
+
+  ```
 
 ### disciplinary actions
 
