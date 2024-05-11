@@ -22,6 +22,8 @@ Im using docker to run my database if you wanna use an other database you can he
 
 ## API
 
+Note for api with search params other than page and limit, other params arent required, they are for filtering
+
 ### Auth
 
 - login using google account :
