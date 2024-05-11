@@ -27,7 +27,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - login using google account :
 
   ```
-    curl http://0.0.0.0:8080/auth/login
+    curl -X GET http://0.0.0.0:8080/auth/login
   ```
 
 - renew access token :
@@ -53,7 +53,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all students :
 
   ```
-    curl http://0.0.0.0:8080/students/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+    curl -X GET http://0.0.0.0:8080/students/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -88,14 +88,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all parents :
 
   ```
-    curl http://0.0.0.0:8080/parents/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+    curl -X GET http://0.0.0.0:8080/parents/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a parent :
 
   ```
-    curl http://0.0.0.0:8080/parents/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/parents/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -122,14 +122,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all teachers :
 
   ```
-    curl http://0.0.0.0:8080/teachers/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
+    curl -X GET http://0.0.0.0:8080/teachers/?page={PAGE}&limit={LIMIT}&full_name={FULL_NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a teacher :
 
   ```
-    curl http://0.0.0.0:8080/teachers/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/teachers/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -152,7 +152,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - delete teacher subject id using id of the column in teacher_subjects table :
 
   ```
-    curl http://0.0.0.0:8080/teachers/subject/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/teachers/subject/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -170,14 +170,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all levels :
 
   ```
-    curl http://0.0.0.0:8080/levels/?page={PAGE}&limit={LIMIT}&name={NAME} \
+    curl -X GET http://0.0.0.0:8080/levels/?page={PAGE}&limit={LIMIT}&name={NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a level :
 
   ```
-    curl http://0.0.0.0:8080/levels/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/levels/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -204,14 +204,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all groups :
 
   ```
-    curl http://0.0.0.0:8080/groups/?page={PAGE}&limit={LIMIT}&name={NAME} \
+    curl -X GET http://0.0.0.0:8080/groups/?page={PAGE}&limit={LIMIT}&name={NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a group :
 
   ```
-    curl http://0.0.0.0:8080/groups/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/groups/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -227,7 +227,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - select groups by level :
 
   ```
-    curl http://0.0.0.0:8080/groups/by-level-id/{id} \
+    curl -X GET http://0.0.0.0:8080/groups/by-level-id/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -245,14 +245,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all subjects :
 
   ```
-    curl http://0.0.0.0:8080/subjects/?page={PAGE}&limit={LIMIT}&name={NAME} \
+    curl -X GET http://0.0.0.0:8080/subjects/?page={PAGE}&limit={LIMIT}&name={NAME} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a subject :
 
   ```
-    curl http://0.0.0.0:8080/subjects/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/subjects/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -268,7 +268,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - select subjects by level :
 
   ```
-    curl http://0.0.0.0:8080/subjects/by-level-id/{id} \
+    curl -X GET http://0.0.0.0:8080/subjects/by-level-id/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -286,14 +286,14 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all classes :
 
   ```
-    curl http://0.0.0.0:8080/classes/?page={PAGE}&limit={LIMIT}&subject_id={SUBJECT_ID}&teacher_id={TEACHER_ID}&group_id={GROUP_ID} \
+    curl -X GET http://0.0.0.0:8080/classes/?page={PAGE}&limit={LIMIT}&subject_id={SUBJECT_ID}&teacher_id={TEACHER_ID}&group_id={GROUP_ID} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
 - delete a class :
 
   ```
-    curl http://0.0.0.0:8080/classes/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/classes/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -311,7 +311,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all scans (students, parents, teachers) :
 
   ```
-    curl http://0.0.0.0:8080/scans/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&person_type={PERSON_TYPE}\
+    curl -X GET http://0.0.0.0:8080/scans/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&person_type={PERSON_TYPE}\
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -329,7 +329,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - list attendance of students :
 
   ```
-    curl http://0.0.0.0:8080/attendance/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&group_id={GROUP_ID} \
+    curl -X GET http://0.0.0.0:8080/attendance/?page={PAGE}&limit={LIMIT}&scan_time_end={SCAN_TIME_END}&scan_time_start={SCAN_TIME_START}&full_name={FULL_NAME}&group_id={GROUP_ID} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
@@ -348,7 +348,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - list all assignments :
 
   ```
-    curl http://0.0.0.0:8080/assignments/?page={PAGE}&limit={LIMIT}&title={TITLE}&due_date={DUE_DATE}&teacher_id={TEACHER_ID} \
+    curl -X GET http://0.0.0.0:8080/assignments/?page={PAGE}&limit={LIMIT}&title={TITLE}&due_date={DUE_DATE}&teacher_id={TEACHER_ID} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 
   ```
@@ -356,7 +356,7 @@ Im using docker to run my database if you wanna use an other database you can he
 - delete a assignment :
 
   ```
-    curl http://0.0.0.0:8080/assignments/{id} -X DELETE \
+    curl -X DELETE http://0.0.0.0:8080/assignments/{id} \
         -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
   ```
 
