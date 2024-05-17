@@ -19,6 +19,8 @@ pub enum AnnouncementCategories {
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "audiences")]
 pub enum Audiences {
+    #[sea_orm(string_value = "all")]
+    All,
     #[sea_orm(string_value = "groups")]
     Groups,
     #[sea_orm(string_value = "parents")]

@@ -21,16 +21,13 @@ pub fn to_announcement_category(category: String) -> AnnouncementCategories {
     }
 }
 
-pub fn to_audience(audience: Option<String>) -> Option<Audiences> {
-    match audience {
-        Some(audience) => match audience.as_str() {
-            "groups" => Some(Audiences::Groups),
-            "parents" => Some(Audiences::Parents),
-            "students" => Some(Audiences::Students),
-            "teachers" => Some(Audiences::Teachers),
-            _ => None,
-        },
-        None => None,
+pub fn to_audience(audience: String) -> Audiences {
+    match audience.as_str() {
+        "groups" => Audiences::Groups,
+        "parents" => Audiences::Parents,
+        "students" => Audiences::Students,
+        "teachers" => Audiences::Teachers,
+        _ => Audiences::All,
     }
 }
 

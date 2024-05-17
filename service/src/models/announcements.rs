@@ -12,7 +12,7 @@ pub struct Announcement {
     pub targets: Option<Vec<Uuid>>,
     pub attachements: Option<NaiveDateTime>,
     pub important: Option<bool>,
-    pub audience: Option<String>,
+    pub audience: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

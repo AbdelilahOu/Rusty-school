@@ -45,7 +45,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Announcement::Targets).array(ColumnType::Uuid))
                     .col(ColumnDef::new(Announcement::Attachements).timestamp())
                     .col(ColumnDef::new(Announcement::Important).boolean())
-                    .col(ColumnDef::new(Announcement::Audience).enumeration(Audiences::Table, Audiences::iter().skip(1)))
+                    .col(
+                        ColumnDef::new(Announcement::Audience)
+                            .enumeration(Audiences::Table, Audiences::iter().skip(1))
+                            .not_null(),
+                    )
                     .to_owned(),
             )
             .await
@@ -81,6 +85,7 @@ enum Audiences {
     Parents,
     Students,
     Groups,
+    All,
 }
 
 #[derive(DeriveIden)]

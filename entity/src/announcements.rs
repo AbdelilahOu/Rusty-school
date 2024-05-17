@@ -19,7 +19,7 @@ pub struct Model {
     pub targets: Option<Vec<Uuid>>,
     pub attachements: Option<DateTime>,
     pub important: Option<bool>,
-    pub audience: Option<Audiences>,
+    pub audience: Audiences,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
