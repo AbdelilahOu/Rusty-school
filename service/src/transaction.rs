@@ -2,10 +2,9 @@ use crate::{
     entities::{
         users, ActivityActiveModel, CriteriaActiveModel, Criterias, EventActiveModel, LectureActiveModel, ParentActiveModel, PersonActiveModel,
         PersonEnums, RubricActiveModel, StudentActiveModel, TeacherActiveModel, TimeTableActiveModel, TimeTableItemCategories, UserActiveModel,
-        UserModel, Users,
+        UserModel, Users, WeekDayNumber,
     },
     models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
-    utils::enum_convertion::{roles_to_string, to_day_of_week, to_performance},
 };
 use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
@@ -106,7 +105,7 @@ impl TransactionService {
                             family_name: user.family_name,
                             email: user.email,
                             picture: user.picture,
-                            role: roles_to_string(user.role),
+                            role: user.role.into(),
                         },
                         user.id,
                     ));
@@ -138,7 +137,7 @@ impl TransactionService {
                         family_name: new_user.family_name,
                         email: new_user.email,
                         picture: new_user.picture,
-                        role: roles_to_string(new_user.role),
+                        role: new_user.role.into(),
                     },
                     new_user.id,
                 ))
@@ -180,7 +179,7 @@ impl TransactionService {
                     item_type: Set(TimeTableItemCategories::Activity),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
-                    day_of_week: Set(to_day_of_week(data.day_of_week)),
+                    day_of_week: Set(WeekDayNumber(data.day_of_week).into()),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -207,7 +206,7 @@ impl TransactionService {
                     item_type: Set(TimeTableItemCategories::Lecture),
                     start_time: Set(Some(data.start_time)),
                     end_time: Set(Some(data.end_time)),
-                    day_of_week: Set(to_day_of_week(data.day_of_week)),
+                    day_of_week: Set(WeekDayNumber(data.day_of_week).into()),
                     ..Default::default()
                 }
                 .insert(txn)
@@ -243,7 +242,7 @@ impl TransactionService {
                         criterias.push(CriteriaActiveModel {
                             grading_rubric_id: Set(rubric_modal.id),
                             description: Set(critera.description),
-                            performance: Set(to_performance(critera.performance)),
+                            performance: Set(critera.performance.into()),
                             ..Default::default()
                         })
                     }

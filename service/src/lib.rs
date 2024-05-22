@@ -2,7 +2,6 @@ pub mod models;
 pub mod mutation;
 pub mod query;
 pub mod transaction;
-pub mod utils;
 
 // group imports from entity
 mod entities {

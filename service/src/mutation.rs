@@ -6,7 +6,6 @@ use crate::{
         SubjectActiveModel, Subjects, TeacherActiveModel, TeacherSubjectActiveModel, TeacherSubjects, Teachers, TimeTables,
     },
     models::{Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric, Scan, Session, Student, Subject, Teacher},
-    utils::enum_convertion::{to_announcement_category, to_audience},
 };
 use chrono::Utc;
 use sea_orm::{prelude::*, Set};
@@ -531,11 +530,11 @@ impl MutationService {
             description: Set(data.description),
             start_date: Set(data.start_date),
             end_date: Set(data.end_date),
-            category: Set(to_announcement_category(data.category)),
+            category: Set(data.category.into()),
             targets: Set(data.targets),
             attachements: Set(data.attachements),
             important: Set(data.important),
-            audience: Set(to_audience(data.audience)),
+            audience: Set(data.audience.into()),
             ..Default::default()
         };
         let announcement = Announcements::insert(announcement_a_model).exec(db).await?;
@@ -551,11 +550,11 @@ impl MutationService {
                 announcement_model.description = Set(data.description);
                 announcement_model.start_date = Set(data.start_date);
                 announcement_model.end_date = Set(data.end_date);
-                announcement_model.category = Set(to_announcement_category(data.category));
+                announcement_model.category = Set(data.category.into());
                 announcement_model.targets = Set(data.targets);
                 announcement_model.attachements = Set(data.attachements);
                 announcement_model.important = Set(data.important);
-                announcement_model.audience = Set(to_audience(data.audience));
+                announcement_model.audience = Set(data.audience.into());
                 //
                 let announcement = announcement_model.update(db).await?;
                 Ok(announcement.id)
