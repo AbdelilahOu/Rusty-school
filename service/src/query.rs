@@ -4,7 +4,6 @@ use sea_orm::{
     DbBackend,
     FromQueryResult, Iterable, JoinType, Order, prelude::*, QueryOrder, QuerySelect, sea_query::{Alias, Expr, extension::postgres::PgExpr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement}, Statement,
 };
-use serde_json::Value as SerdValue;
 
 use crate::{
     entities::{
@@ -19,7 +18,7 @@ use crate::{
     },
 };
 
-type Values = Vec<SerdValue>;
+type Values = Vec<serde_json::Value>;
 type DbResult<T> = Result<T, DbErr>;
 
 pub struct QueryService;
@@ -252,7 +251,7 @@ impl QueryService {
             .conditions(
                 query.scan_time_start.is_some(),
                 |x| {
-                    // get avlue
+                    // get value
                     let scan_time_start = query.scan_time_start.unwrap();
                     // check
                     let start_time = NaiveDateTime::parse_from_str(scan_time_start.as_str(), "%Y-%m-%d %H:%M:%S%");
@@ -269,7 +268,7 @@ impl QueryService {
             .conditions(
                 query.scan_time_end.is_some(),
                 |x| {
-                    // get avlue
+                    // get value
                     let scan_time_end = query.scan_time_end.unwrap();
                     // check
                     let end_time = NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
@@ -666,7 +665,7 @@ impl QueryService {
         Ok(grades)
     }
     //
-    pub async fn list_Disciplinary(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
+    pub async fn list_disciplinary_actions(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
         if let Some(student_id) = query.student_id {
             conditions = conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
@@ -674,7 +673,7 @@ impl QueryService {
         if let Some(issued_at) = query.issued_at {
             conditions = conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
         }
-        let DisciplinaryAction = DisciplinaryActions::find()
+        let disciplinary_action = DisciplinaryActions::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
             .column(students::Column::FullName)
@@ -685,7 +684,7 @@ impl QueryService {
             .into_json()
             .all(db)
             .await?;
-        Ok(DisciplinaryAction)
+        Ok(disciplinary_action)
     }
     //
     pub async fn list_announcements(db: &DbConn, query: AnnouncementQuery) -> DbResult<Values> {

@@ -237,18 +237,18 @@ impl TransactionService {
                 }
                     .insert(txn)
                     .await?;
-                // create criterias
-                if let Some(grading_criterias) = data.grading_criterias {
-                    let mut criterias = Vec::<CriteriaActiveModel>::new();
-                    for critera in grading_criterias {
-                        criterias.push(CriteriaActiveModel {
+                // create criteria
+                if let Some(grading_criteria) = data.grading_criterias {
+                    let mut criteria_arr = Vec::<CriteriaActiveModel>::new();
+                    for criteria in grading_criteria {
+                        criteria_arr.push(CriteriaActiveModel {
                             grading_rubric_id: Set(rubric_modal.id),
-                            description: Set(critera.description),
-                            performance: Set(critera.performance.into()),
+                            description: Set(criteria.description),
+                            performance: Set(criteria.performance.into()),
                             ..Default::default()
                         })
                     }
-                    Criteria::insert_many(criterias).exec(txn).await?;
+                    Criteria::insert_many(criteria_arr).exec(txn).await?;
                 };
                 Ok(rubric_modal.id)
             })

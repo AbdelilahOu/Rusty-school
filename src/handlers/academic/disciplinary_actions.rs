@@ -103,7 +103,7 @@ pub async fn list(req: Request, query: Query<DisciplinaryQuery>, state: State) -
             });
         }
     }
-    let res = QueryService::list_disciplinaries(&state.db_conn, query.into_inner()).await;
+    let res = QueryService::list_disciplinary_actions(&state.db_conn, query.into_inner()).await;
     match res {
         Ok(disciplinary_actions) => Response::Ok().json(ResponseData {
             error: None,

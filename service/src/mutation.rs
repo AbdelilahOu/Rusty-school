@@ -43,7 +43,6 @@ impl MutationService {
         match student_model {
             Some(student_model) => {
                 let mut student_model: StudentActiveModel = student_model.into();
-                // set new feild
                 if let Some(first_name) = data.first_name {
                     student_model.first_name = Set(first_name);
                 }

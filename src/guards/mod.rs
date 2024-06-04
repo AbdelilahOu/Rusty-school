@@ -18,7 +18,7 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
                 return Err("auth headers length".to_string());
             }
             let [authorization_type, token] = split_header[..] else {
-                Err("auth headers format".to_string())
+                return Err("auth headers format".to_string());
             };
             // check if auth type is bearer
             match authorization_type {
