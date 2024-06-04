@@ -274,7 +274,7 @@ impl QueryService {
                     let end_time = NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
-                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(end_time));
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
                     } else {
                         println!("error parsing date : {:?}", end_time.err());
                     }
@@ -371,7 +371,7 @@ impl QueryService {
                     let end_time = NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
-                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(end_time));
+                        x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
                     } else {
                         println!("error parsing date : {:?}", end_time.err());
                     }
