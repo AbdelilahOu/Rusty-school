@@ -10,18 +10,18 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
             let header = header.to_str().unwrap_or("");
             // check header is valid
             if header.is_empty() {
-                Err("auth headers empty".to_string());
+                return Err("auth headers empty".to_string());
             }
             // get token
-            let splited_header = header.split(" ").collect::<Vec<&str>>();
-            if splited_header.len() < 2 {
-                Err("auth headers length".to_string());
+            let split_header = header.split(" ").collect::<Vec<&str>>();
+            if split_header.len() < 2 {
+                return Err("auth headers length".to_string());
             }
-            let [authorization_type, token] = splited_header[..] else {
+            let [authorization_type, token] = split_header[..] else {
                 Err("auth headers format".to_string())
             };
             // check if auth type is bearer
-            match authorization_type.as_str() {
+            match authorization_type {
                 "Bearer" => {
                     match verify_token(token, secret) {
                         Ok(payload) => Ok(payload),
