@@ -1,11 +1,8 @@
-use crate::{
-    guards::{auth_guard, role_guard},
-    types::shared::{ResponseData, State},
-};
 use actix_web::{
-    web::{Json, Path},
-    HttpRequest as Request, HttpResponse as Response,
+    HttpRequest as Request,
+    HttpResponse as Response, web::{Json, Path},
 };
+
 use service::{
     models::{Activity, Event, Lecture},
     mutation::MutationService,
@@ -13,7 +10,12 @@ use service::{
     transaction::TransactionService,
     uuid::Uuid,
 };
-//
+
+use crate::{
+    guards::{auth_guard, role_guard},
+    types::shared::{ResponseData, State},
+};
+
 pub async fn create_event(req: Request, body: Json<Event>, state: State) -> Response {
     let headers = req.headers();
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());

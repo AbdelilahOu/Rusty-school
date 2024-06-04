@@ -1,10 +1,12 @@
+use actix_web::{HttpRequest as Request, HttpResponse as Response, web::Query};
+
+use service::{models::AttendanceQuery, query::QueryService};
+
 use crate::{
     guards::{auth_guard, role_guard},
     types::shared::{ResponseData, State},
 };
-use actix_web::{web::Query, HttpRequest as Request, HttpResponse as Response};
-use service::{models::AttendanceQuery, query::QueryService};
-//
+
 pub async fn list(req: Request, query: Query<AttendanceQuery>, state: State) -> Response {
     let headers = req.headers();
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());

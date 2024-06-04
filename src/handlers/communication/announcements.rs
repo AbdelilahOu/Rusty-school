@@ -1,16 +1,18 @@
-use crate::{
-    guards::{auth_guard, role_guard},
-    types::shared::{ResponseData, State},
-};
 use actix_web::{
-    web::{Json, Path, Query},
-    HttpRequest as Request, HttpResponse as Response,
+    HttpRequest as Request,
+    HttpResponse as Response, web::{Json, Path, Query},
 };
+
 use service::{
     models::{Announcement, AnnouncementQuery},
     mutation::MutationService,
     query::QueryService,
     uuid::Uuid,
+};
+
+use crate::{
+    guards::{auth_guard, role_guard},
+    types::shared::{ResponseData, State},
 };
 
 pub async fn create(req: Request, body: Json<Announcement>, state: State) -> Response {
@@ -97,7 +99,7 @@ pub async fn list(req: Request, query: Query<AnnouncementQuery>, state: State) -
     match res {
         Ok(announcements) => Response::Ok().json(ResponseData {
             error: None,
-            message: Some("Announcementss selected successfully".to_string()),
+            message: Some("Announcements selected successfully".to_string()),
             data: Some(announcements),
         }),
         Err(e) => Response::InternalServerError().json(ResponseData::<String> {

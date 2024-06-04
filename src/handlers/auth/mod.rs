@@ -1,16 +1,10 @@
-use crate::{
-    types::shared::{ResponseData, State},
-    utils::{
-        auth::{get_google_auth_url, get_google_user, request_tokens},
-        token::{generate_tokens, verify_token},
-    },
-};
 use actix_web::{
     http::header,
-    web::{Json, Query},
-    HttpRequest as Request, HttpResponse as Response,
+    HttpRequest as Request,
+    HttpResponse as Response, web::{Json, Query},
 };
 use serde::{Deserialize, Serialize};
+
 use service::{
     chrono::{DateTime, Duration, NaiveDateTime, Utc},
     models::{Session, User},
@@ -20,16 +14,26 @@ use service::{
     uuid::Uuid,
 };
 
+use crate::{
+    types::shared::{ResponseData, State},
+    utils::{
+        auth::{get_google_auth_url, get_google_user, request_tokens},
+        token::{generate_tokens, verify_token},
+    },
+};
+
 #[derive(Debug, Serialize, Deserialize)]
 struct RefreshAccessResponse {
     pub access_token: String,
     pub access_token_expires_at: NaiveDateTime,
 }
+
 //
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RenewAccess {
     pub refresh_token: String,
 }
+
 //
 #[derive(Debug, Serialize, Deserialize)]
 struct LogInResponse {
@@ -41,7 +45,7 @@ struct LogInResponse {
     pub access_token_expires_at: NaiveDateTime,
     pub refresh_token_expires_at: NaiveDateTime,
 }
-//
+
 #[derive(Deserialize, Debug)]
 pub struct AuthQuery {
     pub code: String,
@@ -139,7 +143,7 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                             role: "not_defined".to_string(),
                         },
                     )
-                    .await;
+                        .await;
                     match user_res {
                         Ok((user, id)) => {
                             // create access token
@@ -165,7 +169,7 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                                     expires_at,
                                 },
                             )
-                            .await;
+                                .await;
                             match create_session_res {
                                 Ok(session_id) => {
                                     let access_token_expires_at = DateTime::<Utc>::from_timestamp(access_claims.exp, 0).unwrap().naive_utc();
@@ -186,28 +190,28 @@ pub async fn google_auth(req: Request, query: Query<AuthQuery>, state: State) ->
                                 }
                                 Err(e) => Response::InternalServerError().json(ResponseData::<Option<String>> {
                                     error: Some(e.to_string()),
-                                    message: Some("coudnt create session".to_string()),
+                                    message: Some("couldn't create session".to_string()),
                                     data: None,
                                 }),
                             }
                         }
                         Err(e) => Response::InternalServerError().json(ResponseData::<String> {
                             error: Some(e.to_string()),
-                            message: Some("coudnt insert user into db".to_string()),
+                            message: Some("couldn't insert user into db".to_string()),
                             data: None,
                         }),
                     }
                 }
                 Err(e) => Response::InternalServerError().json(ResponseData::<String> {
                     error: Some(e.to_string()),
-                    message: Some("coudnt get user profile from google".to_string()),
+                    message: Some("couldn't get user profile from google".to_string()),
                     data: None,
                 }),
             }
         }
         Err(e) => Response::InternalServerError().json(ResponseData::<String> {
             error: Some(e.to_string()),
-            message: Some("coudnt get access token from google".to_string()),
+            message: Some("couldn't get access token from google".to_string()),
             data: None,
         }),
     }

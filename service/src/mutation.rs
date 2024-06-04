@@ -1,16 +1,18 @@
-use crate::{
-    entities::{
-        AnnouncementActiveModel, Announcements, AssignmentActiveModel, Assignments, ClassActiveModel, Classes, Disciplinaries,
-        DisciplinaryActiveModel, GradeActiveModel, Grades, GroupActiveModel, Groups, LevelActiveModel, Levels, ParentActiveModel, Parents,
-        RoomActiveModel, Rooms, RubricActiveModel, Rubrics, ScanActiveModel, Scans, SessionActiveModel, Sessions, StudentActiveModel, Students,
-        SubjectActiveModel, Subjects, TeacherActiveModel, TeacherSubjectActiveModel, TeacherSubjects, Teachers, TimeTables,
-    },
-    models::{Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric, Scan, Session, Student, Subject, Teacher},
-};
 use chrono::Utc;
 use sea_orm::{prelude::*, Set};
 
+use crate::{
+    entities::{
+        AnnouncementActiveModel, Announcements, AssignmentActiveModel, Assignments, ClassActiveModel, Classes, DisciplinaryActions,
+        DisciplinaryActiveModel, GradeActiveModel, Grades, GroupActiveModel, Groups, LevelActiveModel, Levels, ParentActiveModel, Parents,
+        RoomActiveModel, Rooms, RubricActiveModel, Rubrics, ScanActiveModel, Scans, SessionActiveModel, Sessions, StudentActiveModel, Students,
+        SubjectActiveModel, Subjects, TeacherActiveModel, Teachers, TeacherSubjectActiveModel, TeacherSubjects, TimeTables,
+    },
+    models::{Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric, Scan, Session, Student, Subject, Teacher},
+};
+
 type DbResult<T> = Result<T, DbErr>;
+
 pub struct MutationService;
 
 impl MutationService {
@@ -467,11 +469,11 @@ impl MutationService {
             consequences: Set(data.consequences),
             ..Default::default()
         };
-        let disciplinary = Disciplinaries::insert(disciplinary_a_model).exec(db).await?;
+        let disciplinary = DisciplinaryActions::insert(disciplinary_a_model).exec(db).await?;
         Ok(disciplinary.last_insert_id)
     }
     pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: Disciplinary) -> DbResult<Uuid> {
-        let disciplinary_model = Disciplinaries::find_by_id(id).one(db).await?;
+        let disciplinary_model = DisciplinaryActions::find_by_id(id).one(db).await?;
         match disciplinary_model {
             Some(disciplinary_model) => {
                 //
@@ -488,7 +490,7 @@ impl MutationService {
         }
     }
     pub async fn delete_disciplinary(db: &DbConn, id: Uuid) -> DbResult<u64> {
-        let disciplinary_model = Disciplinaries::find_by_id(id).one(db).await?;
+        let disciplinary_model = DisciplinaryActions::find_by_id(id).one(db).await?;
         match disciplinary_model {
             Some(disciplinary_model) => {
                 let disciplinary = disciplinary_model.delete(db).await?;

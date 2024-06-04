@@ -1,25 +1,27 @@
+use chrono::NaiveDateTime;
+use sea_orm::{
+    Condition,
+    DbBackend,
+    FromQueryResult, Iterable, JoinType, Order, prelude::*, QueryOrder, QuerySelect, sea_query::{Alias, Expr, extension::postgres::PgExpr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement}, Statement,
+};
+use serde_json::Value as SerdValue;
+
 use crate::{
     entities::{
-        activities, announcements, assignments, classes, disciplinary_actions, events, grades, grading_rubrics, groups, lectures, levels, parents,
-        persons, rooms, scans, sessions, students, subjects, teachers, time_table, users, Activities, Announcements, Assignments, Classes,
-        Disciplinaries, Events, Grades, Groups, Lectures, Levels, Parents, Persons, Rooms, Rubrics, Scans, Sessions, Students, Subjects, Teachers,
-        TimeTableItemCategories, TimeTables, Users,
+        activities, Activities, announcements, Announcements, assignments, Assignments, classes, Classes, disciplinary_actions, DisciplinaryActions, events, Events,
+        grades, Grades, grading_rubrics, groups, Groups, lectures, Lectures, levels, Levels, parents, Parents, persons, Persons,
+        rooms, Rooms, Rubrics, scans, Scans, sessions, Sessions, students, Students, subjects, Subjects, teachers, Teachers, time_table, TimeTableItemCategories,
+        TimeTables, users, Users,
     },
     models::{
         AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GetSessionWithRole, GradeQuery, GroupQuery, LevelQuery,
         ParentQuery, RoomQuery, RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
     },
 };
-use chrono::NaiveDateTime;
-use sea_orm::{
-    prelude::*,
-    sea_query::{extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement},
-    Condition, DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect, Statement,
-};
-use serde_json::Value as SerdValue;
 
 type Values = Vec<SerdValue>;
 type DbResult<T> = Result<T, DbErr>;
+
 pub struct QueryService;
 
 impl QueryService {
@@ -116,32 +118,32 @@ impl QueryService {
                         )),
                     ),
                 )
-                .case(
-                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Parents)
-                                .column(parents::Column::FullName)
-                                .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                .to_owned(),
-                        )),
+                    .case(
+                        Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Parents)
+                                    .column(parents::Column::FullName)
+                                    .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                    .to_owned(),
+                            )),
+                        ),
+                    )
+                    .case(
+                        Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Teachers)
+                                    .column(teachers::Column::FullName)
+                                    .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                    .to_owned(),
+                            )),
+                        ),
                     ),
-                )
-                .case(
-                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Teachers)
-                                .column(teachers::Column::FullName)
-                                .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                .to_owned(),
-                        )),
-                    ),
-                ),
                 Alias::new("full_name"),
             )
             // GET _id
@@ -159,32 +161,32 @@ impl QueryService {
                         )),
                     ),
                 )
-                .case(
-                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Parents)
-                                .column(parents::Column::Id)
-                                .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                .to_owned(),
-                        )),
+                    .case(
+                        Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Parents)
+                                    .column(parents::Column::Id)
+                                    .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                    .to_owned(),
+                            )),
+                        ),
+                    )
+                    .case(
+                        Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Teachers)
+                                    .column(teachers::Column::Id)
+                                    .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                    .to_owned(),
+                            )),
+                        ),
                     ),
-                )
-                .case(
-                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                    SimpleExpr::SubQuery(
-                        None,
-                        Box::new(SubQueryStatement::SelectStatement(
-                            Query::select()
-                                .from(Teachers)
-                                .column(teachers::Column::Id)
-                                .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                .to_owned(),
-                        )),
-                    ),
-                ),
                 Alias::new("_id"),
             )
             //
@@ -211,37 +213,37 @@ impl QueryService {
                                         .to_owned(),
                                 )),
                             )
-                            .ilike(format!("%{}%", full_name)),
+                                .ilike(format!("%{}%", full_name)),
                         )
-                        .case(
-                            Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                            SimpleExpr::SubQuery(
-                                None,
-                                Box::new(SubQueryStatement::SelectStatement(
-                                    Query::select()
-                                        .from(Parents)
-                                        .column(parents::Column::FullName)
-                                        .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                        .to_owned(),
-                                )),
+                            .case(
+                                Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                                SimpleExpr::SubQuery(
+                                    None,
+                                    Box::new(SubQueryStatement::SelectStatement(
+                                        Query::select()
+                                            .from(Parents)
+                                            .column(parents::Column::FullName)
+                                            .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                            .to_owned(),
+                                    )),
+                                )
+                                    .ilike(format!("%{}%", full_name)),
                             )
-                            .ilike(format!("%{}%", full_name)),
-                        )
-                        .case(
-                            Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                            SimpleExpr::SubQuery(
-                                None,
-                                Box::new(SubQueryStatement::SelectStatement(
-                                    Query::select()
-                                        .from(Teachers)
-                                        .column(teachers::Column::FullName)
-                                        .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                        .to_owned(),
-                                )),
+                            .case(
+                                Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                                SimpleExpr::SubQuery(
+                                    None,
+                                    Box::new(SubQueryStatement::SelectStatement(
+                                        Query::select()
+                                            .from(Teachers)
+                                            .column(teachers::Column::FullName)
+                                            .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                            .to_owned(),
+                                    )),
+                                )
+                                    .ilike(format!("%{}%", full_name)),
                             )
-                            .ilike(format!("%{}%", full_name)),
-                        )
-                        .into(),
+                            .into(),
                     );
                 },
                 |_| {},
@@ -560,53 +562,53 @@ impl QueryService {
                         )),
                     ),
                 )
-                .case(
-                    Expr::col(time_table::Column::ItemType)
-                        .cast_as(Alias::new("TEXT"))
-                        .eq(TimeTableItemCategories::Activity),
-                    SimpleExpr::SubQuery(
+                    .case(
+                        Expr::col(time_table::Column::ItemType)
+                            .cast_as(Alias::new("TEXT"))
+                            .eq(TimeTableItemCategories::Activity),
+                        SimpleExpr::SubQuery(
+                            None,
+                            Box::new(SubQueryStatement::SelectStatement(
+                                Query::select()
+                                    .from(Activities)
+                                    .column(activities::Column::ActivityTitle)
+                                    .cond_where(Expr::col((Activities, activities::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
+                                    .to_owned(),
+                            )),
+                        ),
+                    )
+                    .finally(SimpleExpr::SubQuery(
                         None,
                         Box::new(SubQueryStatement::SelectStatement(
                             Query::select()
-                                .from(Activities)
-                                .column(activities::Column::ActivityTitle)
-                                .cond_where(Expr::col((Activities, activities::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
+                                .from(Lectures)
+                                .expr(Expr::cust(
+                                    "FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)",
+                                ))
+                                .join(
+                                    JoinType::Join,
+                                    Classes,
+                                    Expr::col((Classes, classes::Column::Id)).equals((Lectures, lectures::Column::ClassId)),
+                                )
+                                .join(
+                                    JoinType::Join,
+                                    Teachers,
+                                    Expr::col((Teachers, classes::Column::Id)).equals((Classes, classes::Column::TeacherId)),
+                                )
+                                .join(
+                                    JoinType::Join,
+                                    Groups,
+                                    Expr::col((Groups, classes::Column::Id)).equals((Classes, classes::Column::GroupId)),
+                                )
+                                .join(
+                                    JoinType::Join,
+                                    Subjects,
+                                    Expr::col((Subjects, classes::Column::Id)).equals((Classes, classes::Column::SubjectId)),
+                                )
+                                .cond_where(Expr::col((Lectures, lectures::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
                                 .to_owned(),
                         )),
-                    ),
-                )
-                .finally(SimpleExpr::SubQuery(
-                    None,
-                    Box::new(SubQueryStatement::SelectStatement(
-                        Query::select()
-                            .from(Lectures)
-                            .expr(Expr::cust(
-                                "FORMAT('%s, %s, %s', teachers.full_name, subjects.subject_name, groups.group_name)",
-                            ))
-                            .join(
-                                JoinType::Join,
-                                Classes,
-                                Expr::col((Classes, classes::Column::Id)).equals((Lectures, lectures::Column::ClassId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Teachers,
-                                Expr::col((Teachers, classes::Column::Id)).equals((Classes, classes::Column::TeacherId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Groups,
-                                Expr::col((Groups, classes::Column::Id)).equals((Classes, classes::Column::GroupId)),
-                            )
-                            .join(
-                                JoinType::Join,
-                                Subjects,
-                                Expr::col((Subjects, classes::Column::Id)).equals((Classes, classes::Column::SubjectId)),
-                            )
-                            .cond_where(Expr::col((Lectures, lectures::Column::TimeTableId)).equals((TimeTables, time_table::Column::Id)))
-                            .to_owned(),
                     )),
-                )),
                 Alias::new("title"),
             )
             .to_owned()
@@ -664,7 +666,7 @@ impl QueryService {
         Ok(grades)
     }
     //
-    pub async fn list_disciplinaries(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
+    pub async fn list_Disciplinary(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
         let mut conditions = Condition::all();
         if let Some(student_id) = query.student_id {
             conditions = conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
@@ -672,7 +674,7 @@ impl QueryService {
         if let Some(issued_at) = query.issued_at {
             conditions = conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
         }
-        let disciplinaries = Disciplinaries::find()
+        let DisciplinaryAction = DisciplinaryActions::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
             .column(students::Column::FullName)
@@ -683,7 +685,7 @@ impl QueryService {
             .into_json()
             .all(db)
             .await?;
-        Ok(disciplinaries)
+        Ok(DisciplinaryAction)
     }
     //
     pub async fn list_announcements(db: &DbConn, query: AnnouncementQuery) -> DbResult<Values> {

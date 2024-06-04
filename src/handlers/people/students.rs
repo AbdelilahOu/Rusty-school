@@ -12,6 +12,7 @@ use service::{
     query::QueryService,
     uuid::Uuid,
 };
+
 //
 pub async fn create(req: Request, body: Json<Student>, state: State) -> Response {
     let headers = req.headers();

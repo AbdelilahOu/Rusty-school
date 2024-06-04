@@ -1,9 +1,11 @@
-use crate::types::token::Claims;
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{Algorithm, decode, DecodingKey, encode, EncodingKey, Header, Validation};
+
 use service::{
     chrono::{Duration, Utc},
     uuid::Uuid,
 };
+
+use crate::types::token::Claims;
 
 pub fn generate_tokens(user_id: Uuid, role: String, secret: String, duration: Duration) -> (String, Claims) {
     // time

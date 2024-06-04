@@ -1,3 +1,7 @@
+pub use chrono;
+pub use sea_orm;
+pub use uuid;
+
 pub mod models;
 pub mod mutation;
 pub mod query;
@@ -9,10 +13,10 @@ mod entities {
     pub use ::entity::announcements::{self, ActiveModel as AnnouncementActiveModel, Entity as Announcements};
     pub use ::entity::assignments::{self, ActiveModel as AssignmentActiveModel, Entity as Assignments};
     pub use ::entity::classes::{self, ActiveModel as ClassActiveModel, Entity as Classes};
-    pub use ::entity::disciplinary_actions::{self, ActiveModel as DisciplinaryActiveModel, Entity as Disciplinaries};
+    pub use ::entity::disciplinary_actions::{self, ActiveModel as DisciplinaryActiveModel, Entity as DisciplinaryActions};
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Events};
     pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grades};
-    pub use ::entity::grading_criteria::{ActiveModel as CriteriaActiveModel, Entity as Criterias};
+    pub use ::entity::grading_criteria::{ActiveModel as CriteriaActiveModel, Entity as Criteria};
     pub use ::entity::grading_rubrics::{self, ActiveModel as RubricActiveModel, Entity as Rubrics};
     pub use ::entity::groups::{self, ActiveModel as GroupActiveModel, Entity as Groups};
     pub use ::entity::lectures::{self, ActiveModel as LectureActiveModel, Entity as Lectures};
@@ -31,6 +35,3 @@ mod entities {
     pub use ::entity::users::{self, ActiveModel as UserActiveModel, Entity as Users, Model as UserModel};
 }
 
-pub use chrono;
-pub use sea_orm;
-pub use uuid;

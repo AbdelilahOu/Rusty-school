@@ -1,17 +1,19 @@
-use crate::{
-    guards::{auth_guard, role_guard},
-    types::shared::{ResponseData, State},
-};
 use actix_web::{
-    web::{Json, Query},
-    HttpRequest as Request, HttpResponse as Response,
+    HttpRequest as Request,
+    HttpResponse as Response, web::{Json, Query},
 };
+
 use service::{
     models::{Scan, ScansQuery},
     mutation::MutationService,
     query::QueryService,
 };
-//
+
+use crate::{
+    guards::{auth_guard, role_guard},
+    types::shared::{ResponseData, State},
+};
+
 pub async fn create(req: Request, body: Json<Scan>, state: State) -> Response {
     let headers = req.headers();
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());

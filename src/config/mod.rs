@@ -1,5 +1,6 @@
-use crate::types::config::Config;
 use std::env;
+
+use crate::types::config::Config;
 
 pub fn load_config() -> Config {
     // load vars

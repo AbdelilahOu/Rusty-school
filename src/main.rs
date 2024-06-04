@@ -1,6 +1,9 @@
-use actix_web::{middleware::Logger, web, App, HttpResponse as Response, HttpServer};
+use actix_web::{App, HttpResponse as Response, HttpServer, middleware::Logger, web};
+
 use service::sea_orm::DatabaseConnection;
 use types::config::Config;
+
+use crate::routes::{academic, auth, communication, people};
 
 mod config;
 mod database;
@@ -9,8 +12,6 @@ mod handlers;
 mod routes;
 mod types;
 mod utils;
-
-use crate::routes::{academic, auth, communication, people};
 
 pub struct AppState {
     db_conn: DatabaseConnection,
@@ -53,9 +54,9 @@ async fn main() -> std::io::Result<()> {
                     .service(communication::load_announcements_routes())
                     .default_service(web::to(|| Response::NotFound()))
             })
-            .bind(("0.0.0.0", 8080))?
-            .run()
-            .await;
+                .bind(("0.0.0.0", 8080))?
+                .run()
+                .await;
         }
         Err(e) => println!("establish db connection failed: {}", e),
     }
