@@ -1,4 +1,4 @@
-use actix_web::{HttpRequest as Request, HttpResponse as Response, web::Query};
+use actix_web::{web::Query, HttpRequest as Request, HttpResponse as Response};
 
 use service::{models::AttendanceQuery, query::QueryService};
 

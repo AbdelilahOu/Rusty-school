@@ -1,20 +1,28 @@
 use chrono::NaiveDateTime;
 use sea_orm::{
-    Condition,
-    DbBackend,
-    FromQueryResult, Iterable, JoinType, Order, prelude::*, QueryOrder, QuerySelect, sea_query::{Alias, Expr, extension::postgres::PgExpr, PostgresQueryBuilder, Query, SimpleExpr, SubQueryStatement}, Statement,
+    prelude::*,
+    sea_query::{
+        extension::postgres::PgExpr, Alias, Expr, PostgresQueryBuilder, Query, SimpleExpr,
+        SubQueryStatement,
+    },
+    Condition, DbBackend, FromQueryResult, Iterable, JoinType, Order, QueryOrder, QuerySelect,
+    Statement,
 };
 
 use crate::{
     entities::{
-        activities, Activities, announcements, Announcements, assignments, Assignments, classes, Classes, disciplinary_actions, DisciplinaryActions, events, Events,
-        grades, Grades, grading_rubrics, groups, Groups, lectures, Lectures, levels, Levels, parents, Parents, persons, Persons,
-        rooms, Rooms, Rubrics, scans, Scans, sessions, Sessions, students, Students, subjects, Subjects, teachers, Teachers, time_table, TimeTableItemCategories,
-        TimeTables, users, Users,
+        activities, announcements, assignments, classes, disciplinary_actions, events, grades,
+        grading_rubrics, groups, lectures, levels, parents, persons, rooms, scans, sessions,
+        students, subjects, teachers, time_table, users, Activities, Announcements, Assignments,
+        Classes, DisciplinaryActions, Events, Grades, Groups, Lectures, Levels, Parents, Persons,
+        Rooms, Rubrics, Scans, Sessions, Students, Subjects, Teachers, TimeTableItemCategories,
+        TimeTables, Users,
     },
     models::{
-        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery, GetSessionWithRole, GradeQuery, GroupQuery, LevelQuery,
-        ParentQuery, RoomQuery, RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery, SubjectQuery, TeacherQuery,
+        AnnouncementQuery, AssignmentQuery, AttendanceQuery, ClassQuery, DisciplinaryQuery,
+        GetSessionWithRole, GradeQuery, GroupQuery, LevelQuery, ParentQuery, RoomQuery,
+        RubricQuery, ScansQuery, SelectAttendance, SelectScans, SelectTimeTable, StudentQuery,
+        SubjectQuery, TeacherQuery,
     },
 };
 
@@ -112,37 +120,46 @@ impl QueryService {
                             Query::select()
                                 .from(Students)
                                 .column(students::Column::FullName)
-                                .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                .cond_where(
+                                    Expr::col((Students, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
                                 .to_owned(),
                         )),
                     ),
                 )
-                    .case(
-                        Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                        SimpleExpr::SubQuery(
-                            None,
-                            Box::new(SubQueryStatement::SelectStatement(
-                                Query::select()
-                                    .from(Parents)
-                                    .column(parents::Column::FullName)
-                                    .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                    .to_owned(),
-                            )),
-                        ),
-                    )
-                    .case(
-                        Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                        SimpleExpr::SubQuery(
-                            None,
-                            Box::new(SubQueryStatement::SelectStatement(
-                                Query::select()
-                                    .from(Teachers)
-                                    .column(teachers::Column::FullName)
-                                    .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                    .to_owned(),
-                            )),
-                        ),
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Parents)
+                                .column(parents::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Parents, parents::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
                     ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Teachers)
+                                .column(teachers::Column::FullName)
+                                .cond_where(
+                                    Expr::col((Teachers, teachers::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                ),
                 Alias::new("full_name"),
             )
             // GET _id
@@ -155,37 +172,46 @@ impl QueryService {
                             Query::select()
                                 .from(Students)
                                 .column(students::Column::Id)
-                                .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                .cond_where(
+                                    Expr::col((Students, students::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
                                 .to_owned(),
                         )),
                     ),
                 )
-                    .case(
-                        Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                        SimpleExpr::SubQuery(
-                            None,
-                            Box::new(SubQueryStatement::SelectStatement(
-                                Query::select()
-                                    .from(Parents)
-                                    .column(parents::Column::Id)
-                                    .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                    .to_owned(),
-                            )),
-                        ),
-                    )
-                    .case(
-                        Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                        SimpleExpr::SubQuery(
-                            None,
-                            Box::new(SubQueryStatement::SelectStatement(
-                                Query::select()
-                                    .from(Teachers)
-                                    .column(teachers::Column::Id)
-                                    .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                    .to_owned(),
-                            )),
-                        ),
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Parents)
+                                .column(parents::Column::Id)
+                                .cond_where(
+                                    Expr::col((Parents, parents::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
                     ),
+                )
+                .case(
+                    Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                    SimpleExpr::SubQuery(
+                        None,
+                        Box::new(SubQueryStatement::SelectStatement(
+                            Query::select()
+                                .from(Teachers)
+                                .column(teachers::Column::Id)
+                                .cond_where(
+                                    Expr::col((Teachers, teachers::Column::PersonId))
+                                        .equals((Scans, scans::Column::PersonId)),
+                                )
+                                .to_owned(),
+                        )),
+                    ),
+                ),
                 Alias::new("_id"),
             )
             //
@@ -208,41 +234,50 @@ impl QueryService {
                                     Query::select()
                                         .from(Students)
                                         .column(students::Column::FullName)
-                                        .cond_where(Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
+                                        .cond_where(
+                                            Expr::col((Students, students::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
                                         .to_owned(),
                                 )),
                             )
-                                .ilike(format!("%{}%", full_name)),
+                            .ilike(format!("%{}%", full_name)),
                         )
-                            .case(
-                                Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
-                                SimpleExpr::SubQuery(
-                                    None,
-                                    Box::new(SubQueryStatement::SelectStatement(
-                                        Query::select()
-                                            .from(Parents)
-                                            .column(parents::Column::FullName)
-                                            .cond_where(Expr::col((Parents, parents::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                            .to_owned(),
-                                    )),
-                                )
-                                    .ilike(format!("%{}%", full_name)),
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("parent".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Parents)
+                                        .column(parents::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Parents, parents::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
                             )
-                            .case(
-                                Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
-                                SimpleExpr::SubQuery(
-                                    None,
-                                    Box::new(SubQueryStatement::SelectStatement(
-                                        Query::select()
-                                            .from(Teachers)
-                                            .column(teachers::Column::FullName)
-                                            .cond_where(Expr::col((Teachers, teachers::Column::PersonId)).equals((Scans, scans::Column::PersonId)))
-                                            .to_owned(),
-                                    )),
-                                )
-                                    .ilike(format!("%{}%", full_name)),
+                            .ilike(format!("%{}%", full_name)),
+                        )
+                        .case(
+                            Expr::col(persons::Column::PersonType).eq("teacher".to_owned()),
+                            SimpleExpr::SubQuery(
+                                None,
+                                Box::new(SubQueryStatement::SelectStatement(
+                                    Query::select()
+                                        .from(Teachers)
+                                        .column(teachers::Column::FullName)
+                                        .cond_where(
+                                            Expr::col((Teachers, teachers::Column::PersonId))
+                                                .equals((Scans, scans::Column::PersonId)),
+                                        )
+                                        .to_owned(),
+                                )),
                             )
-                            .into(),
+                            .ilike(format!("%{}%", full_name)),
+                        )
+                        .into(),
                     );
                 },
                 |_| {},
@@ -254,7 +289,10 @@ impl QueryService {
                     // get value
                     let scan_time_start = query.scan_time_start.unwrap();
                     // check
-                    let start_time = NaiveDateTime::parse_from_str(scan_time_start.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let start_time = NaiveDateTime::parse_from_str(
+                        scan_time_start.as_str(),
+                        "%Y-%m-%d %H:%M:%S%",
+                    );
                     // parse success
                     if let Ok(start_time) = start_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
@@ -271,7 +309,8 @@ impl QueryService {
                     // get value
                     let scan_time_end = query.scan_time_end.unwrap();
                     // check
-                    let end_time = NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let end_time =
+                        NaiveDateTime::parse_from_str(scan_time_end.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
@@ -297,10 +336,14 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
-            .into_json()
-            .all(db)
-            .await?;
+        let result = SelectScans::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .into_json()
+        .all(db)
+        .await?;
 
         Ok(result)
     }
@@ -318,18 +361,23 @@ impl QueryService {
                 Expr::col((Levels, levels::Column::LevelName)),
             ])
             // GET _id
-            .expr_as(Expr::col((Students, students::Column::Id)), Alias::new("_id"))
+            .expr_as(
+                Expr::col((Students, students::Column::Id)),
+                Alias::new("_id"),
+            )
             //
             .join(
                 JoinType::Join,
                 Students,
-                Expr::col((Students, students::Column::PersonId)).equals((Scans, scans::Column::PersonId)),
+                Expr::col((Students, students::Column::PersonId))
+                    .equals((Scans, scans::Column::PersonId)),
             )
             //
             .join(
                 JoinType::Join,
                 Groups,
-                Expr::col((Groups, groups::Column::Id)).equals((Students, students::Column::GroupId)),
+                Expr::col((Groups, groups::Column::Id))
+                    .equals((Students, students::Column::GroupId)),
             )
             //
             .join(
@@ -342,7 +390,9 @@ impl QueryService {
                 query.full_name.is_some(),
                 |x| {
                     let full_name = query.full_name.unwrap();
-                    x.and_where(Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)));
+                    x.and_where(
+                        Expr::col(students::Column::FullName).ilike(format!("%{}%", full_name)),
+                    );
                 },
                 |_| {},
             )
@@ -352,7 +402,8 @@ impl QueryService {
                 |x| {
                     let start_time = query.scan_time_start.unwrap();
                     // check
-                    let start_time = NaiveDateTime::parse_from_str(start_time.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let start_time =
+                        NaiveDateTime::parse_from_str(start_time.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(start_time) = start_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).gte(start_time));
@@ -368,7 +419,8 @@ impl QueryService {
                 |x| {
                     let end_time = query.scan_time_end.unwrap();
                     // check
-                    let end_time = NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
+                    let end_time =
+                        NaiveDateTime::parse_from_str(end_time.as_str(), "%Y-%m-%d %H:%M:%S%");
                     // parse success
                     if let Ok(end_time) = end_time {
                         x.and_where(Expr::col((Scans, scans::Column::ScanDate)).lte(end_time));
@@ -394,10 +446,14 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectAttendance::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
-            .into_json()
-            .all(db)
-            .await?;
+        let result = SelectAttendance::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .into_json()
+        .all(db)
+        .await?;
 
         Ok(result)
     }
@@ -409,7 +465,11 @@ impl QueryService {
         }
         let levels = Levels::find()
             .select_only()
-            .columns([levels::Column::Id, levels::Column::LevelName, levels::Column::LevelDescription])
+            .columns([
+                levels::Column::Id,
+                levels::Column::LevelName,
+                levels::Column::LevelDescription,
+            ])
             .filter(conditions)
             .order_by_desc(levels::Column::CreatedAt)
             .offset((query.page - 1) * query.limit)
@@ -613,10 +673,14 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = SelectTimeTable::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
-            .into_json()
-            .all(db)
-            .await?;
+        let result = SelectTimeTable::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .into_json()
+        .all(db)
+        .await?;
 
         Ok(result)
     }
@@ -665,19 +729,27 @@ impl QueryService {
         Ok(grades)
     }
     //
-    pub async fn list_disciplinary_actions(db: &DbConn, query: DisciplinaryQuery) -> DbResult<Values> {
+    pub async fn list_disciplinary_actions(
+        db: &DbConn,
+        query: DisciplinaryQuery,
+    ) -> DbResult<Values> {
         let mut conditions = Condition::all();
         if let Some(student_id) = query.student_id {
-            conditions = conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
+            conditions =
+                conditions.add(Expr::col(disciplinary_actions::Column::StudentId).eq(student_id));
         }
         if let Some(issued_at) = query.issued_at {
-            conditions = conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
+            conditions =
+                conditions.add(Expr::col(disciplinary_actions::Column::IssuedAt).eq(issued_at));
         }
         let disciplinary_action = DisciplinaryActions::find()
             .select_only()
             .columns(disciplinary_actions::Column::iter())
             .column(students::Column::FullName)
-            .join(JoinType::Join, disciplinary_actions::Relation::Students.def())
+            .join(
+                JoinType::Join,
+                disciplinary_actions::Relation::Students.def(),
+            )
             .filter(conditions)
             .offset((query.page - 1) * query.limit)
             .limit(query.limit)
@@ -750,9 +822,13 @@ impl QueryService {
             .to_owned()
             .build(PostgresQueryBuilder);
 
-        let result = GetSessionWithRole::find_by_statement(Statement::from_sql_and_values(DbBackend::Postgres, sql, values))
-            .one(db)
-            .await?;
+        let result = GetSessionWithRole::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            sql,
+            values,
+        ))
+        .one(db)
+        .await?;
 
         Ok(result)
     }

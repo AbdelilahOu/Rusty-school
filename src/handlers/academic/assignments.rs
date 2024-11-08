@@ -1,6 +1,6 @@
 use actix_web::{
-    HttpRequest as Request,
-    HttpResponse as Response, web::{Json, Path, Query},
+    web::{Json, Path, Query},
+    HttpRequest as Request, HttpResponse as Response,
 };
 
 use service::{
@@ -110,7 +110,12 @@ pub async fn list(req: Request, query: Query<AssignmentQuery>, state: State) -> 
     }
 }
 
-pub async fn update(req: Request, id: Path<Uuid>, body: Json<Assignment>, state: State) -> Response {
+pub async fn update(
+    req: Request,
+    id: Path<Uuid>,
+    body: Json<Assignment>,
+    state: State,
+) -> Response {
     let headers = req.headers();
     let authorized = auth_guard(headers, state.config.jwt_secret.clone());
     if let Err(message) = authorized {
@@ -129,7 +134,9 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Assignment>, state:
             });
         }
     }
-    let res = MutationService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner()).await;
+    let res =
+        MutationService::update_assignment(&state.db_conn, id.into_inner(), body.into_inner())
+            .await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
             error: None,

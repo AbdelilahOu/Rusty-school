@@ -2,7 +2,8 @@ use sea_orm::{sea_query::extension::postgres::Type, EnumIter, Iterable};
 use sea_orm_migration::prelude::*;
 
 use super::{
-    m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher, m20231116_165911_c_parents::Parent, m20231116_214011_c_scans::Scan,
+    m20231109_190937_c_students::Student, m20231113_170500_c_teachers::Teacher,
+    m20231116_165911_c_parents::Parent, m20231116_214011_c_scans::Scan,
 };
 
 #[derive(DeriveMigrationName)]
@@ -12,7 +13,12 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .create_type(Type::create().as_enum(PersonEnum::Table).values(PersonEnum::iter().skip(1)).to_owned())
+            .create_type(
+                Type::create()
+                    .as_enum(PersonEnum::Table)
+                    .values(PersonEnum::iter().skip(1))
+                    .to_owned(),
+            )
             .await?;
 
         manager
@@ -109,11 +115,21 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_scan_person_id").table(Scan::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_scan_person_id")
+                    .table(Scan::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .alter_table(sea_query::Table::alter().table(Scan::Table).drop_column(Scan::PersonId).to_owned())
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Scan::Table)
+                    .drop_column(Scan::PersonId)
+                    .to_owned(),
+            )
             .await?;
 
         manager
@@ -126,15 +142,30 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-            .alter_table(sea_query::Table::alter().table(Student::Table).drop_column(Student::PersonId).to_owned())
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Student::Table)
+                    .drop_column(Student::PersonId)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .drop_foreign_key(sea_query::ForeignKey::drop().name("fk_parent_person_id").table(Parent::Table).to_owned())
+            .drop_foreign_key(
+                sea_query::ForeignKey::drop()
+                    .name("fk_parent_person_id")
+                    .table(Parent::Table)
+                    .to_owned(),
+            )
             .await?;
 
         manager
-            .alter_table(sea_query::Table::alter().table(Parent::Table).drop_column(Parent::PersonId).to_owned())
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Parent::Table)
+                    .drop_column(Parent::PersonId)
+                    .to_owned(),
+            )
             .await?;
 
         manager
@@ -147,12 +178,21 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-            .alter_table(sea_query::Table::alter().table(Teacher::Table).drop_column(Teacher::PersonId).to_owned())
+            .alter_table(
+                sea_query::Table::alter()
+                    .table(Teacher::Table)
+                    .drop_column(Teacher::PersonId)
+                    .to_owned(),
+            )
             .await?;
 
-        manager.drop_table(Table::drop().table(Person::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(Person::Table).to_owned())
+            .await?;
 
-        manager.drop_type(Type::drop().if_exists().name(PersonEnum::Table).to_owned()).await?;
+        manager
+            .drop_type(Type::drop().if_exists().name(PersonEnum::Table).to_owned())
+            .await?;
 
         Ok(())
     }

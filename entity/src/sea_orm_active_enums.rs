@@ -3,7 +3,11 @@
 use sea_orm::entity::prelude::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "announcement_categories")]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
+    enum_name = "announcement_categories"
+)]
 pub enum AnnouncementCategories {
     #[sea_orm(string_value = "academic")]
     Academic,
@@ -120,7 +124,11 @@ impl Into<String> for Roles {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum)]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "time_table_item_categories")]
+#[sea_orm(
+    rs_type = "String",
+    db_type = "Enum",
+    enum_name = "time_table_item_categories"
+)]
 pub enum TimeTableItemCategories {
     #[sea_orm(string_value = "activity")]
     Activity,

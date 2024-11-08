@@ -1,4 +1,4 @@
-use actix_web::{App, HttpResponse as Response, HttpServer, middleware::Logger, web};
+use actix_web::{middleware::Logger, web, App, HttpResponse as Response, HttpServer};
 
 use service::sea_orm::DatabaseConnection;
 use types::config::Config;
@@ -54,9 +54,9 @@ async fn main() -> std::io::Result<()> {
                     .service(communication::load_announcements_routes())
                     .default_service(web::to(|| Response::NotFound()))
             })
-                .bind(("0.0.0.0", 8080))?
-                .run()
-                .await;
+            .bind(("0.0.0.0", 8080))?
+            .run()
+            .await;
         }
         Err(e) => println!("establish db connection failed: {}", e),
     }

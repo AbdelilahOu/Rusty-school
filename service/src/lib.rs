@@ -9,15 +9,25 @@ pub mod transaction;
 
 // group imports from entity
 mod entities {
-    pub use ::entity::activities::{self, ActiveModel as ActivityActiveModel, Entity as Activities};
-    pub use ::entity::announcements::{self, ActiveModel as AnnouncementActiveModel, Entity as Announcements};
-    pub use ::entity::assignments::{self, ActiveModel as AssignmentActiveModel, Entity as Assignments};
+    pub use ::entity::activities::{
+        self, ActiveModel as ActivityActiveModel, Entity as Activities,
+    };
+    pub use ::entity::announcements::{
+        self, ActiveModel as AnnouncementActiveModel, Entity as Announcements,
+    };
+    pub use ::entity::assignments::{
+        self, ActiveModel as AssignmentActiveModel, Entity as Assignments,
+    };
     pub use ::entity::classes::{self, ActiveModel as ClassActiveModel, Entity as Classes};
-    pub use ::entity::disciplinary_actions::{self, ActiveModel as DisciplinaryActiveModel, Entity as DisciplinaryActions};
+    pub use ::entity::disciplinary_actions::{
+        self, ActiveModel as DisciplinaryActiveModel, Entity as DisciplinaryActions,
+    };
     pub use ::entity::events::{self, ActiveModel as EventActiveModel, Entity as Events};
     pub use ::entity::grades::{self, ActiveModel as GradeActiveModel, Entity as Grades};
     pub use ::entity::grading_criteria::{ActiveModel as CriteriaActiveModel, Entity as Criteria};
-    pub use ::entity::grading_rubrics::{self, ActiveModel as RubricActiveModel, Entity as Rubrics};
+    pub use ::entity::grading_rubrics::{
+        self, ActiveModel as RubricActiveModel, Entity as Rubrics,
+    };
     pub use ::entity::groups::{self, ActiveModel as GroupActiveModel, Entity as Groups};
     pub use ::entity::lectures::{self, ActiveModel as LectureActiveModel, Entity as Lectures};
     pub use ::entity::levels::{self, ActiveModel as LevelActiveModel, Entity as Levels};
@@ -29,9 +39,14 @@ mod entities {
     pub use ::entity::sessions::{self, ActiveModel as SessionActiveModel, Entity as Sessions};
     pub use ::entity::students::{self, ActiveModel as StudentActiveModel, Entity as Students};
     pub use ::entity::subjects::{self, ActiveModel as SubjectActiveModel, Entity as Subjects};
-    pub use ::entity::teacher_subjects::{ActiveModel as TeacherSubjectActiveModel, Entity as TeacherSubjects};
+    pub use ::entity::teacher_subjects::{
+        ActiveModel as TeacherSubjectActiveModel, Entity as TeacherSubjects,
+    };
     pub use ::entity::teachers::{self, ActiveModel as TeacherActiveModel, Entity as Teachers};
-    pub use ::entity::time_table::{self, ActiveModel as TimeTableActiveModel, Entity as TimeTables};
-    pub use ::entity::users::{self, ActiveModel as UserActiveModel, Entity as Users, Model as UserModel};
+    pub use ::entity::time_table::{
+        self, ActiveModel as TimeTableActiveModel, Entity as TimeTables,
+    };
+    pub use ::entity::users::{
+        self, ActiveModel as UserActiveModel, Entity as Users, Model as UserModel,
+    };
 }
-

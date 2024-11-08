@@ -1,6 +1,6 @@
 use actix_web::{
-    HttpRequest as Request,
-    HttpResponse as Response, web::{Json, Path},
+    web::{Json, Path},
+    HttpRequest as Request, HttpResponse as Response,
 };
 
 use service::{

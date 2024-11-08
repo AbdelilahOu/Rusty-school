@@ -2,9 +2,10 @@ use sea_orm::{prelude::*, Set, TransactionError, TransactionTrait};
 
 use crate::{
     entities::{
-        ActivityActiveModel, Criteria, CriteriaActiveModel, EventActiveModel, LectureActiveModel, ParentActiveModel, PersonActiveModel, PersonEnums,
-        RubricActiveModel, StudentActiveModel, TeacherActiveModel, TimeTableActiveModel, TimeTableItemCategories, UserActiveModel, UserModel,
-        users, Users, WeekDayNumber,
+        users, ActivityActiveModel, Criteria, CriteriaActiveModel, EventActiveModel,
+        LectureActiveModel, ParentActiveModel, PersonActiveModel, PersonEnums, RubricActiveModel,
+        StudentActiveModel, TeacherActiveModel, TimeTableActiveModel, TimeTableItemCategories,
+        UserActiveModel, UserModel, Users, WeekDayNumber,
     },
     models::{Activity, Event, Lecture, Parent, Rubric, Student, Teacher, User},
 };
@@ -22,8 +23,8 @@ impl TransactionService {
                     person_type: Set(PersonEnums::Student),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 //
                 StudentActiveModel {
                     first_name: Set(data.first_name.unwrap()),
@@ -32,13 +33,13 @@ impl TransactionService {
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
 
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn create_teacher(db: DbConn, data: Teacher) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
@@ -48,8 +49,8 @@ impl TransactionService {
                     person_type: Set(PersonEnums::Teacher),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 //
                 TeacherActiveModel {
                     first_name: Set(data.first_name.unwrap()),
@@ -57,13 +58,13 @@ impl TransactionService {
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
 
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn create_parent(db: DbConn, data: Parent) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
@@ -73,8 +74,8 @@ impl TransactionService {
                     person_type: Set(PersonEnums::Parent),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 //
                 ParentActiveModel {
                     first_name: Set(data.first_name.unwrap()),
@@ -82,19 +83,22 @@ impl TransactionService {
                     person_id: Set(Some(person.id)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
 
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn upsert_user(db: &DbConn, data: User) -> TxnRes<(User, Uuid)> {
         db.transaction::<_, (User, Uuid), DbErr>(|txn| {
             Box::pin(async move {
                 // check if user exists
-                let user_op: Option<UserModel> = Users::find().filter(users::Column::Email.eq(&data.email)).one(txn).await?;
+                let user_op: Option<UserModel> = Users::find()
+                    .filter(users::Column::Email.eq(&data.email))
+                    .one(txn)
+                    .await?;
 
                 if user_op.is_some() {
                     println!("user already exists");
@@ -117,8 +121,8 @@ impl TransactionService {
                     person_type: Set(PersonEnums::NotDefined),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
 
                 let new_user: UserModel = UserActiveModel {
                     name: Set(data.name),
@@ -129,8 +133,8 @@ impl TransactionService {
                     person_id: Set(c_person.id),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
 
                 Ok((
                     User {
@@ -145,7 +149,7 @@ impl TransactionService {
                 ))
             })
         })
-            .await
+        .await
     }
     pub async fn create_event(db: &DbConn, data: Event) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
@@ -157,8 +161,8 @@ impl TransactionService {
                     start_time: Set(Some(data.start_time)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 // create event
                 EventActiveModel {
                     time_table_id: Set(Some(timetable_active_modal.id)),
@@ -166,12 +170,12 @@ impl TransactionService {
                     event_description: Set(Some(data.event_description)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn create_activity(db: &DbConn, data: Activity) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
@@ -184,8 +188,8 @@ impl TransactionService {
                     day_of_week: Set(WeekDayNumber(data.day_of_week).into()),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 // create activity
                 ActivityActiveModel {
                     time_table_id: Set(Some(timetable_active_modal.id)),
@@ -193,12 +197,12 @@ impl TransactionService {
                     activity_description: Set(Some(data.activity_description)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn create_lecture(db: &DbConn, data: Lecture) -> TxnRes<()> {
         db.transaction::<_, (), DbErr>(|txn| {
@@ -211,20 +215,20 @@ impl TransactionService {
                     day_of_week: Set(WeekDayNumber(data.day_of_week).into()),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 // create lecture
                 LectureActiveModel {
                     time_table_id: Set(Some(timetable_active_modal.id)),
                     class_id: Set(Some(data.class_id)),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 Ok(())
             })
         })
-            .await
+        .await
     }
     pub async fn create_rubric(db: &DbConn, data: Rubric) -> TxnRes<Uuid> {
         db.transaction::<_, Uuid, DbErr>(|txn| {
@@ -235,8 +239,8 @@ impl TransactionService {
                     description: Set(data.description),
                     ..Default::default()
                 }
-                    .insert(txn)
-                    .await?;
+                .insert(txn)
+                .await?;
                 // create criteria
                 if let Some(grading_criteria) = data.grading_criterias {
                     let mut criteria_arr = Vec::<CriteriaActiveModel>::new();
@@ -253,6 +257,6 @@ impl TransactionService {
                 Ok(rubric_modal.id)
             })
         })
-            .await
+        .await
     }
 }

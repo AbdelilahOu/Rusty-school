@@ -3,12 +3,17 @@ use sea_orm::{prelude::*, Set};
 
 use crate::{
     entities::{
-        AnnouncementActiveModel, Announcements, AssignmentActiveModel, Assignments, ClassActiveModel, Classes, DisciplinaryActions,
-        DisciplinaryActiveModel, GradeActiveModel, Grades, GroupActiveModel, Groups, LevelActiveModel, Levels, ParentActiveModel, Parents,
-        RoomActiveModel, Rooms, RubricActiveModel, Rubrics, ScanActiveModel, Scans, SessionActiveModel, Sessions, StudentActiveModel, Students,
-        SubjectActiveModel, Subjects, TeacherActiveModel, Teachers, TeacherSubjectActiveModel, TeacherSubjects, TimeTables,
+        AnnouncementActiveModel, Announcements, AssignmentActiveModel, Assignments,
+        ClassActiveModel, Classes, DisciplinaryActions, DisciplinaryActiveModel, GradeActiveModel,
+        Grades, GroupActiveModel, Groups, LevelActiveModel, Levels, ParentActiveModel, Parents,
+        RoomActiveModel, Rooms, RubricActiveModel, Rubrics, ScanActiveModel, Scans,
+        SessionActiveModel, Sessions, StudentActiveModel, Students, SubjectActiveModel, Subjects,
+        TeacherActiveModel, TeacherSubjectActiveModel, TeacherSubjects, Teachers, TimeTables,
     },
-    models::{Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric, Scan, Session, Student, Subject, Teacher},
+    models::{
+        Announcement, Assignment, Class, Disciplinary, Grade, Group, Level, Parent, Room, Rubric,
+        Scan, Session, Student, Subject, Teacher,
+    },
 };
 
 type DbResult<T> = Result<T, DbErr>;
@@ -360,7 +365,9 @@ impl MutationService {
             subject_id: Set(Some(data.1)),
             ..Default::default()
         };
-        let teacher_subject = TeacherSubjects::insert(teacher_subject_a_model).exec(db).await?;
+        let teacher_subject = TeacherSubjects::insert(teacher_subject_a_model)
+            .exec(db)
+            .await?;
         Ok(teacher_subject.last_insert_id)
     }
     pub async fn delete_teacher_subject(db: &DbConn, id: Uuid) -> DbResult<u64> {
@@ -468,7 +475,9 @@ impl MutationService {
             consequences: Set(data.consequences),
             ..Default::default()
         };
-        let disciplinary = DisciplinaryActions::insert(disciplinary_a_model).exec(db).await?;
+        let disciplinary = DisciplinaryActions::insert(disciplinary_a_model)
+            .exec(db)
+            .await?;
         Ok(disciplinary.last_insert_id)
     }
     pub async fn update_disciplinary(db: &DbConn, id: Uuid, data: Disciplinary) -> DbResult<Uuid> {

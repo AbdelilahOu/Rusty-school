@@ -22,12 +22,10 @@ pub fn auth_guard(headers: &HeaderMap, secret: String) -> Result<Claims, String>
             };
             // check if auth type is bearer
             match authorization_type {
-                "Bearer" => {
-                    match verify_token(token, secret) {
-                        Ok(payload) => Ok(payload),
-                        Err(err) => Err(format!("Invalid token {}", err)),
-                    }
-                }
+                "Bearer" => match verify_token(token, secret) {
+                    Ok(payload) => Ok(payload),
+                    Err(err) => Err(format!("Invalid token {}", err)),
+                },
                 _ => Err("auth type unsupported".to_string()),
             }
         }

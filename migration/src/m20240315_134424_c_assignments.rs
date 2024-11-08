@@ -1,8 +1,8 @@
 use sea_orm_migration::prelude::*;
 
 use crate::{
-    m20231113_170500_c_teachers::Teacher, m20231215_142739_c_subjects::Subject, m20231222_155651_c_groups::Group,
-    m20240314_135418_c_grading_rubric::GradingRubrics,
+    m20231113_170500_c_teachers::Teacher, m20231215_142739_c_subjects::Subject,
+    m20231222_155651_c_groups::Group, m20240314_135418_c_grading_rubric::GradingRubrics,
 };
 
 #[derive(DeriveMigrationName)]
@@ -26,7 +26,11 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Assignment::Title).string().not_null())
                     .col(ColumnDef::new(Assignment::Description).string().not_null())
                     .col(ColumnDef::new(Assignment::DueDate).timestamp().not_null())
-                    .col(ColumnDef::new(Assignment::SubmissionType).string().not_null())
+                    .col(
+                        ColumnDef::new(Assignment::SubmissionType)
+                            .string()
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(Assignment::GradinRubricId).uuid())
                     .foreign_key(
                         ForeignKey::create()
@@ -128,9 +132,13 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager.drop_table(Table::drop().table(GroupAssignment::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(GroupAssignment::Table).to_owned())
+            .await?;
 
-        manager.drop_table(Table::drop().table(Assignment::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(Assignment::Table).to_owned())
+            .await?;
 
         Ok(())
     }

@@ -17,7 +17,12 @@ impl MigrationTrait for Migration {
             .await?;
 
         manager
-            .create_type(Type::create().as_enum(Audiences::Table).values(Audiences::iter().skip(1)).to_owned())
+            .create_type(
+                Type::create()
+                    .as_enum(Audiences::Table)
+                    .values(Audiences::iter().skip(1))
+                    .to_owned(),
+            )
             .await?;
 
         manager
@@ -34,12 +39,19 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Announcement::Title).string().not_null())
                     .col(ColumnDef::new(Announcement::Description).text())
-                    .col(ColumnDef::new(Announcement::CreatedAt).timestamp().default(Expr::current_timestamp()))
+                    .col(
+                        ColumnDef::new(Announcement::CreatedAt)
+                            .timestamp()
+                            .default(Expr::current_timestamp()),
+                    )
                     .col(ColumnDef::new(Announcement::StartDate).timestamp())
                     .col(ColumnDef::new(Announcement::EndDate).timestamp())
                     .col(
                         ColumnDef::new(Announcement::Category)
-                            .enumeration(AnnouncementCategories::Table, AnnouncementCategories::iter().skip(1))
+                            .enumeration(
+                                AnnouncementCategories::Table,
+                                AnnouncementCategories::iter().skip(1),
+                            )
                             .not_null(),
                     )
                     .col(ColumnDef::new(Announcement::Targets).array(ColumnType::Uuid))
@@ -56,13 +68,22 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager.drop_table(Table::drop().table(Announcement::Table).to_owned()).await?;
-
         manager
-            .drop_type(Type::drop().if_exists().name(AnnouncementCategories::Table).to_owned())
+            .drop_table(Table::drop().table(Announcement::Table).to_owned())
             .await?;
 
-        manager.drop_type(Type::drop().if_exists().name(Audiences::Table).to_owned()).await?;
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(AnnouncementCategories::Table)
+                    .to_owned(),
+            )
+            .await?;
+
+        manager
+            .drop_type(Type::drop().if_exists().name(Audiences::Table).to_owned())
+            .await?;
 
         Ok(())
     }

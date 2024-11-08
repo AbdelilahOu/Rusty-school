@@ -1,4 +1,4 @@
-use jsonwebtoken::{Algorithm, decode, DecodingKey, encode, EncodingKey, Header, Validation};
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 
 use service::{
     chrono::{Duration, Utc},
@@ -7,7 +7,12 @@ use service::{
 
 use crate::types::token::Claims;
 
-pub fn generate_tokens(user_id: Uuid, role: String, secret: String, duration: Duration) -> (String, Claims) {
+pub fn generate_tokens(
+    user_id: Uuid,
+    role: String,
+    secret: String,
+    duration: Duration,
+) -> (String, Claims) {
     // time
     let current_time = Utc::now();
     let expiration_time = current_time + duration;
@@ -20,12 +25,17 @@ pub fn generate_tokens(user_id: Uuid, role: String, secret: String, duration: Du
         role,
         exp: expiration_time.timestamp(),
     };
-    let token = encode(&header, &claims, &EncodingKey::from_secret(secret.as_ref())).expect("Failed to generate token");
+    let token = encode(&header, &claims, &EncodingKey::from_secret(secret.as_ref()))
+        .expect("Failed to generate token");
     (token, claims)
 }
 
 pub fn verify_token(token: &str, secret: String) -> Result<Claims, String> {
-    let token_res = decode::<Claims>(&token, &DecodingKey::from_secret(secret.as_ref()), &Validation::new(Algorithm::HS256));
+    let token_res = decode::<Claims>(
+        &token,
+        &DecodingKey::from_secret(secret.as_ref()),
+        &Validation::new(Algorithm::HS256),
+    );
     match token_res {
         Ok(t) => Ok(t.claims),
         Err(e) => Err(e.to_string()),

@@ -1,6 +1,6 @@
 use actix_web::{
-    HttpRequest as Request,
-    HttpResponse as Response, web::{Json, Path, Query},
+    web::{Json, Path, Query},
+    HttpRequest as Request, HttpResponse as Response,
 };
 
 use service::{
@@ -152,7 +152,8 @@ pub async fn update(req: Request, id: Path<Uuid>, body: Json<Group>, state: Stat
             });
         }
     }
-    let res = MutationService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
+    let res =
+        MutationService::update_group(&state.db_conn, id.into_inner(), body.into_inner()).await;
     match res {
         Ok(id) => Response::Ok().json(ResponseData {
             error: None,

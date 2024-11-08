@@ -56,7 +56,10 @@ pub async fn request_tokens(code: String, conf: Config) -> Result<TokenResponse,
         .expect("Failed to send request");
     //
     if res.status().is_success() {
-        let resp = res.json::<TokenResponse>().await.expect("Failed to parse response");
+        let resp = res
+            .json::<TokenResponse>()
+            .await
+            .expect("Failed to parse response");
         return Ok(resp);
     } else {
         Err("Error getting tokens".to_string())

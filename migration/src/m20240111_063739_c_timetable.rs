@@ -11,7 +11,12 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         // create week days enum
         manager
-            .create_type(Type::create().as_enum(WeekDays::Table).values(WeekDays::iter().skip(1)).to_owned())
+            .create_type(
+                Type::create()
+                    .as_enum(WeekDays::Table)
+                    .values(WeekDays::iter().skip(1))
+                    .to_owned(),
+            )
             .await?;
 
         // create timetable item type enum
@@ -39,10 +44,16 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(TimeTable::Type)
-                            .enumeration(TimeTableItemCategories::Table, TimeTableItemCategories::iter().skip(1))
+                            .enumeration(
+                                TimeTableItemCategories::Table,
+                                TimeTableItemCategories::iter().skip(1),
+                            )
                             .not_null(),
                     )
-                    .col(ColumnDef::new(TimeTable::DayOfWeek).enumeration(WeekDays::Table, WeekDays::iter().skip(1)))
+                    .col(
+                        ColumnDef::new(TimeTable::DayOfWeek)
+                            .enumeration(WeekDays::Table, WeekDays::iter().skip(1)),
+                    )
                     .col(ColumnDef::new(TimeTable::FullDate).date())
                     .col(ColumnDef::new(TimeTable::StartTime).time())
                     .col(ColumnDef::new(TimeTable::EndTime).time())
@@ -151,7 +162,9 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager.drop_table(Table::drop().table(Event::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(Event::Table).to_owned())
+            .await?;
 
         manager
             .drop_foreign_key(
@@ -162,7 +175,9 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager.drop_table(Table::drop().table(Lecture::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(Lecture::Table).to_owned())
+            .await?;
 
         manager
             .drop_foreign_key(
@@ -173,14 +188,25 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
-        manager.drop_table(Table::drop().table(Activity::Table).to_owned()).await?;
-
-        manager.drop_table(Table::drop().table(TimeTable::Table).to_owned()).await?;
-
-        manager.drop_type(Type::drop().if_exists().name(WeekDays::Table).to_owned()).await?;
+        manager
+            .drop_table(Table::drop().table(Activity::Table).to_owned())
+            .await?;
 
         manager
-            .drop_type(Type::drop().if_exists().name(TimeTableItemCategories::Table).to_owned())
+            .drop_table(Table::drop().table(TimeTable::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_type(Type::drop().if_exists().name(WeekDays::Table).to_owned())
+            .await?;
+
+        manager
+            .drop_type(
+                Type::drop()
+                    .if_exists()
+                    .name(TimeTableItemCategories::Table)
+                    .to_owned(),
+            )
             .await?;
 
         Ok(())
